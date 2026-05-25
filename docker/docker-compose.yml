@@ -1,0 +1,128 @@
+x-backend-common: &backend-common
+  image: node:20-alpine
+  working_dir: /var/www/backend
+  networks:
+    - covaltech-network
+  volumes:
+    - ../:/var/www/backend
+  env_file:
+    - .env
+  environment:
+    DATABASE: ${DATABASE:?DATABASE is required in .env}
+    DATABASE_USERNAME: ${DATABASE_USERNAME:?DATABASE_USERNAME is required in .env}
+    DATABASE_PASSWORD: ${DATABASE_PASSWORD:?DATABASE_PASSWORD is required in .env}
+    # Internal Docker port is always 5432 regardless of the host mapping in DATABASE_PORT
+    DATABASE_PORT: '5432'
+
+services:
+  website:
+    <<: *backend-common
+    container_name: ${ENVIRONMENT:?ENVIRONMENT is required in .env}-${APP_NAME:?APP_NAME is required in .env}
+    restart: unless-stopped
+    networks:
+      - covaltech-network
+    depends_on:
+      db:
+        condition: service_healthy
+      migrate:
+        condition: service_completed_successfully
+    command:
+      - bash
+      - -lc
+      - |
+        if [ -f /var/www/backend/backend/dist/index.js ]; then
+          cd /var/www/backend/backend && node dist/index.js
+        else
+          cd /var/www/backend && node index.js
+        fi
+
+  migrate:
+    <<: *backend-common
+    container_name: ${ENVIRONMENT:?ENVIRONMENT is required in .env}-${APP_NAME:?APP_NAME is required in .env}-migrate
+    restart: 'no'
+    depends_on:
+      db:
+        condition: service_healthy
+    command:
+      - bash
+      - -lc
+      - |
+        if [ -f /var/www/backend/backend/dist/db/migrate.js ]; then
+          cd /var/www/backend/backend && node dist/db/migrate.js
+        else
+          cd /var/www/backend && node db/migrate.js
+        fi
+
+  seed:
+    <<: *backend-common
+    container_name: ${ENVIRONMENT:?ENVIRONMENT is required in .env}-${APP_NAME:?APP_NAME is required in .env}-seed
+    restart: 'no'
+    depends_on:
+      db:
+        condition: service_healthy
+    command:
+      - bash
+      - -lc
+      - |
+        if [ -f /var/www/backend/backend/dist/db/seed.js ]; then
+          cd /var/www/backend/backend && node dist/db/seed.js
+        else
+          cd /var/www/backend && node db/seed.js
+        fi
+
+  db:
+    image: postgres:17
+    container_name: ${ENVIRONMENT:?ENVIRONMENT is required in .env}-${DATABASE:?DATABASE is required in .env}-db
+    restart: always
+    env_file:
+      - .env
+    logging:
+      options:
+        max-size: 10m
+        max-file: '3'
+    networks:
+      - covaltech-network
+    environment:
+      POSTGRES_USER: ${DATABASE_USERNAME:?DATABASE_USERNAME is required in .env}
+      POSTGRES_PASSWORD: ${DATABASE_PASSWORD:?DATABASE_PASSWORD is required in .env}
+      POSTGRES_DB: ${DATABASE:?DATABASE is required in .env}
+      PGDATA: /var/lib/postgresql/data
+      POSTGRES_INITDB_ARGS: -E UTF8 --locale=C
+    healthcheck:
+      test:
+        - CMD-SHELL
+        - pg_isready -U "$$POSTGRES_USER" -d "$$POSTGRES_DB"
+      interval: 5s
+      timeout: 5s
+      retries: 20
+      start_period: 5s
+    volumes:
+      - ./db/myDB.sql:/docker-entrypoint-initdb.d/fichier.sql
+      - ./data/postgres:/var/lib/postgresql/data
+
+  # S3-compatible object storage for local development.
+  # Opt-in only: `docker compose --profile s3 up`. Pair with STORAGE_DRIVER=s3.
+  minio:
+    image: minio/minio:latest
+    container_name: ${ENVIRONMENT:?ENVIRONMENT is required in .env}-${APP_NAME:?APP_NAME is required in .env}-minio
+    profiles:
+      - s3
+    restart: unless-stopped
+    networks:
+      - covaltech-network
+    environment:
+      MINIO_ROOT_USER: ${STORAGE_S3_ACCESS_KEY:-minioadmin}
+      MINIO_ROOT_PASSWORD: ${STORAGE_S3_SECRET_KEY:-minioadmin}
+    command: server /data --console-address ":9001"
+    ports:
+      # S3 API endpoint
+      - '${MINIO_API_PORT:-9000}:9000'
+      # Web console (http://localhost:9001)
+      - '${MINIO_CONSOLE_PORT:-9001}:9001'
+    volumes:
+      - ./data/minio:/data
+
+networks:
+  covaltech-network:
+    driver: bridge
+

@@ -1,0 +1,16 @@
+@use "variables" as *;
+@use "../../covaltech-react-ui/" as *;
+
+@mixin cardShadow($margins: 0, $padding: 20px) {
+  background-color: $card-color;
+  border-radius: $radius-medium;
+  margin: $margins;
+  padding: $padding;
+  border: 0.25px solid $border-color;
+  @include maxScreen($breakpoint-lg-2) {
+    margin-right: 0;
+  }
+  @include maxScreen($breakpoint-md-2) {
+    padding: $padding-xs;
+  }
+}

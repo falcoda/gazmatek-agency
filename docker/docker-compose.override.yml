@@ -1,0 +1,7 @@
+services:
+  website:
+    ports:
+      - '${PORT:-4001}:${PORT:-4001}'
+  db:
+    ports:
+      - '${DATABASE_PORT:-5432}:5432'

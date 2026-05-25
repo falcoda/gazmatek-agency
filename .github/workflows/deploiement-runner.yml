@@ -1,0 +1,223 @@
+name: PROD CI
+
+env:
+  NODE_OPTIONS: --max-old-space-size=6096
+
+on:
+  push:
+    branches:
+      - main
+  workflow_dispatch:
+    inputs:
+      force_deploy:
+        description: Force all deploy jobs
+        required: false
+        default: 'false'
+
+jobs:
+  check-changes:
+    runs-on: [self-hosted, covaltech]
+    outputs:
+      backend-changed: ${{ steps.detect-backend.outputs.changed }}
+      frontend-changed: ${{ steps.detect-frontend.outputs.changed }}
+      docker-changed: ${{ steps.detect-docker.outputs.changed }}
+    steps:
+      - uses: actions/checkout@v3
+        with:
+          fetch-depth: 0
+
+      - name: Detect backend changes
+        id: detect-backend
+        uses: ./.github/actions/detect-changes
+        with:
+          path_prefix: backend/
+          force_deploy: ${{ github.event_name == 'workflow_dispatch' && inputs.force_deploy || 'false' }}
+
+      - name: Detect frontend changes
+        id: detect-frontend
+        uses: ./.github/actions/detect-changes
+        with:
+          path_prefix: frontend/
+          force_deploy: ${{ github.event_name == 'workflow_dispatch' && inputs.force_deploy || 'false' }}
+
+      - name: Detect docker changes
+        id: detect-docker
+        uses: ./.github/actions/detect-changes
+        with:
+          path_prefix: docker/
+          force_deploy: ${{ github.event_name == 'workflow_dispatch' && inputs.force_deploy || 'false' }}
+
+  build-backend:
+    runs-on: [self-hosted, covaltech]
+    needs: check-changes
+    if: needs.check-changes.outputs.backend-changed == 'true' || needs.check-changes.outputs.docker-changed == 'true'
+    steps:
+      - name: Checkout repository and submodules
+        uses: actions/checkout@v3
+        with:
+          submodules: recursive
+          token: ${{ secrets.GH_TOKEN }}
+
+      - name: Setup Node 20.x
+        uses: actions/setup-node@v3
+        with:
+          node-version: 20.x
+
+      - name: Install backend dependencies
+        working-directory: backend
+        run: npm i
+
+      - name: Build backend
+        working-directory: backend
+        run: CI= npm run build
+
+      - name: Prune devDependencies
+        working-directory: backend
+        run: npm prune --omit=dev
+
+      - name: Copy Docker to Backend
+        run: cp -R docker backend/dist
+
+      - name: Move Node modules to backend dist
+        run: |
+          mv backend/node_modules backend/dist/node_modules
+
+      - name: Move backend build to shared directory
+        run: |
+          mkdir -p /tmp/shared/PROD-${{ github.event.repository.name }}/backend-build
+          cp -R backend/dist/* /tmp/shared/PROD-${{ github.event.repository.name }}/backend-build
+
+  build-frontend:
+    runs-on: [self-hosted, covaltech]
+    needs: check-changes
+    if: needs.check-changes.outputs.frontend-changed == 'true'
+    steps:
+      - name: Checkout repository and submodules
+        uses: actions/checkout@v3
+        with:
+          submodules: recursive
+          token: ${{ secrets.GH_TOKEN }}
+
+      - name: Setup Node 20.x
+        uses: actions/setup-node@v3
+        with:
+          node-version: 20.x
+
+      - name: Install frontend dependencies
+        working-directory: frontend
+        run: npm install --legacy-peer-deps
+
+      - name: Build frontend
+        working-directory: frontend
+        run: CI= npm run build:prod
+
+      - name: Move frontend build to shared directory
+        run: |
+          mkdir -p /tmp/shared/PROD-${{ github.event.repository.name }}/frontend-build
+          cp -R frontend/build/* /tmp/shared/PROD-${{ github.event.repository.name }}/frontend-build
+
+  deploy-backend:
+    runs-on: [self-hosted, covaltech]
+    needs: build-backend
+    if: needs.build-backend.result == 'success'
+    steps:
+      - uses: actions/checkout@v3
+
+      - name: Create directory for downloaded artifact
+        run: mkdir -p backend-build
+
+      - name: Copy backend build from shared directory
+        run: |
+          REPO_PATH="$HOME/PROD-${{ github.event.repository.name }}"
+          DOT_ENV="$REPO_PATH/docker/.env"
+
+          # Preserve the server .env before wiping the directory
+          ENV_BACKUP="/tmp/docker-env-backup-${{ github.run_id }}"
+          if [ -f "$DOT_ENV" ]; then
+            cp "$DOT_ENV" "$ENV_BACKUP"
+          fi
+
+          rm -rf "$REPO_PATH"
+          mkdir -p "$REPO_PATH"
+          cp -R /tmp/shared/PROD-${{ github.event.repository.name }}/backend-build/* "$REPO_PATH"
+
+          # Restore the server .env
+          if [ -f "$ENV_BACKUP" ]; then
+            mkdir -p "$REPO_PATH/docker"
+            mv "$ENV_BACKUP" "$DOT_ENV"
+          fi
+
+      - name: Restart Docker containers
+        run: |
+          REPO_PATH="$HOME/PROD-${{ github.event.repository.name }}"
+          COMPOSE_FILE="$REPO_PATH/docker/docker-compose.yml"
+          cd "$REPO_PATH/docker"
+          docker-compose -f "$COMPOSE_FILE" down
+
+          # Start only PostgreSQL first so migrations run before app boot.
+          docker-compose -f "$COMPOSE_FILE" up -d db
+
+      - name: Wait for PostgreSQL
+        run: |
+          REPO_PATH="$HOME/PROD-${{ github.event.repository.name }}"
+          COMPOSE_FILE="$REPO_PATH/docker/docker-compose.yml"
+          cd "$REPO_PATH/docker"
+
+          ATTEMPTS=0
+          until docker-compose -f "$COMPOSE_FILE" exec -T db sh -lc 'pg_isready -U "$POSTGRES_USER" -d "$POSTGRES_DB"'; do
+            ATTEMPTS=$((ATTEMPTS + 1))
+
+            if [ "$ATTEMPTS" -ge 30 ]; then
+              echo "PostgreSQL is not ready after 60s"
+              exit 1
+            fi
+
+            sleep 2
+          done
+
+      - name: Run backend migrations
+        run: |
+          REPO_PATH="$HOME/PROD-${{ github.event.repository.name }}"
+          COMPOSE_FILE="$REPO_PATH/docker/docker-compose.yml"
+          cd "$REPO_PATH/docker"
+          docker-compose -f "$COMPOSE_FILE" run --rm migrate
+
+      - name: Start application containers
+        run: |
+          REPO_PATH="$HOME/PROD-${{ github.event.repository.name }}"
+          COMPOSE_FILE="$REPO_PATH/docker/docker-compose.yml"
+          cd "$REPO_PATH/docker"
+          docker-compose -f "$COMPOSE_FILE" up -d --no-deps website
+
+  deploy-frontend:
+    runs-on: [self-hosted, covaltech]
+    needs: build-frontend
+    if: needs.build-frontend.result == 'success'
+    steps:
+      - uses: actions/checkout@v3
+
+      - name: Create directory for downloaded artifact
+        run: mkdir -p frontend-build
+
+      - name: Create build directory in PROD
+        run: |
+          REPO_PATH="$HOME/PROD-${{ github.event.repository.name }}"
+          mkdir -p "$REPO_PATH/build"
+
+      - name: Copy frontend build from shared directory
+        run: |
+          REPO_PATH="$HOME/PROD-${{ github.event.repository.name }}"
+          cp -R /tmp/shared/PROD-${{ github.event.repository.name }}/frontend-build/* "$REPO_PATH/build"
+
+  cleanup:
+    runs-on: [self-hosted, covaltech]
+    needs:
+      - deploy-backend
+      - deploy-frontend
+    if: always()
+    steps:
+      - name: Cleanup shared directory
+        run: |
+          echo "Cleaning up shared directory..."
+          rm -rf /tmp/shared/PROD-${{ github.event.repository.name }}/*
+          echo "Cleanup complete."

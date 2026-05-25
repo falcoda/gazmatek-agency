@@ -1,0 +1,37 @@
+.paginationControls {
+  gap: 10px;
+  display: flex;
+  justify-content: space-between;
+  grid-column: span 3;
+
+  .paginationNumberContainer {
+    display: flex;
+    justify-content: center;
+    height: auto;
+    align-items: center;
+    .paginationNumber.selected {
+      border-radius: 6px;
+      @include elevation1(3px, $button-square-background);
+      color: $primary-font;
+    }
+    .paginationNumber:not(.selected) {
+      color: $secondary-font;
+    }
+  }
+  .inactive,
+  .paginationEllipsis,
+  .paginationNumber,
+  .dots {
+    color: $primary-font;
+    width: 40px;
+    height: 40px;
+    font-size: 14px;
+  }
+  .paginationNumber.selected {
+    color: $secondary-color;
+    cursor: default;
+  }
+  .dots {
+    cursor: default;
+  }
+}

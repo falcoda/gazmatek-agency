@@ -1,0 +1,37 @@
+{
+  "seo": {
+    "title": "My App — Template",
+    "description": "A production-ready web application template."
+  },
+  "language": {
+    "switcher_aria": "Switch language"
+  },
+  "nav": {
+    "home": "Home"
+  },
+  "contact": {
+    "dropdownPlaceholder": "Subject*"
+  },
+  "cookieConsent": {
+    "aria_label": "Cookie consent",
+    "title": "We value your privacy",
+    "description": "We use cookies to keep the site working, measure usage, and improve your experience. You decide what you allow.",
+    "customize": "Customize",
+    "accept_all": "Accept all",
+    "reject_all": "Reject all",
+    "save": "Save my choices",
+    "category_necessary": "Strictly necessary",
+    "category_necessary_desc": "Required for security and core features.",
+    "category_necessary_badge": "Always on",
+    "category_analytics": "Analytics",
+    "category_analytics_desc": "Help us understand how the site is used so we can improve it.",
+    "category_marketing": "Marketing",
+    "category_marketing_desc": "Used to personalize content and measure outreach campaigns.",
+    "reopen_aria": "Cookie preferences"
+  },
+  "notFound": {
+    "title": "Page not found",
+    "text": "The page you are looking for does not exist or has been moved.",
+    "back": "Back to home"
+  }
+}

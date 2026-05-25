@@ -1,0 +1,44 @@
+.spanContainer {
+  gap: 8px;
+  display: flex;
+  border-radius: 6px;
+  justify-content: center;
+  align-items: center;
+  text-align: center;
+}
+
+.spanContainer.primary {
+  border: 1px solid #0c90ff;
+  color: #0c90ff;
+  background: #061a38;
+}
+
+.spanContainer.secondary {
+  color: $secondary-color;
+  background: $secondary-background-color;
+}
+
+.spanContainer.valid {
+  background: rgba(56, 199, 105, 0.1);
+  color: $green-color;
+}
+
+.spanContainer.lock {
+  border: 1px solid rgba(242, 80, 80, 0.7);
+  background: rgba(242, 80, 80, 0.2);
+}
+
+.spanContainer.yellow {
+  background: rgba(255, 229, 0, 0.1);
+  color: #ffe500;
+}
+.spanContainer.neutral {
+  background: rgba(255, 255, 255, 0.1);
+  border: 1px solid rgba(255, 255, 255, 0.5);
+  color: $primary-font;
+}
+
+.spanContainer.transparent {
+  background: transparent;
+  border: none;
+}

@@ -1,0 +1,106 @@
+.styledInput {
+  display: flex;
+  gap: 8px;
+  flex-direction: column;
+
+  label {
+    color: $input-label-color;
+    @include text(400, 14px, 15px);
+  }
+
+  input,
+  textarea {
+    @include syledInput;
+  }
+  textarea {
+    width: 440px;
+    height: 120px;
+    @include maxScreen($breakpoint-sm) {
+      width: 100%;
+    }
+  }
+  .balanceInput {
+    width: 100%;
+  }
+  .wrappedInput {
+    display: flex;
+    align-items: center;
+    width: 100%;
+    position: relative;
+    color: $secondary-color;
+
+    @include syledInput;
+    padding: 0;
+    // flex: 1;
+
+    input {
+      width: 100%;
+      height: 100%;
+      border-radius: none;
+      background-color: transparent;
+      padding: $padding-xxs;
+      border: none;
+      outline: none;
+      &:hover {
+        outline: none;
+      }
+    }
+
+    .inputButton,
+    .inputIcon,
+    .wrapInputText {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      padding: 8px;
+      position: absolute;
+      right: 3px;
+      top: 0;
+      bottom: 0;
+      background-color: $container-content-color;
+      color: $primary-font;
+      border: none;
+      border-radius: 7px;
+    }
+    .wrapInputText {
+      background-color: transparent;
+      font-weight: 500;
+    }
+    .inputButton {
+      cursor: pointer;
+    }
+  }
+  .wrappedInput.invalid {
+    outline: 1px solid $lock-color !important;
+  }
+  .invalid {
+    border: 1px solid $lock-color;
+  }
+  .invalidMessage {
+    @include text(400, 10px, auto);
+    color: $lock-color;
+    text-align: left;
+  }
+  .filePreview {
+    max-width: 300px;
+  }
+  .max {
+    @include text(400, 15px, 20px);
+    margin-top: $margin-xxxs;
+    font-size: 12px;
+    font-style: normal;
+    font-weight: 400;
+    line-height: 15px; /* 125% */
+    .maxLabel {
+      color: $secondary-font !important;
+      white-space: nowrap;
+    }
+    .formatNumber {
+      color: $tertiary-font !important;
+    }
+  }
+
+  @include maxScreen($breakpoint-sm) {
+    width: 100%;
+  }
+}

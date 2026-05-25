@@ -1,0 +1,202 @@
+@use "../../covaltech-react-ui" as *;
+@use "typography" as *;
+@use "variables" as *;
+
+$card-color: #0d162d;
+
+// INPUT
+$input-background-color: #252d42;
+$input-field-color: rgba(12, 144, 255, 0.5);
+$input-label-color: $secondary-font;
+$input-placeholder-color: $secondary-font;
+$input-value-color: $primary-font;
+
+// BUTTON - primary (blue)
+$primary-button-background: #0c90ff;
+$primary-button-hover: #45affc;
+$primary-button-disabled: #f7f8fa;
+
+// BUTTON - square
+$button-square-background: rgba(12, 144, 255, 0.1);
+$button-square-background-selected: $primary-background-color;
+
+// Backgrounds
+$container-content-color: #0d162d;
+
+// NAVBAR
+$navbar-primary-font: #b4bac8;
+$navbar-hover-background: rgba(12, 144, 255, 0.2);
+$navbar-background: #0d162d;
+$navbar-active-background: #0c90ff;
+$navbar-border-color: #505d80;
+
+// dropdown
+$dropdown-button-background-color: $input-background-color;
+$dropdown-background-color: #252d42;
+$dropdown-border: 1px solid transparent;
+$dropdown-height: 36px;
+$dropdown-submenu-border: 1px solid rgba(12, 144, 255, 0.3);
+$dropdown-hover-color: rgba(12, 144, 255, 0.3);
+$dropdown-hover-border: 1px solid #0c90ff;
+
+// table
+$table-background-color: #0d162d;
+$table-font-color: $light-color;
+$table-row-hover: $card-color;
+
+// modal
+$modal-button-background-color: $input-background-color;
+$modal-background-color: $container-content-color;
+$modal-font-color: $light-color;
+$modal-title-font-color: $light-color;
+
+// spinner
+$spinner-color: #0c90ff;
+
+// styled switch
+$switch-label-color: $input-label-color;
+$switch-background-color-on: $light-color;
+$switch-background-color-off: $input-background-color;
+$switch-color-on: $primary-color;
+$switch-color-off: #d9d9d9;
+
+@mixin container {
+}
+@mixin containerContent {
+  border: none;
+  width: 550px;
+  margin-left: auto;
+  margin-right: auto;
+  flex-grow: initial !important;
+  background-color: transparent;
+  @include maxScreen($breakpoint-md) {
+    margin-top: $navbar-height-sm + 20px;
+  }
+  @include maxScreen($breakpoint-md-2) {
+    width: 100%;
+  }
+}
+
+@mixin syledInput {
+  border-radius: 6px;
+  outline: 1px solid transparent;
+  border: none;
+  width: 100%;
+  height: 40px;
+  background-color: $input-background-color;
+  color: $input-value-color;
+  padding: $padding-xxs $padding-xs;
+  @include text(400, 14px, 15px);
+  &::placeholder {
+    color: $input-placeholder-color;
+  }
+  &:focus {
+    outline: 1px solid $secondary-font;
+    border: 0;
+  }
+  &:hover {
+    outline: 1px solid $secondary-font;
+  }
+}
+
+@mixin styledDropdown {
+  .label {
+    color: $input-label-color;
+    @include text(400, 14px, 15px);
+  }
+}
+
+@mixin elevation1($radius, $background: rgba(12, 144, 255, 0.1)) {
+  border: 1px solid $secondary-color;
+  border-radius: $radius;
+  background: $background;
+  &:hover {
+    box-shadow: 0px 2.75px 6.875000476837158px 0px rgba(5, 24, 73, 0.35);
+    background: rgba(12, 144, 255, 0.3);
+  }
+  &:active {
+    border: 2px solid $secondary-color;
+    background: rgba(12, 144, 255, 0.5);
+  }
+}
+
+@mixin elevation2($radius: 0, $color: $secondary-background-color) {
+  border: none;
+  border-radius: $radius;
+  background: $color;
+  box-shadow: 0px 0px 5px 0px rgba(5, 24, 73, 0.2);
+}
+
+@mixin buttonSwitcher($radius) {
+  .buttonSetValue {
+    &.selected {
+      border: 0.688px solid $secondary-color;
+      border-radius: $radius;
+      background: $primary-color;
+      box-shadow: 0px 1.6366515159606934px 3.2733030319213867px 0px
+        rgba(5, 24, 73, 0.2);
+      background-color: $secondary-color;
+      color: $primary-font;
+      cursor: unset;
+      &:hover {
+        box-shadow: 0px 1.6366515159606934px 3.2733030319213867px 0px
+          rgba(5, 24, 73, 0.2);
+        background: $secondary-color;
+        cursor: unset;
+      }
+    }
+    &:hover {
+      background: rgba(12, 144, 255, 0.2);
+    }
+  }
+}
+
+@mixin mainSectionMargin {
+}
+
+@mixin dynamicTable {
+}
+
+@mixin card($margins: 0, $padding: 15px) {
+  background-color: $card-color;
+  border-radius: 10px;
+  margin: $margins;
+  padding: $padding;
+  border: 0.25px solid $border-color;
+  @include maxScreen($breakpoint-lg-2) {
+    margin-right: 0;
+  }
+}
+
+@mixin scrollbar($margin-top: 15px) {
+  *::-webkit-scrollbar {
+    width: 13px;
+  }
+  *::-webkit-scrollbar-track {
+    background: $primary-background-color;
+    box-shadow: inset 0 0 10px 10px $primary-background-color;
+    border: solid 3px $primary-background-color;
+  }
+  ::-webkit-scrollbar-thumb {
+    background: $scrollbar-background-color;
+    border: 3px $primary-background-color solid;
+    border-radius: 10px;
+  }
+}
+
+// BUTTON
+@mixin styledButton() {
+  &.blue {
+    &:disabled {
+      color: rgba(255, 255, 255, 0.5);
+      opacity: 1;
+      background-color: #0c5396;
+    }
+  }
+}
+
+@mixin helpMeWith() {
+}
+
+@mixin helpMeWithTooltip() {
+}

@@ -1,0 +1,35 @@
+.languageSwitcher {
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  border: 1px solid $border-color;
+  background: rgba($secondary-color, 0.04);
+  padding: 4px;
+
+  button {
+    border: none;
+    background: transparent;
+    color: $secondary-font;
+    font-size: 0.62rem;
+    letter-spacing: 0.14em;
+    text-transform: uppercase;
+    padding: 6px 10px;
+    cursor: pointer;
+    transition: color 0.15s, background 0.15s;
+  }
+
+  button.active {
+    color: $accent-color;
+    background: rgba($accent-color, 0.1);
+  }
+
+  &.mobile {
+    margin: 0 20px 14px;
+    width: fit-content;
+
+    button {
+      font-size: 0.68rem;
+      padding: 8px 12px;
+    }
+  }
+}

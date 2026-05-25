@@ -1,0 +1,55 @@
+-- [OPTIONAL] SQL Migration Example
+-- This migration is COMMENTED OUT as a reference.
+-- Uncomment the statements below to add a second example table.
+-- 
+-- PURPOSE:
+-- Demonstrate a real-world migration for reference when creating your own migrations.
+-- Shows:
+-- - Creating a table with proper types and constraints
+-- - Adding indexes for performance
+-- - Setting up triggers for automatic timestamps
+-- - Foreign key relationships (if needed)
+-- 
+-- TO USE:
+-- 1. Rename this file to: src/db/migrations/002_create_example_entities.sql (remove .commented)
+-- 2. Uncomment the SQL below
+-- 3. Run: npm run db:migrate
+
+/*
+CREATE TABLE IF NOT EXISTS example_entities (
+  entity_id SERIAL PRIMARY KEY,
+  name VARCHAR(255) NOT NULL,
+  description TEXT,
+  status VARCHAR(50) DEFAULT 'active' CHECK (status IN ('active', 'inactive', 'archived')),
+  created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+  updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+);
+
+-- Create index on commonly searched columns
+CREATE INDEX idx_example_entities_name ON example_entities(name);
+CREATE INDEX idx_example_entities_status ON example_entities(status);
+
+-- Create trigger to automatically update updated_at timestamp
+CREATE OR REPLACE FUNCTION update_example_entities_updated_at()
+RETURNS TRIGGER AS $$
+BEGIN
+  NEW.updated_at = CURRENT_TIMESTAMP;
+  RETURN NEW;
+END;
+$$ LANGUAGE plpgsql;
+
+CREATE TRIGGER example_entities_updated_at
+BEFORE UPDATE ON example_entities
+FOR EACH ROW
+EXECUTE FUNCTION update_example_entities_updated_at();
+
+-- Create a second table with foreign key relationship (optional)
+CREATE TABLE IF NOT EXISTS example_items (
+  item_id SERIAL PRIMARY KEY,
+  entity_id INT NOT NULL REFERENCES example_entities(entity_id) ON DELETE CASCADE,
+  name VARCHAR(255) NOT NULL,
+  created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+);
+
+CREATE INDEX idx_example_items_entity_id ON example_items(entity_id);
+*/

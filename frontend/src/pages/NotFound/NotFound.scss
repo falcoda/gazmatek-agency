@@ -1,0 +1,52 @@
+.notFound {
+  min-height: 100dvh;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: $padding-xl $padding-md;
+  background: $primary-background-color;
+  color: $primary-font;
+
+  .notFoundInner {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    text-align: center;
+    gap: $padding-md;
+    max-width: 480px;
+  }
+
+  .notFoundCode {
+    @include title-pages;
+    color: $accent-color;
+    letter-spacing: 0.05em;
+  }
+
+  .notFoundTitle {
+    @include text-t1;
+    margin: 0;
+    color: $primary-font;
+  }
+
+  .notFoundText {
+    @include text-t7;
+    margin: 0;
+    color: $secondary-font;
+    line-height: 1.6;
+  }
+
+  .notFoundLink {
+    @include text-t9;
+    display: inline-flex;
+    align-items: center;
+    padding: $padding-xs $padding-md;
+    border-radius: $radius-medium;
+    color: $primary-font;
+    background: $accent-color;
+    transition: opacity 0.2s ease;
+
+    &:hover {
+      opacity: 0.85;
+    }
+  }
+}

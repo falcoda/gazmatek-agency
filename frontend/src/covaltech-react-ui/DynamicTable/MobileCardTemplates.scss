@@ -1,0 +1,52 @@
+.mobileTable {
+  .mobileCardDefault,
+  .mobileCardWithHeader,
+  .mobileCardWithoutHeader,
+  .mobileCardWithHeaderTitleAbove {
+    gap: 10px;
+
+    .rowHeader,
+    .row {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      gap: 10px;
+
+      .content {
+        color: $table-font-color;
+        display: flex;
+        align-items: center;
+        gap: 5px;
+      }
+      .title {
+        color: $secondary-font;
+      }
+
+      .col {
+        &:last-child {
+          text-align: center;
+        }
+      }
+    }
+
+    // if we have to many col we need to wrap them
+    .row {
+      flex-wrap: wrap;
+    }
+
+    .separator {
+      border-bottom: 1px solid $border-color;
+    }
+  }
+
+  .mobileCardWithHeaderTitleAbove {
+    .row {
+      align-items: flex-start;
+      .col {
+        display: flex;
+        flex-direction: column;
+        justify-content: flex-start;
+      }
+    }
+  }
+}

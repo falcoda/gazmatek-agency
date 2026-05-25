@@ -1,0 +1,16 @@
+.deleteConfirmModal {
+  .deleteTrigger.styledButton.square {
+    width: 36px;
+    min-width: 36px;
+    height: 36px;
+    min-height: 36px;
+    padding: 0;
+    color: $light-color;
+    background: $lock-color;
+
+    &:hover {
+      background: $lock-color;
+      box-shadow: 0 0 0 1px $lock-color;
+    }
+  }
+}

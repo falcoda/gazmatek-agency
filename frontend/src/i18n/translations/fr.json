@@ -1,0 +1,38 @@
+{
+  "seo": {
+    "title": "My App — Template",
+    "description": "Un template d'application web prêt pour la production."
+  },
+  "language": {
+    "switcher_aria": "Changer de langue"
+  },
+  "nav": {
+    "home": "Accueil"
+  },
+  "contact": {
+    "dropdownPlaceholder": "Sujet*"
+  },
+  "cookieConsent": {
+    "aria_label": "Consentement aux cookies",
+    "title": "Votre vie privée compte",
+    "description": "Nous utilisons des cookies pour assurer le fonctionnement du site, mesurer l'usage et améliorer votre expérience. Vous décidez de ce que vous autorisez.",
+    "customize": "Personnaliser",
+    "accept_all": "Tout accepter",
+    "reject_all": "Tout refuser",
+    "save": "Enregistrer mes choix",
+    "category_necessary": "Strictement nécessaires",
+    "category_necessary_desc": "Indispensables à la sécurité et aux fonctions de base.",
+    "category_necessary_badge": "Toujours actifs",
+    "category_analytics": "Analyse d'audience",
+    "category_analytics_desc": "Nous aident à comprendre l'usage du site pour l'améliorer.",
+    "category_marketing": "Marketing",
+    "category_marketing_desc": "Permettent de personnaliser le contenu et de mesurer les campagnes.",
+    "reopen_aria": "Préférences cookies"
+  },
+  "notFound": {
+    "title": "Page introuvable",
+    "text": "La page que vous recherchez n'existe pas ou a été déplacée.",
+    "back": "Retour à l'accueil"
+  }
+}
+

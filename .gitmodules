@@ -1,0 +1,6 @@
+[submodule "frontend/src/covaltech-react-ui"]
+	path = frontend/src/covaltech-react-ui
+	url = https://github.com/covaltech/covaltech-react-ui.git
+[submodule "backend/src/covaltech-tsnode-backend"]
+	path = backend/src/covaltech-tsnode-backend
+	url = https://github.com/covaltech/covaltech-tsnode-backend.git

@@ -1,0 +1,11 @@
+.container {
+  transition: 300ms ease-in-out;
+  background-color: $primary-background-color;
+  display: flex;
+  flex-direction: column;
+  flex-grow: 1;
+  position: relative;
+  min-height: 400px;
+  @include mainSectionMargin;
+  @include container;
+}

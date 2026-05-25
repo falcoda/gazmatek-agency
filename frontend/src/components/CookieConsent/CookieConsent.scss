@@ -1,0 +1,300 @@
+.cookieConsent {
+  position: fixed;
+  bottom: $padding-md;
+  right: $padding-md;
+  z-index: 200;
+  width: min(388px, calc(100vw - #{$padding-md} * 2));
+
+  // Entrance / exit animation — settles into place via .cookieConsent--entered.
+  opacity: 0;
+  transform: translateY(28px) scale(0.96);
+  transition:
+    opacity 0.42s cubic-bezier(0.22, 1, 0.36, 1),
+    transform 0.42s cubic-bezier(0.22, 1, 0.36, 1);
+  will-change: opacity, transform;
+
+  &--entered {
+    opacity: 1;
+    transform: translateY(0) scale(1);
+  }
+
+  &__card {
+    position: relative;
+    overflow: hidden;
+    display: flex;
+    flex-direction: column;
+    gap: $padding-sm;
+    padding: $padding-md;
+    border: 1px solid $border-color;
+    border-radius: $radius-large;
+    background: linear-gradient(
+      160deg,
+      $quaternary-color,
+      $primary-color 62%
+    );
+    box-shadow:
+      0 24px 48px -16px rgba($black, 0.66),
+      0 2px 10px rgba($black, 0.4);
+
+    // Accent hairline running along the top edge.
+    &::before {
+      content: "";
+      position: absolute;
+      inset: 0 0 auto 0;
+      height: 2px;
+      background: linear-gradient(
+        90deg,
+        transparent,
+        rgba($accent-color, 0.7) 50%,
+        transparent
+      );
+    }
+  }
+
+  &__header {
+    display: flex;
+    align-items: flex-start;
+    gap: $padding-sm;
+  }
+
+  &__icon {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex-shrink: 0;
+    width: 44px;
+    height: 44px;
+    border-radius: $radius-medium;
+    color: $accent-color;
+    background: rgba($accent-color, 0.12);
+    border: 1px solid rgba($accent-color, 0.28);
+    box-shadow: 0 0 22px -4px rgba($accent-color, 0.4);
+
+    svg {
+      width: 22px;
+      height: 22px;
+    }
+  }
+
+  &__heading {
+    display: flex;
+    flex-direction: column;
+    gap: $padding-xxxs;
+  }
+
+  &__title {
+    @include text-t2;
+    margin: 0;
+    color: $primary-font;
+  }
+
+  &__text {
+    @include text-t12;
+    margin: 0;
+    color: $secondary-font;
+    line-height: 1.5;
+  }
+
+  // Collapsible "customize" section — animated with the grid-rows technique.
+  &__details {
+    display: grid;
+    grid-template-rows: 0fr;
+    transition: grid-template-rows 0.35s cubic-bezier(0.22, 1, 0.36, 1);
+
+    &--open {
+      grid-template-rows: 1fr;
+    }
+  }
+
+  &__detailsInner {
+    overflow: hidden;
+    min-height: 0;
+  }
+
+  &__category {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: $padding-sm;
+    padding: $padding-xs 0;
+
+    & + & {
+      border-top: 1px solid $border-color;
+    }
+  }
+
+  &__categoryInfo {
+    display: flex;
+    flex-direction: column;
+    gap: 2px;
+  }
+
+  &__categoryName {
+    @include text-t9;
+    color: $primary-font;
+  }
+
+  &__categoryDesc {
+    @include text-t13;
+    color: $tertiary-font;
+    line-height: 1.45;
+  }
+
+  &__badge {
+    @include text-t13;
+    flex-shrink: 0;
+    padding: 4px 10px;
+    border-radius: 999px;
+    white-space: nowrap;
+    color: $green-color;
+    background: rgba($green-color, 0.12);
+    border: 1px solid rgba($green-color, 0.3);
+  }
+
+  // Stacked layout: the two action buttons sit on their own row at full
+  // width (50/50), with the "customize" toggle above, aligned to the right.
+  &__actions {
+    display: flex;
+    flex-direction: column-reverse;
+    align-items: stretch;
+    gap: $padding-sm;
+    padding-top: $padding-xxs;
+    border-top: 1px solid $border-color;
+  }
+
+  &__customize {
+    @include text-t9;
+    display: flex;
+    align-items: center;
+    justify-content: flex-end;
+    gap: $padding-xxxs;
+    padding: 0;
+    border: none;
+    background: transparent;
+    cursor: pointer;
+    color: $tertiary-font;
+    transition: color 0.2s ease;
+
+    svg {
+      width: 15px;
+      height: 15px;
+      transition: transform 0.3s ease;
+    }
+
+    &:hover {
+      color: $secondary-font;
+    }
+
+    &--open svg {
+      transform: rotate(180deg);
+    }
+  }
+
+  &__buttons {
+    display: flex;
+    align-items: center;
+    gap: $padding-xxs;
+  }
+
+  // Accept / Reject share one identical style on purpose: EU guidance
+  // (CNIL, EDPB 03/2022) requires the refuse option to be as prominent
+  // and easy to use as the accept option — no nudging via colour or size.
+  &__btn {
+    @include text-t9;
+    flex: 1;
+    height: 38px;
+    padding: 0 $padding-md;
+    border-radius: $radius-medium-small;
+    cursor: pointer;
+    color: $primary-font;
+    background: $secondary-background-color;
+    border: 1px solid $border-color;
+    transition:
+      background-color 0.2s ease,
+      border-color 0.2s ease,
+      transform 0.1s ease;
+
+    &:hover {
+      background: $quaternary-color;
+      border-color: $accent-color;
+    }
+
+    &:active {
+      transform: translateY(1px);
+    }
+  }
+
+  @include maxScreen($breakpoint-sm) {
+    left: $padding-xs;
+    right: $padding-xs;
+    bottom: $padding-xs;
+    width: auto;
+
+    &__btn {
+      padding: 0 $padding-sm;
+    }
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    transition: opacity 0.001s linear;
+    transform: none;
+
+    &--entered {
+      transform: none;
+    }
+
+    .cookieConsent__details,
+    .cookieConsent__customize svg,
+    .cookieConsent__btn {
+      transition: none;
+    }
+  }
+}
+
+// Discreet always-available trigger to re-open the banner once a decision
+// has been made — guarantees consent can be reviewed/withdrawn at any time.
+.cookieReopen {
+  position: fixed;
+  bottom: $padding-md;
+  right: $padding-md;
+  z-index: 200;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 44px;
+  height: 44px;
+  border-radius: 50%;
+  cursor: pointer;
+  color: $accent-color;
+  background: $primary-color;
+  border: 1px solid $border-color;
+  box-shadow: 0 8px 24px -8px rgba($black, 0.6);
+  transition:
+    transform 0.2s ease,
+    border-color 0.2s ease,
+    box-shadow 0.2s ease;
+
+  svg {
+    width: 20px;
+    height: 20px;
+  }
+
+  &:hover {
+    transform: translateY(-2px);
+    border-color: rgba($accent-color, 0.5);
+    box-shadow: 0 12px 28px -8px rgba($black, 0.7);
+  }
+
+  @include maxScreen($breakpoint-sm) {
+    bottom: $padding-xs;
+    right: $padding-xs;
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    transition: border-color 0.2s ease;
+
+    &:hover {
+      transform: none;
+    }
+  }
+}

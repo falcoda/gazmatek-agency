@@ -1,0 +1,63 @@
+.styledSwitch {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  label {
+    font-size: 14px;
+    color: $switch-label-color;
+    @include text(400, 14px, 15px);
+  }
+  .toggleSwitch {
+    position: relative;
+    display: inline-block;
+    width: 58px;
+    height: 26px;
+
+    &.switchOn .switchLabel {
+      background-color: $switch-background-color-on; // background-color
+      &:before {
+        background-color: $switch-color-on;
+      }
+    }
+
+    &.switchOff .switchLabel {
+      background-color: $switch-background-color-off; // background-color
+      &:before {
+        background-color: $switch-color-off;
+      }
+    }
+
+    .switchCheckbox {
+      opacity: 0;
+      width: 0;
+      height: 0;
+    }
+
+    .switchLabel {
+      position: absolute;
+      cursor: pointer;
+      top: 0;
+      left: 0;
+      right: 0;
+      bottom: 0;
+      transition: 0.4s;
+      border-radius: 25px;
+
+      &:before {
+        position: absolute;
+        content: "";
+        height: 21px;
+        width: 21px;
+        left: 2.5px;
+        bottom: 2.5px;
+        background-color: $switch-color-on;
+        transition: 0.4s;
+        border-radius: 50%;
+      }
+    }
+
+    .switchCheckbox:checked + .switchLabel:before {
+      transform: translateX(32px);
+    }
+  }
+}

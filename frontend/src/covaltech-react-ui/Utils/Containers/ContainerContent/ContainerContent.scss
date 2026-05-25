@@ -1,0 +1,53 @@
+.containerContent {
+  padding: 30px 20px 30px 20px;
+  border-top-right-radius: $radius-medium;
+  background-color: $container-content-color;
+  color: $primary-font;
+  border: 0.25px solid $border-color;
+  height: fit-content;
+  flex-grow: 1;
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+  margin-left: auto;
+  margin-right: auto;
+
+  @include scrollbar();
+  @include minScreen($breakpoint-lg-2) {
+    padding-bottom: $footerHeight;
+  }
+  @include maxScreen($breakpoint-lg-2) {
+    flex-grow: 1;
+  }
+
+  @include maxScreen($breakpoint-sm) {
+    border-top-right-radius: $radius-medium;
+    padding: 18px 10px;
+  }
+  & {
+    @include containerContent;
+  }
+}
+
+.containerContent.gradiant {
+  // gradient
+  &::before {
+    content: "";
+    position: absolute;
+    top: 38.6px;
+    left: 20px;
+    right: 20px;
+    height: 30px;
+    background-image: linear-gradient(
+      180deg,
+      #fff 83.85%,
+      rgba(255, 255, 255, 0) 100%
+    );
+    pointer-events: none;
+  }
+  @include maxScreen($breakpoint-lg-2) {
+    &::before {
+      display: none;
+    }
+  }
+}

@@ -1,0 +1,31 @@
+.buttonSwitcher {
+  display: grid;
+  grid-column-gap: 5px;
+  grid-row-gap: 5px;
+  justify-content: center;
+  align-items: center;
+  justify-items: center;
+  background-color: $primary-background-color;
+  border: 0.25px solid $border-color;
+  border-radius: 8px;
+  padding: $padding-xxxs;
+  width: fit-content;
+
+  .buttonSetValue {
+    border: none;
+    background-color: transparent;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    padding: 5px;
+    border-radius: 5px;
+    cursor: pointer;
+    user-select: none;
+    height: 100%;
+    width: 100%;
+    color: $secondary-font;
+
+    @include text(500, 14px, 17px);
+  }
+  @include buttonSwitcher($radius-medium-small);
+}

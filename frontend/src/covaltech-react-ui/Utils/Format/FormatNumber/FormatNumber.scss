@@ -1,0 +1,16 @@
+.formatNumber,
+.formatNumberAlias {
+  color: $green-color;
+
+  &.negative {
+    color: $lock-color;
+  }
+
+  &[data-colored="false"] {
+    color: inherit;
+  }
+
+  &[data-colored="false"] + .formatNumberAlias {
+    color: inherit;
+  }
+}

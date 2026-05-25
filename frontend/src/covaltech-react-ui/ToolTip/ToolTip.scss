@@ -1,0 +1,18 @@
+.tooltip {
+  margin-left: auto;
+  .tooltipTitle {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    height: 30px;
+    gap: 5px;
+    border-radius: 5px;
+    cursor: pointer;
+  }
+}
+
+.tooltipContent {
+  z-index: 140;
+  position: absolute;
+  margin: 0px;
+}

@@ -1,0 +1,143 @@
+.mobileTable {
+  gap: 10px;
+  display: flex;
+  flex-direction: column;
+  .card {
+    img {
+      width: 21px;
+      height: 21px;
+    }
+    @include card($margins: 0, $padding: $padding-md);
+  }
+
+  .tableControllers {
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+    align-items: center;
+    gap: 10px;
+    padding: 10px 13px;
+    .paginationControls {
+      gap: 5px;
+    }
+  }
+
+  @include dynamicTable;
+}
+
+.dynamicTableContainer {
+  display: flex;
+  flex-direction: row;
+  gap: 20px;
+}
+
+.dynamicTable {
+  margin-bottom: 10px;
+  border-collapse: collapse;
+  width: 100%;
+  background-color: $table-background-color;
+  border-radius: 8px;
+
+  .col {
+    height: 100%;
+    display: flex;
+    align-items: center;
+    gap: 5px;
+    position: relative;
+  }
+  .col.sortable {
+    cursor: pointer;
+    .styledButton {
+      max-height: 20px;
+      min-height: 20px;
+      height: 20px;
+    }
+    .styledButton.asc {
+      svg {
+        transform: rotate(180deg);
+      }
+    }
+    .styledButton.active {
+      svg {
+        filter: brightness(0) saturate(100%) invert(37%) sepia(98%)
+          saturate(2028%) hue-rotate(192deg) brightness(104%) contrast(100%);
+        filter: brightness(0) saturate(100%) invert(37%) sepia(98%)
+          saturate(2028%) hue-rotate(192deg) brightness(104%) contrast(100%);
+      }
+    }
+    &:hover {
+      color: $primary-font;
+      svg {
+        filter: brightness(0) saturate(100%) invert(17%) sepia(0%)
+          saturate(3250%) hue-rotate(323deg) brightness(98%) contrast(100%);
+      }
+    }
+  }
+  .tableHeader {
+    font-size: 14px;
+    font-weight: 700;
+    display: grid;
+    justify-content: space-between;
+    border-bottom: 2px solid rgba(113, 132, 193, 0.3);
+    padding: 23px;
+    align-items: center;
+    color: $secondary-font;
+    -webkit-user-select: none;
+    -moz-user-select: none;
+    -ms-user-select: none;
+    user-select: none;
+    span:not(:first-child):not(:last-child) {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+    span:last-child {
+      display: flex;
+      justify-content: end;
+    }
+  }
+
+  .tableBody {
+    @include scrollbar(0);
+    .tableRow {
+      color: $table-font-color;
+      padding: 10px 13px;
+      display: grid;
+      justify-content: space-between;
+      align-items: center;
+      font-size: 12px;
+      border-bottom: 2px solid rgba(113, 132, 193, 0.3);
+      &:last-child {
+        border-bottom: none;
+      }
+      &:hover {
+        background-color: $table-row-hover;
+      }
+
+      img {
+        width: 21px;
+        height: 21px;
+      }
+    }
+  }
+  .tableHeader,
+  .tableRow {
+    .col:not(:first-child):not(:last-child) {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+    .col:last-child {
+      display: flex;
+      justify-content: end;
+    }
+  }
+  .tableControllers {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    gap: 10px;
+    padding: 10px 13px;
+  }
+  @include dynamicTable;
+}

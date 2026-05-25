@@ -1,0 +1,17 @@
+.formatAddress {
+  display: flex;
+  gap: 5px;
+  align-items: center;
+  .copyButton {
+    width: 19px;
+    height: 19px;
+    box-shadow: none;
+    border: none;
+    .toolsBarCopyButton {
+      box-shadow: none;
+      border: none;
+      width: auto !important ;
+      height: auto !important ;
+    }
+  }
+}

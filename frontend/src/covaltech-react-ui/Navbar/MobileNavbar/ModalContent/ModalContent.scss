@@ -1,0 +1,6 @@
+.modalContent {
+  text-align: center;
+  margin-bottom: $margin-xl;
+  margin-top: $padding-xl;
+  @include text(400, 16px, 19px);
+}

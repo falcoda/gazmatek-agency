@@ -1,0 +1,66 @@
+.hero {
+  overflow: hidden;
+  z-index: 3;
+
+  .slider {
+    display: grid;
+    grid-template-columns: repeat(12, 1fr);
+    grid-template-rows: 1fr;
+    z-index: 4;
+    position: relative;
+
+    .overflow-wrap {
+      position: relative;
+      overflow: hidden;
+      grid-area: 1 / 1 / 2 / 13;
+      height: 100vh;
+      z-index: 3;
+
+      .hero-image {
+        position: absolute;
+        top: 0;
+        left: 50%;
+        transform: translateX(-50%);
+        width: 100%;
+        height: 100vh;
+        object-fit: cover;
+        opacity: 0;
+        transition: opacity 0.5s ease;
+
+        &.active {
+          opacity: 0.45;
+        }
+      }
+    }
+  }
+
+  .hero-text {
+    position: relative;
+    z-index: 4;
+    grid-area: 1 / 1 / 2 / 7;
+    align-self: start;
+    justify-self: start;
+    margin-top: 32%;
+    padding-left: 1em;
+    .magical-touch {
+      color: #d3d3d3;
+    }
+    .styledButton {
+      margin-top: 30px;
+    }
+  }
+  @include maxScreen($breakpoint-md) {
+    .hero-text {
+      grid-area: 1 / 1 / 2 / 13;
+      margin-left: auto;
+      margin-right: auto;
+      padding: 0;
+      text-align: center;
+      .styledButton {
+        margin-top: 20px;
+        margin-left: auto;
+        margin-right: auto;
+      }
+    }
+  }
+}

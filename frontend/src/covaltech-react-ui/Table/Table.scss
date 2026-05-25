@@ -1,0 +1,56 @@
+.table {
+  border: 0;
+  vertical-align: start;
+  width: 100%;
+  margin-bottom: 1rem;
+  color: $primary-color;
+  vertical-align: top;
+  border-color: $border-color;
+  caption-side: bottom;
+  border-collapse: collapse;
+  overflow-x: scroll;
+
+  thead {
+    border-bottom: 1px solid $border-color;
+    color: $secondary-font;
+    tr {
+      th {
+        @include smoothValue(
+          "padding-right",
+          10px,
+          49px,
+          $breakpoint-sm,
+          $breakpoint-lg
+        );
+      }
+    }
+  }
+  tbody {
+    color: $primary-font;
+    tr {
+      border-bottom: 1px solid $border-color;
+    }
+  }
+  td,
+  tr {
+    border: 0;
+    vertical-align: left;
+    text-align: left;
+    height: 52px;
+    @include text(400, 15px, 20px);
+  }
+
+  @include maxScreen($breakpoint-lg-2) {
+    tbody {
+      color: $primary-font;
+      tr {
+        border-bottom: 1px solid $border-color;
+        td {
+          &:first-child {
+            width: 28%;
+          }
+        }
+      }
+    }
+  }
+}

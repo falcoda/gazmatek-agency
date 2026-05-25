@@ -1,0 +1,53 @@
+@use "../../covaltech-react-ui" as *;
+@use "./variables.scss" as *;
+html,
+body {
+  height: 100%;
+}
+/* Custom scrollbar styles */
+*::-webkit-scrollbar {
+  width: 13px;
+}
+*::-webkit-scrollbar-track {
+  background: $primary-background-color;
+  box-shadow: inset 0 0 10px 10px $primary-background-color;
+  border: solid 3px $primary-background-color;
+}
+::-webkit-scrollbar-thumb {
+  background: $scrollbar-background-color;
+  border: 3px $primary-background-color solid;
+  border-radius: 10px;
+}
+
+// margin-top only applied to the .App element to work with the mobile nav
+.App::-webkit-scrollbar-track {
+  @include maxScreen($breakpoint-lg-4) {
+    margin-top: $navbar-height-sm;
+  }
+}
+.noSelect {
+  -webkit-touch-callout: none;
+  -webkit-user-select: none;
+  -khtml-user-select: none;
+  -moz-user-select: none;
+  -ms-user-select: none;
+  user-select: none;
+}
+
+a:-webkit-any-link {
+  color: inherit;
+  cursor: pointer;
+  text-decoration: none;
+}
+
+body {
+  margin: 0;
+  min-height: 100vh;
+  color: $primary-font;
+}
+
+@media screen and (max-width: 991px) {
+  :root {
+    --navbar-width: 0rem;
+  }
+}

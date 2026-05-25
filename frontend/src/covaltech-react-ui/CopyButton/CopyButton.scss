@@ -1,0 +1,48 @@
+.copyButton {
+  display: inline-block;
+  font-size: 12px;
+  filter: drop-shadow(0px 2px 2px rgba(0, 0, 0, 0.06));
+  position: relative;
+  z-index: 101;
+
+  .toolsBarCopyButton {
+    @include text(500, 14, normal);
+  }
+
+  .toolsBarCopyButton.reverse {
+    flex-direction: row-reverse;
+  }
+
+  .copiedMessage {
+    min-width: 100px;
+    background-color: #555;
+    color: $light-color;
+    text-align: center;
+    border-radius: 6px;
+    padding: 5px;
+    position: absolute;
+    bottom: 140%;
+    left: 50%;
+    transform: translateX(-50%);
+    transition: opacity 0.3s;
+    opacity: 0;
+    pointer-events: none;
+
+    &.active {
+      opacity: 0.95;
+      pointer-events: auto;
+    }
+
+    &::after {
+      content: "";
+      position: absolute;
+      top: 100%;
+      left: 50%;
+      transform: translateX(-50%);
+      border-width: 5px;
+      border-style: solid;
+      border-color: #555 transparent transparent transparent;
+      z-index: 101;
+    }
+  }
+}

@@ -1,0 +1,70 @@
+.modalButton {
+  border: none;
+  padding: 0;
+  background-color: $modal-button-background-color;
+
+  svg {
+    display: block;
+    cursor: pointer;
+  }
+}
+
+.modalContainer {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background-color: rgba(5, 24, 73, 0.3);
+  backdrop-filter: blur(5px);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 150;
+  cursor: default;
+  color: $modal-font-color;
+}
+
+.modal {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  padding: $padding-lg $padding-lg-2;
+  background-color: $modal-background-color;
+  width: 28rem;
+  border-radius: $radius-medium;
+  color: $modal-font-color;
+  border: 0.25px solid $border-color;
+
+  display: flex;
+  flex-direction: column;
+  .modalTitle {
+    border-bottom: 1px solid $border-color;
+    @include text(500, 24px, 29px);
+    padding-bottom: $padding-md;
+    width: 100%;
+    color: $modal-title-font-color;
+    text-align: center;
+  }
+
+  .grClose {
+    position: absolute;
+    top: 0;
+    right: 0;
+    margin-top: 10px;
+    margin-right: 10px;
+    cursor: pointer;
+  }
+
+  .buttonWrapper {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+  }
+
+  @include maxScreen($breakpoint-sm) {
+    width: 90%;
+    padding: 26px;
+  }
+}

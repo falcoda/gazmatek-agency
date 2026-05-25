@@ -1,0 +1,94 @@
+.desktopNavbar,
+.mobileNavbar {
+  background-color: $navbar-background;
+  display: flex;
+  position: fixed;
+  z-index: 130;
+
+  .navbar-collapse {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    width: 100%;
+    background-color: $navbar-background;
+    overflow: auto;
+
+    // not show the scrollbar
+    &::-webkit-scrollbar {
+      display: none;
+    }
+  }
+
+  .navbar-nav {
+    display: flex;
+    flex-direction: column;
+    list-style-type: none;
+    margin: 0;
+    width: 100%;
+    gap: 10px;
+
+    .nav-item {
+      display: flex;
+      height: 48px;
+      border-radius: $radius-medium;
+      margin-left: auto;
+      margin-right: auto;
+      width: 100%;
+      min-width: 3rem;
+      overflow: hidden;
+      button {
+        background-color: transparent;
+        cursor: pointer;
+      }
+
+      .nav-link {
+        color: $navbar-primary-font;
+        border-radius: $radius-medium;
+        border: 1px solid $navbar-border-color;
+        row-gap: 8px;
+        display: flex;
+        align-items: center;
+        justify-content: flex-start;
+        text-decoration: none;
+
+        width: 100%;
+        .link-text {
+          flex-grow: 1;
+          display: flex;
+          justify-content: space-between;
+        }
+        svg {
+          margin-top: auto;
+          margin-bottom: auto;
+          filter: brightness(0) saturate(100%) invert(93%) sepia(2%)
+            saturate(3787%) hue-rotate(188deg) brightness(87%) contrast(76%);
+        }
+        &:hover {
+          background-color: $navbar-hover-background;
+          border-radius: $radius-medium;
+        }
+
+        .link-text {
+          @include text(400, 16px, normal);
+          margin-left: 12px;
+          visibility: visible;
+          opacity: 1;
+          display: inline-block;
+        }
+      }
+
+      &.active {
+        background-color: $navbar-active-background;
+        border-radius: $radius-medium;
+        .nav-link {
+          color: $light-color;
+          cursor: default;
+        }
+        svg {
+          filter: brightness(0) saturate(100%) invert(100%) sepia(0%)
+            saturate(0%) hue-rotate(97deg) brightness(103%) contrast(105%);
+        }
+      }
+    }
+  }
+}

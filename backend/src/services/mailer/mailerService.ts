@@ -1,0 +1,35 @@
+import { config } from "@src/helpers/config";
+import { LoggerMailerService } from "@src/services/mailer/drivers/logger";
+import { SmtpMailerService } from "@src/services/mailer/drivers/smtp";
+import { MailerService } from "@src/services/mailer/types";
+import { MAIL_DRIVER } from "@src/types/config";
+
+let mailerService: MailerService | null = null;
+
+export const getMailerService = (): MailerService => {
+  if (mailerService) {
+    return mailerService;
+  }
+
+  if (!config.mailer.enabled || config.mailer.driver === MAIL_DRIVER.DISABLED) {
+    mailerService = new LoggerMailerService();
+    return mailerService;
+  }
+
+  if (config.mailer.driver === MAIL_DRIVER.SMTP) {
+    mailerService = new SmtpMailerService();
+    return mailerService;
+  }
+
+  mailerService = new LoggerMailerService();
+  return mailerService;
+};
+
+export const closeMailerService = async (): Promise<void> => {
+  if (!mailerService) {
+    return;
+  }
+
+  await mailerService.close();
+  mailerService = null;
+};

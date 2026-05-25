@@ -1,0 +1,76 @@
+.faqAccordion {
+  display: flex;
+  flex-direction: column;
+  gap: $padding-xs;
+
+  .faqItem {
+    border: 1px solid $border-color;
+    border-radius: $radius-large;
+    background: $card-color;
+    overflow: hidden;
+    transition: border-color 0.15s ease;
+
+    &.faqItem--open {
+      border-color: rgba($secondary-color, 0.5);
+    }
+  }
+
+  .faqQuestion {
+    width: 100%;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: $padding-md;
+    padding: $padding-md $padding-md-2;
+    background: none;
+    border: none;
+    cursor: pointer;
+    color: $primary-font;
+    font-family: "Inter";
+    font-size: 1.02rem;
+    font-weight: 600;
+    text-align: left;
+
+    .faqChevron {
+      flex-shrink: 0;
+      font-size: 1.25rem;
+      color: $secondary-color;
+      transition: transform 0.25s ease;
+    }
+  }
+
+  .faqAnswer {
+    display: grid;
+    grid-template-rows: 0fr;
+    transition: grid-template-rows 0.25s ease;
+
+    p {
+      overflow: hidden;
+      margin: 0;
+      padding: 0 $padding-md-2;
+      color: $secondary-font;
+      font-size: 0.95rem;
+      line-height: 1.65;
+    }
+  }
+
+  .faqItem--open {
+    .faqQuestion .faqChevron {
+      transform: rotate(180deg);
+    }
+
+    .faqAnswer {
+      grid-template-rows: 1fr;
+
+      p {
+        padding-bottom: $padding-md;
+      }
+    }
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .faqAccordion .faqAnswer {
+    transition: none;
+  }
+}

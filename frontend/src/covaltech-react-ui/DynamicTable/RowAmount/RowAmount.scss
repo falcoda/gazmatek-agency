@@ -1,0 +1,15 @@
+.rowAmount {
+  display: flex;
+  gap: 8px;
+  align-items: flex-end;
+  justify-content: center;
+  .rowAmountButton.selected {
+    color: $primary-font;
+    // background-color: $button-square-background-selected;
+  }
+
+  // not selected
+  .rowAmountButton:not(.selected) {
+    color: $secondary-font;
+  }
+}

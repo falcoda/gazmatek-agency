@@ -1,0 +1,105 @@
+:root {
+  --default-navbar-width: #{$navbar-width};
+}
+.desktopNavbar {
+  flex-direction: column;
+  height: -webkit-fill-available;
+  width: var(--navbar-width, $navbar-width);
+  transition: width 0.3s;
+
+  &.closed {
+    .navbar-nav {
+      .chevronLeft {
+        transform: rotate(180deg);
+      }
+      .nav-link {
+        justify-content: center !important;
+        padding: 5px;
+      }
+    }
+  }
+
+  .openButton {
+    position: absolute;
+    right: -25px;
+    top: calc(35px + 25px / 2);
+    transform: translateY(-50%);
+    cursor: pointer;
+    border-radius: 0px 4px 4px 0px;
+    padding: 5px;
+    transition: transform 3s;
+    background-color: $secondary-color;
+    border: 1px solid $secondary-color;
+
+    &:hover {
+      svg {
+        filter: brightness(0) saturate(100%) invert(98%) sepia(34%)
+          saturate(236%) hue-rotate(263deg) brightness(118%) contrast(100%);
+      }
+    }
+  }
+
+  .navbar-collapse {
+    height: 100%;
+    padding: 60px 20px 20px 20px;
+  }
+
+  .navbar-nav {
+    padding: 0;
+
+    .nav-link {
+      padding: 12px 20px;
+    }
+  }
+
+  .navTitleDiv {
+    margin-bottom: 30px;
+    display: flex;
+    align-items: center;
+    width: 100%;
+    a {
+      margin-left: auto;
+      margin-right: auto;
+    }
+
+    .navTitle {
+      height: 35px;
+      @include maxScreen($breakpoint-lg-4) {
+        display: none;
+      }
+    }
+  }
+}
+
+.desktopNavbar.closeable {
+  &.closed {
+    .openButton {
+      display: none;
+    }
+  }
+  &:hover {
+    width: $navbar-width;
+    backdrop-filter: blur(4px);
+    .openButton {
+      display: flex;
+    }
+    .navbar-nav {
+      .chevronLeft {
+        transform: rotate(180deg);
+      }
+      .nav-link {
+        justify-content: flex-start;
+        padding: 12px 20px;
+
+        .link-text {
+          // disable the text go to the line
+          white-space: nowrap;
+        }
+      }
+    }
+  }
+
+  &.open {
+    backdrop-filter: unset;
+  }
+}

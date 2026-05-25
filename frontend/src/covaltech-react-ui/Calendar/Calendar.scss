@@ -1,0 +1,10 @@
+.calendarDateSelect {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  width: max-content;
+  label {
+    color: $input-label-color;
+    @include text(400, 14px, 15px);
+  }
+}

@@ -1,0 +1,34 @@
+{
+  "permissions": {
+    "allow": [
+      "Bash(rm -rf node_modules package-lock.json)",
+      "Bash(npm install:*)",
+      "Bash(npm info:*)",
+      "Bash(xargs ls:*)",
+      "Bash(wc -l /f/juneo/personal/website-template/frontend/src/covaltech-react-ui/**/*.tsx)",
+      "Bash(npm run:*)",
+      "Bash(powershell.exe -Command \"$content = Get-Content ''f:/juneo/personal/website-template/frontend/src/covaltech-react-ui/Utils/Format/FormatNumber/FormatNumber.tsx'' -Raw; $crlf = $content -replace ''\\(?<!\\\\r\\)\\\\n'', \"\"\\\\`r\\\\`n\"\"; [System.IO.File]::WriteAllText\\(''f:/juneo/personal/website-template/frontend/src/covaltech-react-ui/Utils/Format/FormatNumber/FormatNumber.tsx'', $crlf\\)\")",
+      "Bash(npx prettier:*)",
+      "Bash(find f:/juneo/personal/website-template/frontend -name .prettierrc* -o -name prettier.config*)",
+      "Bash(git -C \"f:/juneo/personal/website-template\" config --list)",
+      "Bash(xxd \"f:/juneo/personal/website-template/frontend/src/stores/AuthStore.ts\")",
+      "Bash(python3 -c \":*)",
+      "Bash(node -e \":*)",
+      "Bash(mv frontend/src/Utils/LoggerService.ts frontend/src/utils_temp_LoggerService.ts)",
+      "Bash(mkdir -p frontend/src/utils)",
+      "Bash(mv frontend/src/utils_temp_LoggerService.ts frontend/src/utils/LoggerService.ts)",
+      "Bash(rmdir frontend/src/Utils)",
+      "Skill(update-config)",
+      "Skill(update-config:*)",
+      "Bash(npm test:*)",
+      "Bash(docker compose:*)",
+      "Bash(npx jest:*)",
+      "Bash(npx tsc:*)",
+      "Bash(ls \"c:/Users/mcnde/juneo/covaltech/projetsGithub/website-template/backend/.eslint\"*)",
+      "Bash(npm ls:*)",
+      "Bash(npm list:*)",
+      "Bash(xargs grep:*)",
+      "Bash(tsc --noEmit)"
+    ]
+  }
+}
