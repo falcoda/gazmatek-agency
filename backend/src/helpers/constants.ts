@@ -23,3 +23,10 @@ export const JWT_EXPIRES = {
   ACCESS: "15m",
   REFRESH_DAYS: 7,
 } as const;
+
+// Mount point for the HTTP API router. Shared so the frontend SPA fallback can
+// exclude API routes from the index.html catch-all.
+export const API_PREFIX = "/api";
+
+// Entry document of the built frontend single-page application.
+export const FRONTEND_INDEX_FILE = "index.html";

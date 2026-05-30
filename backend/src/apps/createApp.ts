@@ -1,9 +1,10 @@
 import { config } from "@src/helpers/config";
-import { NODE_ENV } from "@src/helpers/constants";
+import { API_PREFIX, NODE_ENV } from "@src/helpers/constants";
 import { ERROR_MESSAGES } from "@src/helpers/error/constants";
 import { ErrorHandler } from "@src/helpers/error/errorHandler";
 import { NotFoundError } from "@src/helpers/error/errors";
 import { metricsHandler, requestMetricsMiddleware } from "@src/helpers/metrics";
+import { serveFrontend } from "@src/helpers/serveFrontend";
 import { setupSwagger } from "@src/helpers/swagger";
 import { requestContextMiddleware } from "@src/middleware/observability/requestContext";
 import { requestLoggerMiddleware } from "@src/middleware/observability/requestLogger";
@@ -58,9 +59,14 @@ export const createApp = (): Express => {
     app.get(config.metrics.path, metricsRateLimiter, metricsHandler);
   }
 
-  app.use("/api", routes);
+  app.use(API_PREFIX, routes);
 
   setupSwagger(app);
+
+  // Serve the built frontend (SPA) for all non-backend routes. Registered after
+  // the API and Swagger so those keep priority; the 404 handler below still
+  // covers unknown API routes and the case where no build is present.
+  serveFrontend(app);
 
   app.use((req: Request, _res: Response, next: NextFunction): void => {
     next(

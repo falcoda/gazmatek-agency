@@ -16,6 +16,15 @@
     a {
       display: flex;
       align-items: center;
+      min-width: 0;
+
+      svg,
+      img {
+        height: 32px;
+        width: auto;
+        max-width: 60vw;
+        object-fit: contain;
+      }
     }
 
     .navbar-toggleButton {
