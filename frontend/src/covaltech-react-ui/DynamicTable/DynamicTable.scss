@@ -78,7 +78,7 @@
     font-weight: 700;
     display: grid;
     justify-content: space-between;
-    border-bottom: 2px solid rgba(113, 132, 193, 0.3);
+    border-bottom: 2px solid rgba($accent-color, 0.3);
     padding: 23px;
     align-items: center;
     color: $secondary-font;
@@ -106,7 +106,7 @@
       justify-content: space-between;
       align-items: center;
       font-size: 12px;
-      border-bottom: 2px solid rgba(113, 132, 193, 0.3);
+      border-bottom: 2px solid rgba($accent-color, 0.3);
       &:last-child {
         border-bottom: none;
       }

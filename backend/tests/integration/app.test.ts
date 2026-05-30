@@ -31,36 +31,12 @@ describe("backend template integration", () => {
     expect(response.body.info.title).toBe("Backend Template API");
   });
 
-  it("requires authentication on protected routes", async () => {
-    const response = await request(app).get("/api/example");
-
-    expect(response.status).toBe(401);
-    expect(response.body.message).toBe("Unauthorized");
-  });
-
   it("returns a request id on not found routes", async () => {
     const response = await request(app).get("/api/unknown-route");
 
     expect(response.status).toBe(404);
     expect(response.body.message).toBe("Route not found");
     expect(response.body.requestId).toBeDefined();
-  });
-
-  it("validates protected route payloads after api-key auth", async () => {
-    const response = await request(app)
-      .post("/api/example")
-      .set("x-api-key", "test-api-key")
-      .send({});
-
-    expect(response.status).toBe(400);
-    expect(response.body.message).toBe("Request validation failed");
-    expect(response.body.details).toEqual(
-      expect.arrayContaining([
-        expect.objectContaining({
-          path: "name",
-        }),
-      ]),
-    );
   });
 
   it("exposes prometheus metrics at /metrics", async () => {

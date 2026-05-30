@@ -2,45 +2,52 @@
 @use "typography" as *;
 @use "variables" as *;
 
-$card-color: #0d162d;
+$card-color: #232426;
 
 // INPUT
-$input-background-color: #252d42;
-$input-field-color: rgba(12, 144, 255, 0.5);
+$input-background-color: #1b1b1f;
+$input-field-color: rgba(22, 155, 255, 0.5);
 $input-label-color: $secondary-font;
 $input-placeholder-color: $secondary-font;
 $input-value-color: $primary-font;
 
 // BUTTON - primary (blue)
-$primary-button-background: #0c90ff;
-$primary-button-hover: #45affc;
-$primary-button-disabled: #f7f8fa;
+$primary-button-background: #169bff;
+$primary-button-hover: #4ab4ff;
+$primary-button-disabled: #1b1b1f;
 
 // BUTTON - square
-$button-square-background: rgba(12, 144, 255, 0.1);
+$button-square-background: rgba(22, 155, 255, 0.1);
 $button-square-background-selected: $primary-background-color;
 
 // Backgrounds
-$container-content-color: #0d162d;
+$container-content-color: #0b0b0d;
 
 // NAVBAR
-$navbar-primary-font: #b4bac8;
-$navbar-hover-background: rgba(12, 144, 255, 0.2);
-$navbar-background: #0d162d;
-$navbar-active-background: #0c90ff;
-$navbar-border-color: #505d80;
+$navbar-primary-font: #8b8b8b;
+$navbar-active-font: $primary-color;
+$navbar-hover-background: rgba(22, 155, 255, 0.2);
+$navbar-background: #0b0b0d;
+$navbar-active-background: #169bff;
+$navbar-active-border: $accent-color;
+$navbar-border-color: rgba(247, 247, 247, 0.12);
+$navbar-width-compact: 90px;
+
+// SURFACE shortcuts used by lib components
+$surface-color: $card-color;
+$on-accent-color: $primary-color;
 
 // dropdown
 $dropdown-button-background-color: $input-background-color;
-$dropdown-background-color: #252d42;
+$dropdown-background-color: #1b1b1f;
 $dropdown-border: 1px solid transparent;
 $dropdown-height: 36px;
-$dropdown-submenu-border: 1px solid rgba(12, 144, 255, 0.3);
-$dropdown-hover-color: rgba(12, 144, 255, 0.3);
-$dropdown-hover-border: 1px solid #0c90ff;
+$dropdown-submenu-border: 1px solid rgba(22, 155, 255, 0.3);
+$dropdown-hover-color: rgba(22, 155, 255, 0.3);
+$dropdown-hover-border: 1px solid #169bff;
 
 // table
-$table-background-color: #0d162d;
+$table-background-color: #0b0b0d;
 $table-font-color: $light-color;
 $table-row-hover: $card-color;
 
@@ -51,7 +58,7 @@ $modal-font-color: $light-color;
 $modal-title-font-color: $light-color;
 
 // spinner
-$spinner-color: #0c90ff;
+$spinner-color: #169bff;
 
 // styled switch
 $switch-label-color: $input-label-color;
@@ -106,17 +113,17 @@ $switch-color-off: #d9d9d9;
   }
 }
 
-@mixin elevation1($radius, $background: rgba(12, 144, 255, 0.1)) {
+@mixin elevation1($radius, $background: rgba(22, 155, 255, 0.1)) {
   border: 1px solid $secondary-color;
   border-radius: $radius;
   background: $background;
   &:hover {
-    box-shadow: 0px 2.75px 6.875000476837158px 0px rgba(5, 24, 73, 0.35);
-    background: rgba(12, 144, 255, 0.3);
+    box-shadow: 0px 2.75px 6.875000476837158px 0px rgba(0, 0, 0, 0.35);
+    background: rgba(22, 155, 255, 0.3);
   }
   &:active {
     border: 2px solid $secondary-color;
-    background: rgba(12, 144, 255, 0.5);
+    background: rgba(22, 155, 255, 0.5);
   }
 }
 
@@ -124,7 +131,7 @@ $switch-color-off: #d9d9d9;
   border: none;
   border-radius: $radius;
   background: $color;
-  box-shadow: 0px 0px 5px 0px rgba(5, 24, 73, 0.2);
+  box-shadow: 0px 0px 5px 0px rgba(0, 0, 0, 0.2);
 }
 
 @mixin buttonSwitcher($radius) {
@@ -134,19 +141,19 @@ $switch-color-off: #d9d9d9;
       border-radius: $radius;
       background: $primary-color;
       box-shadow: 0px 1.6366515159606934px 3.2733030319213867px 0px
-        rgba(5, 24, 73, 0.2);
+        rgba(0, 0, 0, 0.2);
       background-color: $secondary-color;
       color: $primary-font;
       cursor: unset;
       &:hover {
         box-shadow: 0px 1.6366515159606934px 3.2733030319213867px 0px
-          rgba(5, 24, 73, 0.2);
+          rgba(0, 0, 0, 0.2);
         background: $secondary-color;
         cursor: unset;
       }
     }
     &:hover {
-      background: rgba(12, 144, 255, 0.2);
+      background: rgba(22, 155, 255, 0.2);
     }
   }
 }
@@ -190,7 +197,7 @@ $switch-color-off: #d9d9d9;
     &:disabled {
       color: rgba(255, 255, 255, 0.5);
       opacity: 1;
-      background-color: #0c5396;
+      background-color: rgba(22, 155, 255, 0.5);
     }
   }
 }

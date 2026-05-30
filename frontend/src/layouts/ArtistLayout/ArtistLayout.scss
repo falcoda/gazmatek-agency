@@ -1,0 +1,37 @@
+.artistLayout {
+  display: flex;
+  width: 100%;
+  height: 100vh;
+  overflow: hidden;
+  background-color: $primary-color;
+
+  .main {
+    flex: 1;
+    min-width: 0;
+    height: 100vh;
+    overflow-y: auto;
+    overflow-x: hidden;
+    margin-left: var(--navbar-width, #{$navbar-width});
+    transition: margin-left 0.3s ease;
+    background-color: $tertiary-color;
+
+    @include maxScreen($breakpoint-lg-4) {
+      margin-left: 0;
+      padding-top: $navbar-height-sm;
+    }
+  }
+
+  .content {
+    width: 100%;
+    min-height: 100%;
+    padding: $padding-lg;
+
+    @include maxScreen($breakpoint-md) {
+      padding: $padding-md;
+    }
+
+    @include maxScreen($breakpoint-md-3) {
+      padding: $padding-sm;
+    }
+  }
+}

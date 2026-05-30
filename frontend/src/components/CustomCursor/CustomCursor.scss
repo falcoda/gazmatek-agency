@@ -1,31 +1,109 @@
-.customCursorDot {
+.customCursorCore {
   position: fixed;
-  width: 10px;
-  height: 10px;
-  background: $accent-color;
+  top: 0;
+  left: 0;
+  width: 8px;
+  height: 8px;
   border-radius: 50%;
+  background-color: rgba($light-color, 0.95);
   pointer-events: none;
-  z-index: 9999;
-  transform: translate(-50%, -50%);
-  transition: width 0.2s, height 0.2s;
-  mix-blend-mode: screen;
+  z-index: 99999;
+  transform: translate3d(var(--cursor-x, 50vw), var(--cursor-y, 50vh), 0)
+    translate(-50%, -50%) scale(1);
+  opacity: 0;
+  will-change: transform, opacity;
+  box-shadow:
+    0 0 0 2px rgba($primary-color, 0.18),
+    0 0 12px rgba($light-color, 0.48);
+  transition:
+    opacity 0.2s ease;
 }
 
-.customCursorRing {
+.customCursorGlyph {
   position: fixed;
-  width: 36px;
-  height: 36px;
-  border: 1px solid rgba($accent-color, 0.4);
-  border-radius: 50%;
+  top: 0;
+  left: 0;
+  width: 18px;
+  height: 18px;
+  border-radius: 4px;
+  border: 1px solid rgba($light-color, 0.42);
+  background: rgba($light-color, 0.03);
   pointer-events: none;
-  z-index: 9998;
-  transform: translate(-50%, -50%);
-  transition: width 0.2s, height 0.2s, border-color 0.2s;
+  z-index: 99997;
+  transform: translate3d(var(--cursor-x, 50vw), var(--cursor-y, 50vh), 0)
+    translate(-50%, -50%) rotate(45deg) scale(1);
+  opacity: 0;
+  will-change: transform, opacity, border-color;
+  box-shadow:
+    0 0 0 1px rgba($primary-color, 0.24),
+    0 10px 28px rgba($primary-color, 0.18);
+  transition:
+    opacity 0.2s ease,
+    border-color 0.2s ease;
+}
+
+body.gzkCursorVisible {
+  .customCursorCore,
+  .customCursorGlyph {
+    opacity: 1;
+  }
+}
+
+body.gzkCursorEnabled {
+  cursor: none;
+}
+
+body.gzkCursorEnabled a,
+body.gzkCursorEnabled button,
+body.gzkCursorEnabled [role="button"],
+body.gzkCursorEnabled select,
+body.gzkCursorEnabled label,
+body.gzkCursorEnabled summary,
+body.gzkCursorEnabled [data-cursor="hover"] {
+  cursor: none !important;
+}
+
+body.gzkCursorEnabled input,
+body.gzkCursorEnabled textarea,
+body.gzkCursorEnabled [contenteditable="true"] {
+  cursor: text !important;
+}
+
+body.gzkCursorInteractive {
+  .customCursorCore {
+    transform: translate3d(var(--cursor-x, 50vw), var(--cursor-y, 50vh), 0)
+      translate(-50%, -50%) scale(0.78);
+  }
+
+  .customCursorGlyph {
+    border-color: rgba($accent-color, 0.85);
+    transform: translate3d(var(--cursor-x, 50vw), var(--cursor-y, 50vh), 0)
+      translate(-50%, -50%) rotate(0deg) scale(1.15);
+  }
+}
+
+body.gzkCursorDown {
+  .customCursorCore {
+    transform: translate3d(var(--cursor-x, 50vw), var(--cursor-y, 50vh), 0)
+      translate(-50%, -50%) scale(1.45);
+  }
+
+  .customCursorGlyph {
+    transform: translate3d(var(--cursor-x, 50vw), var(--cursor-y, 50vh), 0)
+      translate(-50%, -50%) rotate(90deg) scale(0.9);
+  }
 }
 
 @media (hover: none) {
-  .customCursorDot,
-  .customCursorRing {
+  .customCursorCore,
+  .customCursorGlyph {
+    display: none;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .customCursorCore,
+  .customCursorGlyph {
     display: none;
   }
 }

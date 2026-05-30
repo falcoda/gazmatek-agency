@@ -1,5 +1,6 @@
 import "./NoData.scss";
-import NoDataIcon from "./noData.svg?react";
+
+import { FaRegFolderOpen } from "react-icons/fa";
 
 interface NoDataProps {
   title?: string;
@@ -8,7 +9,7 @@ interface NoDataProps {
 const NoData = ({ title }: NoDataProps) => {
   return (
     <div className="noData">
-      <NoDataIcon />
+      <FaRegFolderOpen className="noDataIcon" size={64} aria-hidden />
 
       {title && <span>{title}</span>}
     </div>

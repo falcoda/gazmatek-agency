@@ -1,5 +1,5 @@
-export const SITE_NAME = "My App";
-export const SITE_URL = "https://example.com";
+export const SITE_NAME = "Gazmatek";
+export const SITE_URL = "https://booking.Gazmatek.com";
 
 /**
  * Set to true to enable /:lang/* routing (e.g. /en/, /fr/).

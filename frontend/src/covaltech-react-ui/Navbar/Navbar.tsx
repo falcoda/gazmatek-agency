@@ -15,6 +15,10 @@ export type NavItemType = {
   className?: string;
   submenu?: NavItemType[];
   hilight?: boolean;
+  /** Count pill rendered on the right side of the item. */
+  badge?: string | number;
+  /** Section label; a header is rendered before the first item of each section. */
+  section?: string;
 };
 
 interface NavbarProps {
@@ -43,7 +47,7 @@ const Navbar: React.FC<NavbarProps> = ({
   },
   showLogo = true,
   showLinkLogo = true,
-  breakpoint = "breakpoint-lg-4",
+  breakpoint = "breakpoint-md-2",
   scrollToContainer = false,
 }) => {
   const { windowWidth } = useWindowWidth();

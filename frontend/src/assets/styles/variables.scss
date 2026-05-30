@@ -1,43 +1,43 @@
 // FONTS
-$default-font-family: "Inter", Arial, sans-serif;
-$switzer-font-family: "Inter", Arial, sans-serif;
+$default-font-family: "Anton", Arial, sans-serif;
+$switzer-font-family: "Anton", Arial, sans-serif;
 
 // COLORS
-$primary-color: #0d162d;
-$secondary-color: #0c90ff;
-$tertiary-color: #060d22;
-$quaternary-color: #0d2242;
-$accent-color: $secondary-color; // Main accent — override if needed
+$primary-color: #0b0b0d;
+$secondary-color: #141416;
+$tertiary-color: #1b1b1f;
+$quaternary-color: #232426;
+$accent-color: #169bff; // Main accent — override if needed
 
 // BACKGROUND
-$primary-background-color: #0d162d;
-$secondary-background-color: rgba(12, 144, 255, 0.1);
-$scrollbar-background-color: #b4bac8;
-$light-color: #f3f6fb;
+$primary-background-color: #0b0b0d;
+$secondary-background-color: rgba(22, 155, 255, 0.1);
+$scrollbar-background-color: #8b8b8b;
+$light-color: #f7f7f7;
 $light-white: #fff;
 
 $black: #000;
 
 // FONTS
-$primary-font: #f3f6fb;
-$secondary-font: #7184c1;
-$tertiary-font: #9ba3b6;
+$primary-font: #f7f7f7;
+$secondary-font: #8b8b8b;
+$tertiary-font: rgba(247, 247, 247, 0.72);
 
 // BORDER
-$border-color: rgba(12, 144, 255, 0.5);
+$border-color: rgba(247, 247, 247, 0.12);
 
 // ALERTS
-$lock-color: #f25050;
+$lock-color: #d11b1b;
 $green-color: #38c769;
 $main-orange: #ff8e00;
 
 // RADIUS
-$radius-extra-small: 3px;
-$radius-small: 5px;
-$radius-medium-small: 6px;
-$radius-medium: 10px;
-$radius-large: 15px;
-$radius-extra-large: 20px;
+$radius-extra-small: 4px;
+$radius-small: 6px;
+$radius-medium-small: 10px;
+$radius-medium: 8px;
+$radius-large: 16px;
+$radius-extra-large: 24px;
 $radius-extra-large-2: 25px;
 
 // SPACING
@@ -49,7 +49,7 @@ $padding-sm: 14px;
 $padding-md: 20px;
 $padding-md-2: 25px;
 $padding-lg: 30px;
-$padding-lg-2: 35px;
+$padding-lg-2: 32px;
 $padding-xl: 40px;
 $padding-xl-2: 45px;
 $padding-xl-3: 50px;
@@ -61,10 +61,10 @@ $margin-xxxs: 4px;
 $margin-xxs: 7px;
 $margin-xs: 10px;
 $margin-sm: 14px;
-$margin-md: 20px;
+$margin-md: 16px;
 $margin-md-2: 25px;
 $margin-lg: 30px;
-$margin-lg-2: 35px;
+$margin-lg-2: 32px;
 $margin-xl: 40px;
 $margin-xl-2: 45px;
 $margin-xl-3: 50px;
@@ -72,7 +72,7 @@ $margin-xl-3: 50px;
 // OTHER
 $navbar-width: 300px;
 $navbar-height-sm: 60px;
-$footerHeight: 100px;
+$footerHeight: 30px;
 
 // MEDIA QUERIES
 $breakpoint-xl: 2560px;

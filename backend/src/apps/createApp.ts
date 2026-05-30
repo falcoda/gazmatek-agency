@@ -40,7 +40,15 @@ export const createApp = (): Express => {
 
   app.use(cors({ origin: config.server.corsOrigin, credentials: true }));
   app.use(express.urlencoded({ extended: true }));
-  app.use(express.json());
+  app.use(
+    express.json({
+      // Capture rawBody for HMAC signature verification (Documenso webhook).
+      verify: (req, _res, buffer) => {
+        (req as Request & { rawBody?: string }).rawBody =
+          buffer.toString("utf8");
+      },
+    }),
+  );
 
   if (config.server.trustProxy && config.nodeEnv !== NODE_ENV.TEST) {
     app.set("trust proxy", true);

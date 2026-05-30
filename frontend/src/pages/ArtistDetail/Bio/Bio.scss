@@ -1,0 +1,12 @@
+.artistBio {
+  .title {
+    margin: 0 0 $padding-sm;
+  }
+
+  .text {
+    margin: 0;
+    line-height: 1.65;
+    white-space: pre-wrap;
+    color: $primary-font;
+  }
+}

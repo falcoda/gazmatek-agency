@@ -13,11 +13,9 @@
     @include syledInput;
   }
   textarea {
-    width: 440px;
+    width: 100%;
+    max-width: 440px;
     height: 120px;
-    @include maxScreen($breakpoint-sm) {
-      width: 100%;
-    }
   }
   .balanceInput {
     width: 100%;
@@ -68,6 +66,7 @@
     }
     .inputButton {
       cursor: pointer;
+      background-color: transparent;
     }
   }
   .wrappedInput.invalid {
@@ -102,5 +101,35 @@
 
   @include maxScreen($breakpoint-sm) {
     width: 100%;
+  }
+
+  &.ghost {
+    gap: 4px;
+
+    label {
+      color: rgba($secondary-font, 0.72);
+      letter-spacing: 0.08em;
+      text-transform: uppercase;
+    }
+
+    input,
+    textarea {
+      padding: 0;
+      border: none;
+      border-radius: 0;
+      background: transparent;
+      color: $light-color;
+      box-shadow: none;
+
+      &::placeholder {
+        color: rgba($secondary-font, 0.72);
+      }
+
+      &:focus,
+      &:hover {
+        outline: none;
+        box-shadow: none;
+      }
+    }
   }
 }

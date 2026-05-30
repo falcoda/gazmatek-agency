@@ -5,11 +5,13 @@ import { DEFAULT_LANGUAGE } from "./config";
 import { getStoredLanguage } from "./routing";
 import en from "./translations/en.json";
 import fr from "./translations/fr.json";
+import nl from "./translations/nl.json";
 
 i18n.use(initReactI18next).init({
   resources: {
-    en: { translation: en },
     fr: { translation: fr },
+    nl: { translation: nl },
+    en: { translation: en },
   },
   lng: getStoredLanguage() ?? DEFAULT_LANGUAGE,
   fallbackLng: DEFAULT_LANGUAGE,

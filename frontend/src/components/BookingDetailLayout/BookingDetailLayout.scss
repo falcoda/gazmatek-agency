@@ -1,0 +1,383 @@
+.bookingDetail {
+  max-width: 1180px;
+  margin: 0 auto;
+  padding: $padding-xl $padding-md;
+  display: flex;
+  flex-direction: column;
+  gap: $padding-lg;
+
+  .backRow {
+    display: flex;
+    align-items: center;
+    gap: $padding-sm;
+  }
+
+  .hero {
+    position: relative;
+    overflow: hidden;
+    padding: $padding-xl $padding-lg;
+    border-radius: $radius-large;
+    border: 1px solid $border-color;
+    background:
+      radial-gradient(
+        circle at top left,
+        rgba($accent-color, 0.18),
+        transparent 55%
+      ),
+      radial-gradient(
+        circle at bottom right,
+        rgba($main-orange, 0.12),
+        transparent 60%
+      ),
+      $secondary-color;
+
+    &::after {
+      content: "";
+      position: absolute;
+      inset: 0;
+      pointer-events: none;
+      background:
+        linear-gradient(
+          120deg,
+          transparent 0%,
+          rgba($light-color, 0.04) 50%,
+          transparent 100%
+        );
+    }
+  }
+
+  .heroInner {
+    position: relative;
+    z-index: 1;
+    display: flex;
+    flex-wrap: wrap;
+    gap: $padding-lg;
+    justify-content: space-between;
+    align-items: flex-start;
+  }
+
+  .heroLeft {
+    display: flex;
+    flex-direction: column;
+    gap: $padding-xs;
+    min-width: 0;
+  }
+
+  .eyebrow {
+    display: inline-flex;
+    align-items: center;
+    gap: $padding-xs;
+    font-size: 0.75rem;
+    letter-spacing: 0.18em;
+    text-transform: uppercase;
+    color: $tertiary-font;
+  }
+
+  .heroTitle {
+    margin: 0;
+    font-size: clamp(1.75rem, 2.4vw + 1rem, 2.75rem);
+    line-height: 1.1;
+    color: $primary-font;
+  }
+
+  .heroMeta {
+    display: flex;
+    flex-wrap: wrap;
+    gap: $padding-md;
+    color: $tertiary-font;
+    margin-top: $padding-xs;
+
+    span {
+      display: inline-flex;
+      align-items: center;
+      gap: $padding-xxs;
+      font-size: 0.95rem;
+
+      svg {
+        color: $accent-color;
+      }
+    }
+  }
+
+  .heroRight {
+    display: flex;
+    flex-direction: column;
+    align-items: flex-end;
+    gap: $padding-sm;
+  }
+
+  .idChip {
+    display: inline-flex;
+    align-items: center;
+    gap: $padding-xxs;
+    padding: 6px 10px;
+    background: rgba($light-color, 0.06);
+    border: 1px solid $border-color;
+    border-radius: $radius-small;
+    font-family: monospace;
+    font-size: 0.8rem;
+    color: $tertiary-font;
+  }
+
+  // Legacy two-column grid (kept for ArtistBookingDetail which still uses it).
+  .grid {
+    display: grid;
+    grid-template-columns: 1.4fr 1fr;
+    gap: $padding-lg;
+
+    @include maxScreen($breakpoint-md-3) {
+      grid-template-columns: 1fr;
+    }
+  }
+
+  .column {
+    display: flex;
+    flex-direction: column;
+    gap: $padding-lg;
+    min-width: 0;
+  }
+
+  // Flat grid: each card is a direct child, `spanFull` makes it stretch.
+  .cardsGrid {
+    display: grid;
+    grid-template-columns: 1.4fr 1fr;
+    gap: $padding-lg;
+    align-items: start;
+
+    > .spanFull {
+      grid-column: 1 / -1;
+    }
+
+    @include maxScreen($breakpoint-md-3) {
+      grid-template-columns: 1fr;
+
+      > .spanFull {
+        grid-column: 1;
+      }
+    }
+  }
+
+  .card {
+    padding: $padding-lg;
+    border-radius: $radius-large;
+    border: 1px solid $border-color;
+    background: $card-color;
+    display: flex;
+    flex-direction: column;
+    gap: $padding-md;
+  }
+
+  .cardHeader {
+    display: flex;
+    align-items: center;
+    gap: $padding-sm;
+
+    h2 {
+      margin: 0;
+      font-size: 1.15rem;
+      color: $primary-font;
+    }
+
+    svg {
+      color: $accent-color;
+      font-size: 1.1rem;
+    }
+  }
+
+  .rowList {
+    list-style: none;
+    margin: 0;
+    padding: 0;
+    display: flex;
+    flex-direction: column;
+    gap: $padding-sm;
+  }
+
+  .row {
+    display: grid;
+    grid-template-columns: 160px 1fr;
+    gap: $padding-sm;
+    align-items: baseline;
+    padding-bottom: $padding-sm;
+    border-bottom: 1px dashed $border-color;
+
+    &:last-child {
+      padding-bottom: 0;
+      border-bottom: none;
+    }
+
+    @include maxScreen($breakpoint-sm) {
+      grid-template-columns: 1fr;
+      gap: $padding-xxxs;
+    }
+  }
+
+  .rowLabel {
+    color: $secondary-font;
+    font-size: 0.85rem;
+    text-transform: uppercase;
+    letter-spacing: 0.06em;
+    display: inline-flex;
+    align-items: center;
+    gap: $padding-xxs;
+
+    svg {
+      color: $accent-color;
+    }
+  }
+
+  .rowValue {
+    color: $primary-font;
+    font-size: 1rem;
+    word-break: break-word;
+
+    &.isMuted {
+      color: $tertiary-font;
+    }
+  }
+
+  .contextBox {
+    background: rgba($light-color, 0.04);
+    border-left: 3px solid $accent-color;
+    border-radius: $radius-small;
+    padding: $padding-sm $padding-md;
+    color: $tertiary-font;
+    font-style: italic;
+    white-space: pre-wrap;
+  }
+
+  .priceGrid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(140px, 1fr));
+    gap: $padding-sm;
+  }
+
+  .priceTile {
+    padding: $padding-md;
+    border-radius: $radius-medium;
+    border: 1px solid $border-color;
+    background: rgba($light-color, 0.02);
+    display: flex;
+    flex-direction: column;
+    gap: $padding-xxs;
+
+    &.isAccent {
+      border-color: rgba($accent-color, 0.4);
+      background: rgba($accent-color, 0.06);
+    }
+  }
+
+  .priceLabel {
+    font-size: 0.75rem;
+    text-transform: uppercase;
+    letter-spacing: 0.1em;
+    color: $secondary-font;
+  }
+
+  .priceValue {
+    font-size: 1.6rem;
+    font-weight: 600;
+    color: $primary-font;
+    line-height: 1.1;
+  }
+
+  .optionsList {
+    list-style: none;
+    padding: 0;
+    margin: 0;
+    display: flex;
+    flex-wrap: wrap;
+    gap: $padding-xs;
+
+    li {
+      padding: 6px 12px;
+      border-radius: $radius-small;
+      border: 1px solid $border-color;
+      background: rgba($light-color, 0.04);
+      color: $tertiary-font;
+      font-size: 0.85rem;
+    }
+  }
+
+  .clientHidden {
+    display: flex;
+    align-items: flex-start;
+    gap: $padding-sm;
+    padding: $padding-md;
+    border-radius: $radius-medium;
+    border: 1px dashed $border-color;
+    background: rgba($main-orange, 0.05);
+    color: $tertiary-font;
+
+    svg {
+      color: $main-orange;
+      font-size: 1.4rem;
+      flex-shrink: 0;
+      margin-top: 2px;
+    }
+  }
+
+  .clientHeader {
+    display: flex;
+    align-items: center;
+    gap: $padding-sm;
+  }
+
+  .clientIdenticon {
+    border-radius: 50%;
+    width: 48px;
+    height: 48px;
+    border: 1px solid $border-color;
+  }
+
+  .clientName {
+    margin: 0;
+    color: $primary-font;
+    font-size: 1.1rem;
+  }
+
+  .clientRole {
+    color: $secondary-font;
+    font-size: 0.85rem;
+  }
+
+  .contactLink {
+    display: inline-flex;
+    align-items: center;
+    gap: $padding-xxs;
+    color: $accent-color;
+    text-decoration: none;
+
+    &:hover {
+      text-decoration: underline;
+    }
+  }
+
+  .cancelBox {
+    padding: $padding-md;
+    border-radius: $radius-medium;
+    background: rgba($lock-color, 0.06);
+    border: 1px solid rgba($lock-color, 0.4);
+    color: $primary-font;
+
+    strong {
+      color: $lock-color;
+    }
+  }
+
+  .loading {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    gap: $padding-md;
+    padding: $padding-xl;
+    color: $tertiary-font;
+  }
+
+  .actions {
+    display: flex;
+    flex-wrap: wrap;
+    gap: $padding-sm;
+  }
+}

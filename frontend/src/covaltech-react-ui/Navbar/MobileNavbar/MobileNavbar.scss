@@ -1,7 +1,9 @@
 .mobileNavbar {
   height: $navbar-height-sm;
   top: 0;
+  left: 0;
   width: 100%;
+  box-sizing: border-box;
 
   .navbar-toggler {
     display: flex;
@@ -16,35 +18,70 @@
       align-items: center;
     }
 
+    .navbar-toggleButton {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      padding: 0;
+      background: transparent;
+      border: none;
+      color: inherit;
+      cursor: pointer;
+    }
+
     .burger-close-btn,
     .burger-open-btn {
-      &:hover {
-        cursor: pointer;
-      }
+      pointer-events: none;
     }
+  }
+
+  .navbar-backdrop {
+    position: fixed;
+    inset: calc(#{$navbar-height-sm} + var(--mobile-navbar-offset, 0px)) 0 0;
+    background: rgba($primary-color, 0.55);
+    border: none;
+    opacity: 0;
+    pointer-events: none;
+    transition: opacity 0.2s ease;
+  }
+
+  .navbar-backdrop.show {
+    opacity: 1;
+    pointer-events: auto;
   }
 
   .navbar-collapse {
     justify-content: space-between;
-    position: absolute;
-    top: $navbar-height-sm;
+    position: fixed;
+    inset: calc(#{$navbar-height-sm} + var(--mobile-navbar-offset, 0px)) 0
+      auto 0;
     z-index: 10;
-    transition: max-height 0.3s;
-    overflow: hidden;
-    max-height: 0;
-    height: calc(100vh - #{$navbar-height-sm});
+    width: 100%;
+    min-height: calc(100vh - #{$navbar-height-sm} - var(--mobile-navbar-offset, 0px));
+    min-height: calc(100dvh - #{$navbar-height-sm} - var(--mobile-navbar-offset, 0px));
+    max-height: calc(100vh - #{$navbar-height-sm} - var(--mobile-navbar-offset, 0px));
+    max-height: calc(100dvh - #{$navbar-height-sm} - var(--mobile-navbar-offset, 0px));
+    box-sizing: border-box;
+    overflow-y: auto;
+    opacity: 0;
+    pointer-events: none;
+    transform: translateY(-12px);
+    transition:
+      opacity 0.2s ease,
+      transform 0.2s ease;
   }
 
   .navbar-collapse.show {
-    max-height: 100vh;
-    overflow-y: auto;
+    opacity: 1;
+    pointer-events: auto;
+    transform: translateY(0);
   }
 
   .navbar-nav {
-    padding: 20px $link-padding-mobile 0px $link-padding-mobile;
+    padding: 20px $link-padding-mobile 0 $link-padding-mobile;
 
     .nav-link {
-      padding: 10px 20px 10px 20px;
+      padding: 10px 20px;
     }
   }
 

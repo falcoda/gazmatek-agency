@@ -1,5 +1,9 @@
 :root {
   --default-navbar-width: #{$navbar-width};
+
+  @include maxScreen($breakpoint-lg-4) {
+    --default-navbar-width: #{$navbar-width-compact};
+  }
 }
 .desktopNavbar {
   flex-direction: column;
@@ -42,6 +46,11 @@
   .navbar-collapse {
     height: 100%;
     padding: 60px 20px 20px 20px;
+
+    @include maxScreen($breakpoint-lg-4) {
+      padding-left: 14px;
+      padding-right: 14px;
+    }
   }
 
   .navbar-nav {
@@ -53,20 +62,21 @@
   }
 
   .navTitleDiv {
-    margin-bottom: 30px;
+    margin-bottom: 24px;
     display: flex;
     align-items: center;
     width: 100%;
     a {
+      display: flex;
+      align-items: center;
       margin-left: auto;
       margin-right: auto;
     }
 
     .navTitle {
-      height: 35px;
-      @include maxScreen($breakpoint-lg-4) {
-        display: none;
-      }
+      height: 32px;
+      width: auto;
+      max-width: 100%;
     }
   }
 }

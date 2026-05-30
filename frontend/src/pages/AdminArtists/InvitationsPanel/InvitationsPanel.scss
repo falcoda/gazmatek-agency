@@ -1,0 +1,84 @@
+.invitationsSubtitle {
+  margin: 0 0 $padding-md 0;
+  color: $secondary-font;
+}
+
+.invitationsMessageRow {
+  grid-column: 1 / -1;
+}
+
+.invitationsFilters {
+  margin-bottom: $padding-md;
+  max-width: 320px;
+}
+
+.invitationsEmpty {
+  color: $secondary-font;
+  margin: $padding-sm 0;
+}
+
+.invitationActions {
+  display: flex;
+  gap: $padding-xxs;
+  flex-wrap: wrap;
+}
+
+.invitationResult {
+  margin-top: $padding-md;
+  padding: $padding-md;
+  border-radius: $radius-medium;
+  border: 1px solid $border-color;
+  background: $card-color;
+
+  p {
+    margin: 0 0 $padding-sm 0;
+    color: $secondary-font;
+  }
+
+  &__row {
+    display: flex;
+    align-items: center;
+    gap: $padding-sm;
+    flex-wrap: wrap;
+  }
+
+  &__url {
+    flex: 1;
+    min-width: 240px;
+    padding: $padding-xs;
+    background: $input-background-color;
+    border-radius: $radius-small;
+    border: 1px solid $border-color;
+    font-size: 12px;
+    word-break: break-all;
+  }
+}
+
+.invitationStatus {
+  display: inline-flex;
+  align-items: center;
+  padding: 2px $padding-xs;
+  border-radius: $radius-small;
+  font-size: 12px;
+  font-weight: 500;
+
+  &--pending {
+    background: rgba($main-orange, 0.15);
+    color: $main-orange;
+  }
+
+  &--accepted {
+    background: rgba($green-color, 0.15);
+    color: $green-color;
+  }
+
+  &--expired {
+    background: rgba($lock-color, 0.15);
+    color: $lock-color;
+  }
+
+  &--revoked {
+    background: rgba($secondary-font, 0.15);
+    color: $secondary-font;
+  }
+}

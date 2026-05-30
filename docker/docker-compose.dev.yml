@@ -1,0 +1,17 @@
+services:
+  website:
+    ports:
+      - '${PORT:-4001}:${PORT:-4001}'
+  db:
+    ports:
+      - '${DATABASE_PORT:-5432}:5432'
+  minio:
+    ports:
+      - '${MINIO_API_PORT:-9010}:9000'
+      - '${MINIO_CONSOLE_PORT:-9011}:9001'
+  browser:
+    ports:
+      - '${BROWSER_PORT:-3011}:3000'
+  documenso:
+    ports:
+      - '${DOCUMENSO_PORT:-3003}:${DOCUMENSO_INTERNAL_PORT:-3000}'

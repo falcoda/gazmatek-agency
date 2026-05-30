@@ -1,0 +1,278 @@
+.priceSimulator {
+  display: flex;
+  flex-direction: column;
+  gap: $padding-lg;
+
+  .layout {
+    display: grid;
+    grid-template-columns: minmax(0, 1fr) 380px;
+    gap: $padding-lg;
+    align-items: stretch;
+  }
+
+  .layout:has(> :only-child) {
+    grid-template-columns: minmax(0, 1fr);
+  }
+
+  .formColumn {
+    display: flex;
+    flex-direction: column;
+    gap: $padding-lg;
+    min-width: 0;
+  }
+
+  .sideColumn {
+    display: flex;
+    flex-direction: column;
+    gap: $padding-sm;
+    min-width: 0;
+  }
+
+  .sidePanel {
+    padding: $padding-md;
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+
+    h2 {
+      margin: 0 0 $padding-sm;
+      font-size: 1rem;
+    }
+  }
+
+  .sideHint {
+    margin: 0 0 $padding-sm;
+    color: $secondary-font;
+    font-size: 0.85rem;
+  }
+
+  .miniCalendar {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+
+    .publicAvailabilityCalendar {
+      padding: $padding-sm;
+    }
+  }
+
+  .form {
+    background: $card-color;
+    padding: $padding-lg;
+    border-radius: $radius-medium;
+    display: flex;
+    flex-direction: column;
+    gap: $padding-md;
+    border: 1px solid $border-color;
+    flex: 1;
+  }
+
+  .row {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: $padding-sm;
+  }
+
+  .field {
+    display: flex;
+    flex-direction: column;
+    gap: 4px;
+
+    span {
+      font-size: 0.85rem;
+      color: $secondary-font;
+    }
+
+    select,
+    input {
+      padding: $padding-xxs $padding-xs;
+      border-radius: $radius-small;
+      border: 1px solid $border-color;
+      background: $input-background-color;
+      color: $primary-font;
+      font: inherit;
+    }
+
+    select:focus-visible,
+    input:focus-visible {
+      outline: 2px solid $accent-color;
+      outline-offset: 1px;
+    }
+  }
+
+  .toggle {
+    display: flex;
+    align-items: center;
+    gap: $padding-xs;
+    cursor: pointer;
+    user-select: none;
+    color: $primary-font;
+  }
+
+  .ticketed {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
+    gap: $padding-sm;
+    padding-top: $padding-xs;
+    border-top: 1px dashed $border-color;
+    padding-top: $padding-md;
+  }
+
+  .levelReadOnly {
+    display: flex;
+    flex-direction: column;
+    gap: 4px;
+    justify-content: flex-end;
+
+    .levelLabel {
+      font-size: 0.85rem;
+      color: $secondary-font;
+    }
+
+    .levelValue {
+      padding: $padding-xxs $padding-xs;
+      border-radius: $radius-small;
+      border: 1px solid $border-color;
+      background: $input-background-color;
+      color: $primary-font;
+      font-weight: 600;
+      letter-spacing: 0.04em;
+    }
+  }
+
+  .error {
+    color: $main-orange;
+    margin: 0;
+    font-size: 0.9rem;
+  }
+
+  .formActions {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: $padding-sm;
+
+    @include maxScreen($breakpoint-md-3) {
+      grid-template-columns: 1fr;
+    }
+  }
+
+  .submit {
+    padding: $padding-sm $padding-lg;
+    background: $accent-color;
+    color: $primary-color;
+    border: 0;
+    border-radius: $radius-small;
+    font-weight: 600;
+    cursor: pointer;
+    align-self: flex-start;
+    font: inherit;
+
+    &:disabled {
+      opacity: 0.6;
+      cursor: not-allowed;
+    }
+  }
+
+  .result {
+    padding: $padding-lg;
+    gap: $padding-sm;
+    align-self: start;
+    position: sticky;
+    top: $padding-md;
+  }
+
+  .resultTitle {
+    margin: 0 0 $padding-xs;
+    font-size: 1.2rem;
+  }
+
+  .breakdown {
+    margin: 0;
+    display: flex;
+    flex-direction: column;
+    gap: $padding-xxs;
+
+    div {
+      display: flex;
+      justify-content: space-between;
+      align-items: baseline;
+
+      dt {
+        color: $secondary-font;
+      }
+
+      dd {
+        margin: 0;
+        font-weight: 500;
+      }
+    }
+  }
+
+  .subtotal {
+    padding-top: $padding-xs;
+    border-top: 1px solid $border-color;
+    font-weight: 600;
+  }
+
+  .total {
+    padding-top: $padding-xs;
+    border-top: 1px solid $border-color;
+    font-size: 1.1rem;
+
+    dd {
+      font-weight: 700 !important;
+      color: $accent-color;
+    }
+  }
+
+  .artistFee {
+    padding: $padding-sm;
+    border-radius: $radius-small;
+    background: $secondary-color;
+
+    h3 {
+      margin: 0 0 $padding-xxs;
+      font-size: 0.95rem;
+    }
+
+    p {
+      margin: 0;
+      font-size: 0.9rem;
+      line-height: 1.5;
+    }
+  }
+
+  .disclaimer {
+    margin: $padding-xs 0 0;
+    font-size: 0.8rem;
+    color: $secondary-font;
+    line-height: 1.45;
+  }
+
+  .bookCta {
+    margin-top: $padding-xs;
+    padding: $padding-sm $padding-md;
+    background: $accent-color;
+    color: $primary-color;
+    border-radius: $radius-small;
+    text-decoration: none;
+    text-align: center;
+    font-weight: 600;
+  }
+
+  @include maxScreen($breakpoint-md) {
+    .layout {
+      grid-template-columns: 1fr;
+    }
+
+    .result {
+      position: static;
+    }
+  }
+
+  @include maxScreen($breakpoint-md-3) {
+    .row {
+      grid-template-columns: 1fr;
+    }
+  }
+}

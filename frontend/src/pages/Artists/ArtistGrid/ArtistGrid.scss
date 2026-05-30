@@ -1,0 +1,83 @@
+.artistGridWrapper {
+  display: flex;
+  flex-direction: column;
+  gap: $padding-lg;
+
+  .pagination {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: $padding-md;
+
+    button {
+      width: 36px;
+      height: 36px;
+      border-radius: 50%;
+      border: 1px solid $border-color;
+      background: $card-color;
+      cursor: pointer;
+      color: $primary-font;
+
+      &:disabled {
+        opacity: 0.4;
+        cursor: not-allowed;
+      }
+    }
+
+    span {
+      color: $secondary-font;
+    }
+  }
+}
+
+.artistGrid {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(240px, 1fr));
+  gap: $padding-md;
+
+  &.isLoading {
+    pointer-events: none;
+  }
+
+  .cardSkeleton {
+    min-height: 320px;
+    border-radius: $radius-medium;
+    background: linear-gradient(90deg, $secondary-color, $card-color, $secondary-color);
+    background-size: 200% 100%;
+    animation: artistGrid-shimmer 1.4s ease-in-out infinite;
+  }
+}
+
+.artistGridEmpty {
+  text-align: center;
+  padding: $padding-xl 0;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: $padding-sm;
+  color: $secondary-font;
+
+  h2 {
+    margin: 0;
+    color: $primary-font;
+  }
+
+  .resetBtn {
+    margin-top: $padding-xs;
+    padding: $padding-xs $padding-lg;
+    border-radius: $radius-small;
+    border: 1px solid $border-color;
+    background: $card-color;
+    color: $primary-font;
+    cursor: pointer;
+    font: inherit;
+  }
+}
+
+@keyframes artistGrid-shimmer {
+  0% { background-position: 200% 0; }
+  100% { background-position: -200% 0; }
+}

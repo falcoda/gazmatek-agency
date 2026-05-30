@@ -5,6 +5,11 @@ import { refreshSession } from "@/Utils/Auth/authSession";
 import { createTokenRefresher } from "@/Utils/Auth/createTokenRefresher";
 import { isAccessTokenExpired } from "@/Utils/Auth/jwt";
 import { loggerService, LogTag } from "@/Utils/LoggerService";
+import {
+  extractApiErrorMessage,
+  isDownloadContentType,
+  parseErrorBody,
+} from "@/Utils/Services/Fetch/responseParsing";
 
 // Singleton refresh guard shared across concurrent requests.
 const tryRefreshTokens = createTokenRefresher(async () => {
@@ -98,10 +103,7 @@ async function appFetch(route: string, options?: RequestInit) {
 
       if (retryResponse.ok) {
         const retryContentType = retryResponse.headers.get("content-type");
-        if (
-          retryContentType?.includes("application/pdf") ||
-          retryContentType?.includes("text/csv")
-        ) {
+        if (isDownloadContentType(retryContentType)) {
           return await retryResponse.blob();
         }
         return await retryResponse.json();
@@ -113,40 +115,25 @@ async function appFetch(route: string, options?: RequestInit) {
     const contentType = response.headers.get("content-type");
 
     if (response.ok) {
-      if (
-        contentType?.includes("application/pdf") ||
-        contentType?.includes("text/csv")
-      ) {
+      if (isDownloadContentType(contentType)) {
         return await response.blob();
       }
       return await response.json();
     }
 
-    const parseResponseData = async () => {
-      if (!contentType?.includes("application/json")) return null;
-      return await response.json();
-    };
-
-    const responseData = await parseResponseData();
+    const responseData = await parseErrorBody(response);
     loggerService.error(LogTag.API, "API request failed", {
       route,
       responseData,
       status: response.status,
     });
 
-    const firstDetail =
-      Array.isArray(responseData?.details) && responseData.details.length > 0
-        ? (responseData.details[0] as { message?: string }).message
-        : null;
-
     if (response.status === 403) {
-      toast.error(firstDetail ?? responseData?.message ?? "Accès refusé");
+      toast.error(extractApiErrorMessage(responseData, "Accès refusé"));
       return { forbidden: true };
     }
 
-    toast.error(
-      firstDetail ?? responseData?.message ?? "Une erreur est survenue",
-    );
+    toast.error(extractApiErrorMessage(responseData));
     return null;
   } catch (error) {
     loggerService.error(LogTag.API, "Unexpected fetch error", error);

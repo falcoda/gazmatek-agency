@@ -1,0 +1,39 @@
+.adminLogoutButton {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  width: calc(100% - #{$padding-md});
+  margin: auto auto $padding-md;
+  padding: $padding-xs $padding-sm;
+  background: transparent;
+  border: 1px solid transparent;
+  border-radius: $radius-medium;
+  color: $navbar-primary-font;
+  cursor: pointer;
+  font: inherit;
+  text-align: left;
+
+  .icon {
+    flex-shrink: 0;
+    width: 20px;
+    height: 20px;
+  }
+
+  .label {
+    @include text(400, 15px, normal);
+    flex-grow: 1;
+    overflow: hidden;
+    white-space: nowrap;
+    text-overflow: ellipsis;
+  }
+
+  &:hover {
+    background-color: $navbar-hover-background;
+    color: $accent-color;
+  }
+
+  &:focus-visible {
+    outline: 2px solid $accent-color;
+    outline-offset: 2px;
+  }
+}

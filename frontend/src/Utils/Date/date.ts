@@ -1,3 +1,6 @@
+import type { AppLanguage } from "@/i18n/config";
+import { localeFromLang } from "@/Utils/locale";
+
 const DAY_IN_MS = 24 * 60 * 60 * 1000;
 
 function padDateUnit(value: number) {
@@ -114,4 +117,33 @@ export function formatDisplayTime(value: Date | string, locale?: string) {
     hour: "2-digit",
     minute: "2-digit",
   }).format(new Date(value));
+}
+
+/**
+ * Long event date + time for the given app language
+ * (e.g. `lundi 05 janvier 2026, 14:30`).
+ */
+export function formatEventDateTime(iso: string, lang: AppLanguage): string {
+  return new Date(iso).toLocaleString(localeFromLang(lang), {
+    weekday: "long",
+    day: "2-digit",
+    month: "long",
+    year: "numeric",
+    hour: "2-digit",
+    minute: "2-digit",
+  });
+}
+
+/**
+ * Compact date + time for the given app language (e.g. `05 Jan 2026, 14:30`),
+ * used for audit timestamps.
+ */
+export function formatTimestamp(iso: string, lang: AppLanguage): string {
+  return new Date(iso).toLocaleString(localeFromLang(lang), {
+    day: "2-digit",
+    month: "short",
+    year: "numeric",
+    hour: "2-digit",
+    minute: "2-digit",
+  });
 }

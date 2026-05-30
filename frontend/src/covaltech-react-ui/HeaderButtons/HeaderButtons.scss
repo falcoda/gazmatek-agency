@@ -9,7 +9,7 @@
   .headerButtonsWrapper {
     width: fit-content;
     display: flex;
-    border: 1px solid #dfdfdf;
+    border: 1px solid $border-color;
     border-bottom: none;
     border-radius: 10px 10px 0px 0px;
   }
@@ -23,7 +23,7 @@
     @include text(13px, 600, normal);
     padding: 0px;
     background-color: transparent;
-    color: $black;
+    color: $secondary-font;
     border-bottom: none;
     border-top: none;
     border: none;
@@ -49,7 +49,8 @@
 
     &.activeButton {
       border: none;
-      background-color: $light-color;
+      background-color: $surface-color;
+      color: $primary-font;
 
       border-radius: 10px 10px 0px 0px;
       margin: 0;
@@ -67,7 +68,7 @@
       }
 
       &:hover {
-        background-color: $light-color;
+        background-color: $surface-color;
         color: $primary-font;
         opacity: 1;
       }

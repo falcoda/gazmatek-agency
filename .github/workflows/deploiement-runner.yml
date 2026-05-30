@@ -16,7 +16,7 @@ on:
 
 jobs:
   check-changes:
-    runs-on: [self-hosted, covaltech]
+    runs-on: [self-hosted, gazmatek-agency]
     outputs:
       backend-changed: ${{ steps.detect-backend.outputs.changed }}
       frontend-changed: ${{ steps.detect-frontend.outputs.changed }}
@@ -48,15 +48,10 @@ jobs:
           force_deploy: ${{ github.event_name == 'workflow_dispatch' && inputs.force_deploy || 'false' }}
 
   build-backend:
-    runs-on: [self-hosted, covaltech]
+    runs-on: [self-hosted, gazmatek-agency]
     needs: check-changes
     if: needs.check-changes.outputs.backend-changed == 'true' || needs.check-changes.outputs.docker-changed == 'true'
     steps:
-      - name: Checkout repository and submodules
-        uses: actions/checkout@v3
-        with:
-          submodules: recursive
-          token: ${{ secrets.GH_TOKEN }}
 
       - name: Setup Node 20.x
         uses: actions/setup-node@v3
@@ -88,15 +83,10 @@ jobs:
           cp -R backend/dist/* /tmp/shared/PROD-${{ github.event.repository.name }}/backend-build
 
   build-frontend:
-    runs-on: [self-hosted, covaltech]
+    runs-on: [self-hosted, gazmatek-agency]
     needs: check-changes
     if: needs.check-changes.outputs.frontend-changed == 'true'
     steps:
-      - name: Checkout repository and submodules
-        uses: actions/checkout@v3
-        with:
-          submodules: recursive
-          token: ${{ secrets.GH_TOKEN }}
 
       - name: Setup Node 20.x
         uses: actions/setup-node@v3
@@ -109,7 +99,7 @@ jobs:
 
       - name: Build frontend
         working-directory: frontend
-        run: CI= npm run build:prod
+        run: CI= npm run build
 
       - name: Move frontend build to shared directory
         run: |
@@ -117,7 +107,7 @@ jobs:
           cp -R frontend/build/* /tmp/shared/PROD-${{ github.event.repository.name }}/frontend-build
 
   deploy-backend:
-    runs-on: [self-hosted, covaltech]
+    runs-on: [self-hosted, gazmatek-agency]
     needs: build-backend
     if: needs.build-backend.result == 'success'
     steps:
@@ -131,31 +121,27 @@ jobs:
           REPO_PATH="$HOME/PROD-${{ github.event.repository.name }}"
           DOT_ENV="$REPO_PATH/docker/.env"
 
-          # Preserve the server .env before wiping the directory
-          ENV_BACKUP="/tmp/docker-env-backup-${{ github.run_id }}"
-          if [ -f "$DOT_ENV" ]; then
-            cp "$DOT_ENV" "$ENV_BACKUP"
-          fi
+          # Wipe only backend-owned dirs; exclude frontend build and
+          # docker/ (contains postgres data and .env that must never be deleted)
+          find "$REPO_PATH" -mindepth 1 -maxdepth 1 \
+            ! -name 'build' \
+            ! -name 'docker' \
+            ! -name 'logs' \
+            -exec rm -rf {} +
 
-          rm -rf "$REPO_PATH"
-          mkdir -p "$REPO_PATH"
+          # cp -R merges into existing docker/ so docker-compose.yml is updated
+          # without touching docker/data/ or docker/.env
           cp -R /tmp/shared/PROD-${{ github.event.repository.name }}/backend-build/* "$REPO_PATH"
-
-          # Restore the server .env
-          if [ -f "$ENV_BACKUP" ]; then
-            mkdir -p "$REPO_PATH/docker"
-            mv "$ENV_BACKUP" "$DOT_ENV"
-          fi
 
       - name: Restart Docker containers
         run: |
           REPO_PATH="$HOME/PROD-${{ github.event.repository.name }}"
           COMPOSE_FILE="$REPO_PATH/docker/docker-compose.yml"
           cd "$REPO_PATH/docker"
-          docker-compose -f "$COMPOSE_FILE" down
+          docker compose -f "$COMPOSE_FILE" down
 
           # Start only PostgreSQL first so migrations run before app boot.
-          docker-compose -f "$COMPOSE_FILE" up -d db
+          docker compose -f "$COMPOSE_FILE" up -d db
 
       - name: Wait for PostgreSQL
         run: |
@@ -164,7 +150,7 @@ jobs:
           cd "$REPO_PATH/docker"
 
           ATTEMPTS=0
-          until docker-compose -f "$COMPOSE_FILE" exec -T db sh -lc 'pg_isready -U "$POSTGRES_USER" -d "$POSTGRES_DB"'; do
+          until docker compose -f "$COMPOSE_FILE" exec -T db sh -lc 'pg_isready -U "$POSTGRES_USER" -d "$POSTGRES_DB"'; do
             ATTEMPTS=$((ATTEMPTS + 1))
 
             if [ "$ATTEMPTS" -ge 30 ]; then
@@ -180,17 +166,17 @@ jobs:
           REPO_PATH="$HOME/PROD-${{ github.event.repository.name }}"
           COMPOSE_FILE="$REPO_PATH/docker/docker-compose.yml"
           cd "$REPO_PATH/docker"
-          docker-compose -f "$COMPOSE_FILE" run --rm migrate
+          docker compose -f "$COMPOSE_FILE" run --rm migrate
 
       - name: Start application containers
         run: |
           REPO_PATH="$HOME/PROD-${{ github.event.repository.name }}"
           COMPOSE_FILE="$REPO_PATH/docker/docker-compose.yml"
           cd "$REPO_PATH/docker"
-          docker-compose -f "$COMPOSE_FILE" up -d --no-deps website
+          docker compose -f "$COMPOSE_FILE" up -d --no-deps website
 
   deploy-frontend:
-    runs-on: [self-hosted, covaltech]
+    runs-on: [self-hosted, gazmatek-agency]
     needs: build-frontend
     if: needs.build-frontend.result == 'success'
     steps:
@@ -210,7 +196,7 @@ jobs:
           cp -R /tmp/shared/PROD-${{ github.event.repository.name }}/frontend-build/* "$REPO_PATH/build"
 
   cleanup:
-    runs-on: [self-hosted, covaltech]
+    runs-on: [self-hosted, gazmatek-agency]
     needs:
       - deploy-backend
       - deploy-frontend

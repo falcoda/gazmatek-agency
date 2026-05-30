@@ -1,0 +1,18 @@
+.availabilityPreview {
+  .title {
+    margin: 0 0 $padding-sm;
+  }
+
+  .placeholder {
+    padding: $padding-md;
+    border-radius: $radius-medium;
+    background: $card-color;
+    color: $secondary-font;
+    text-align: center;
+    border: 1px dashed $border-color;
+
+    p {
+      margin: 0;
+    }
+  }
+}

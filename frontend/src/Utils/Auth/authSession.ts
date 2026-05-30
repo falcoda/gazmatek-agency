@@ -1,7 +1,5 @@
+import { API_ROUTES } from "@/config/apiRoutes";
 import { AUTH_STORAGE_KEYS } from "@/Utils/Auth/authConstants";
-
-/** Backend refresh endpoint (POST). See `backend/src/routes/auth.ts`. */
-const AUTH_REFRESH_ENDPOINT = "/api/auth/refresh";
 
 export interface AuthUser {
   email: string;
@@ -76,7 +74,7 @@ export async function refreshSession(
   currentRefreshToken: string,
 ): Promise<{ accessToken: string; refreshToken: string } | null> {
   try {
-    const response = await fetch(AUTH_REFRESH_ENDPOINT, {
+    const response = await fetch(API_ROUTES.authRefresh, {
       method: "POST",
       headers: { "Content-Type": "application/json" },
       body: JSON.stringify({ refreshToken: currentRefreshToken }),

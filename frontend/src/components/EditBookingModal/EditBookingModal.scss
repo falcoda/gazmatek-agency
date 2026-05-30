@@ -1,0 +1,55 @@
+// `.editBookingModal` is forwarded to the modal container — both the trigger
+// button (outside the portal) and the modal content (inside the portal) carry
+// this class. The button selector below is kept for backwards compatibility
+// even though it sits outside the modal subtree.
+.editBookingModal {
+  .editTrigger.styledButton.square {
+    width: 36px;
+    min-width: 36px;
+    height: 36px;
+    min-height: 36px;
+    padding: 0;
+  }
+}
+
+.modalContainer.editBookingModal {
+  .modal {
+    width: min(640px, 92vw);
+  }
+
+  .editBookingForm {
+    display: grid;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: $padding-md;
+    width: 100%;
+
+    .styledInput {
+      width: 100% !important;
+      min-width: 0;
+    }
+
+    .styledInput input,
+    .styledInput textarea,
+    .styledInput .balanceInput,
+    .styledInput .wrappedInput {
+      width: 100%;
+      box-sizing: border-box;
+    }
+
+    .styledInput textarea {
+      max-width: 100%;
+    }
+
+    .styledInputTextArea {
+      grid-column: span 2;
+    }
+
+    @include maxScreen($breakpoint-md-3) {
+      grid-template-columns: 1fr;
+
+      .styledInputTextArea {
+        grid-column: span 1;
+      }
+    }
+  }
+}

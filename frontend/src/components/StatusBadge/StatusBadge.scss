@@ -1,0 +1,67 @@
+.statusBadge {
+  display: inline-flex;
+  align-items: center;
+  gap: $padding-xxs;
+  padding: 6px 12px;
+  border-radius: 999px;
+  border: 1px solid currentColor;
+  font-size: 0.75rem;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.06em;
+  white-space: nowrap;
+  line-height: 1;
+
+  &::before {
+    content: "";
+    width: 8px;
+    height: 8px;
+    border-radius: 50%;
+    background: currentColor;
+  }
+
+  &.isSuccess {
+    color: $green-color;
+    background: rgba($green-color, 0.08);
+
+    &::before {
+      box-shadow: 0 0 0 4px rgba($green-color, 0.18);
+    }
+  }
+
+  &.isWarning {
+    color: $main-orange;
+    background: rgba($main-orange, 0.08);
+
+    &::before {
+      box-shadow: 0 0 0 4px rgba($main-orange, 0.18);
+    }
+  }
+
+  &.isInfo {
+    color: $accent-color;
+    background: rgba($accent-color, 0.08);
+
+    &::before {
+      box-shadow: 0 0 0 4px rgba($accent-color, 0.18);
+    }
+  }
+
+  &.isDanger {
+    color: $lock-color;
+    background: rgba($lock-color, 0.08);
+
+    &::before {
+      box-shadow: 0 0 0 4px rgba($lock-color, 0.18);
+    }
+  }
+
+  &.isNeutral {
+    color: $secondary-font;
+    background: rgba($light-color, 0.05);
+
+    &::before {
+      box-shadow: 0 0 0 4px rgba($light-color, 0.12);
+    }
+  }
+}

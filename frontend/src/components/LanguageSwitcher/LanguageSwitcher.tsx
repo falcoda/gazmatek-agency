@@ -1,14 +1,12 @@
 import "./LanguageSwitcher.scss";
 
 import { useTranslation } from "react-i18next";
-import { useNavigate, useParams } from "react-router-dom";
+import { useLocation, useNavigate } from "react-router-dom";
 
-import {
-  type AppLanguage,
-  DEFAULT_LANGUAGE,
-  SUPPORTED_LANGUAGES,
-} from "../../i18n/config";
-import { buildLocalizedPath, isSupportedLanguage } from "../../i18n/routing";
+import { useLanguage } from "@/hooks/useLanguage";
+
+import { type AppLanguage, SUPPORTED_LANGUAGES } from "../../i18n/config";
+import { buildLocalizedPath, stripLanguagePrefix } from "../../i18n/routing";
 
 interface LanguageSwitcherProps {
   mobile?: boolean;
@@ -19,15 +17,25 @@ const LanguageSwitcher = ({
   mobile = false,
   toggleNavbar,
 }: LanguageSwitcherProps) => {
-  const { t } = useTranslation();
-  const { lang } = useParams<{ lang: string }>();
+  const { t, i18n } = useTranslation();
   const navigate = useNavigate();
+  const location = useLocation();
 
-  const currentLanguage = isSupportedLanguage(lang) ? lang : DEFAULT_LANGUAGE;
+  const currentLanguage = useLanguage();
 
   const setLanguage = (newLang: AppLanguage) => {
     if (currentLanguage === newLang) return;
-    navigate(buildLocalizedPath(newLang));
+
+    // 1. Sync i18next state so labels update before navigation.
+    void i18n.changeLanguage(newLang);
+
+    // 2. Preserve the current path (so we don't lose context, e.g. switching
+    //    language while on /fr/artists/dj-nova lands on /en/artists/dj-nova).
+    const currentPathWithoutLang = stripLanguagePrefix(
+      location.pathname + location.search,
+    );
+    const target = buildLocalizedPath(newLang, currentPathWithoutLang);
+    navigate(target, { replace: false });
 
     if (mobile && toggleNavbar) {
       toggleNavbar();

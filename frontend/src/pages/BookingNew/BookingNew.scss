@@ -1,0 +1,199 @@
+.bookingNew {
+  max-width: 1240px;
+  margin: 0 auto;
+  padding: $padding-xl $padding-md;
+  display: flex;
+  flex-direction: column;
+  gap: $padding-lg;
+
+  .header {
+    text-align: center;
+    max-width: 880px;
+    margin: 0 auto;
+
+    h1 {
+      margin: 0 0 $padding-xs;
+      font-size: clamp(2rem, 3vw, 2.5rem);
+    }
+
+    p {
+      margin: 0;
+      color: $secondary-font;
+    }
+  }
+
+  .layout {
+    display: grid;
+    grid-template-columns: minmax(0, 1fr) 380px;
+    gap: $padding-lg;
+    align-items: start;
+  }
+
+  .layout:has(> :only-child) {
+    grid-template-columns: minmax(0, 880px);
+    justify-content: center;
+  }
+
+  .sideColumn {
+    position: sticky;
+    top: $padding-md;
+    display: flex;
+    flex-direction: column;
+    gap: $padding-sm;
+    min-width: 0;
+  }
+
+  .sidePanel {
+    padding: $padding-md;
+
+    h2 {
+      margin: 0 0 $padding-sm;
+      font-size: 1rem;
+    }
+  }
+
+  .sideHint {
+    margin: 0 0 $padding-sm;
+    color: $secondary-font;
+    font-size: 0.85rem;
+  }
+
+  .miniCalendar {
+    .publicAvailabilityCalendar {
+      padding: $padding-sm;
+    }
+  }
+
+  @include maxScreen($breakpoint-md) {
+    .layout {
+      grid-template-columns: 1fr;
+    }
+
+    .sideColumn {
+      position: static;
+    }
+  }
+
+  .stepper {
+    list-style: none;
+    padding: 0;
+    margin: $padding-md 0 0;
+    display: flex;
+    gap: $padding-xs;
+    justify-content: center;
+    flex-wrap: wrap;
+  }
+
+  .step {
+    padding: 4px $padding-xs;
+    border-radius: $radius-small;
+    background: $card-color;
+    color: $secondary-font;
+    font-size: 0.85rem;
+    border: 1px solid $border-color;
+
+    &.isActive {
+      background: $accent-color;
+      color: $primary-color;
+      border-color: $accent-color;
+    }
+
+    &.isDone {
+      color: $primary-font;
+      border-color: $accent-color;
+    }
+  }
+
+  .panel {
+    padding: $padding-lg;
+    gap: $padding-md;
+  }
+
+  form {
+    display: flex;
+    flex-direction: column;
+    gap: $padding-md;
+  }
+
+  .row {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+    gap: $padding-md;
+    align-items: end;
+  }
+
+  .field {
+    display: flex;
+    flex-direction: column;
+    gap: 4px;
+
+    > .styledInput {
+      width: 100%;
+    }
+
+    > span {
+      font-size: 0.85rem;
+      color: $lock-color;
+    }
+  }
+
+  .summary {
+    h2 {
+      margin: 0 0 $padding-sm;
+    }
+
+    dl {
+      display: grid;
+      grid-template-columns: max-content 1fr;
+      gap: $padding-xxs $padding-md;
+      margin: 0;
+    }
+
+    dt {
+      color: $secondary-font;
+    }
+
+    dd {
+      margin: 0;
+      color: $primary-font;
+    }
+  }
+
+  .disclaimer {
+    margin-top: $padding-sm;
+    color: $secondary-font;
+    font-size: 0.85rem;
+  }
+
+  .actions {
+    display: flex;
+    justify-content: space-between;
+    gap: $padding-sm;
+  }
+
+  .back,
+  .submit {
+    padding: $padding-xs $padding-lg;
+    border-radius: $radius-small;
+    cursor: pointer;
+    font-weight: 600;
+    font: inherit;
+    border: 0;
+  }
+
+  .back {
+    background: transparent;
+    border: 1px solid $border-color;
+    color: $primary-font;
+  }
+
+  .submit {
+    background: $accent-color;
+    color: $primary-color;
+
+    &:disabled {
+      opacity: 0.6;
+      cursor: not-allowed;
+    }
+  }
+}

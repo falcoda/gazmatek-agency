@@ -1,0 +1,294 @@
+.pricingGrid {
+  padding: $padding-xl $padding-md;
+  background: $primary-color;
+  position: relative;
+
+  &::before {
+    content: "";
+    position: absolute;
+    inset: 0;
+    background: radial-gradient(
+      ellipse at 20% 50%,
+      rgba($accent-color, 0.08) 0%,
+      rgba($accent-color, 0) 60%
+    );
+    pointer-events: none;
+  }
+
+  .inner {
+    max-width: 1080px;
+    margin: 0 auto;
+    position: relative;
+    z-index: 1;
+  }
+
+  .header {
+    text-align: center;
+    margin-bottom: $padding-lg;
+  }
+
+  .eyebrow {
+    text-transform: uppercase;
+    letter-spacing: 0.22em;
+    font-size: 0.78rem;
+    color: $accent-color;
+    margin: 0 0 $padding-xs;
+  }
+
+  .title {
+    font-family: $default-font-family;
+    font-size: clamp(1.8rem, 3.2vw, 2.6rem);
+    letter-spacing: 0.03em;
+    margin: 0 0 $padding-sm;
+    color: $primary-font;
+  }
+
+  .formula {
+    display: inline-flex;
+    align-items: center;
+    flex-wrap: wrap;
+    justify-content: center;
+    gap: $padding-xs;
+    margin: 0 0 $padding-sm;
+    padding: $padding-xs $padding-md;
+    border: 1px solid $border-color;
+    border-radius: $radius-medium;
+    background: rgba($light-color, 0.03);
+    font-family: $default-font-family;
+    color: $primary-font;
+    letter-spacing: 0.04em;
+  }
+
+  .formulaPart {
+    text-transform: uppercase;
+    font-size: 0.92rem;
+
+    &.isAccent {
+      color: $accent-color;
+    }
+  }
+
+  .formulaOp {
+    color: $secondary-font;
+    font-size: 1.1rem;
+  }
+
+  .subtitle {
+    color: $secondary-font;
+    margin: 0 auto;
+    max-width: 640px;
+    line-height: 1.5;
+  }
+
+  .tableWrap {
+    overflow-x: auto;
+    border: 1px solid $border-color;
+    border-radius: $radius-medium;
+    background: $tertiary-color;
+    margin-bottom: $padding-md;
+  }
+
+  .table {
+    width: 100%;
+    border-collapse: collapse;
+    min-width: 540px;
+
+    th,
+    td {
+      padding: $padding-sm $padding-md;
+      text-align: center;
+      font-size: 0.95rem;
+      border-bottom: 1px solid $border-color;
+    }
+
+    thead th {
+      color: $secondary-font;
+      text-transform: uppercase;
+      letter-spacing: 0.18em;
+      font-size: 0.72rem;
+      font-weight: 600;
+      background: rgba($light-color, 0.04);
+      border-bottom: 1px solid $border-color;
+    }
+
+    tbody tr:last-child th,
+    tbody tr:last-child td {
+      border-bottom: none;
+    }
+
+    tbody tr:hover {
+      background: rgba($accent-color, 0.06);
+    }
+
+    &.isExamples {
+      th,
+      td {
+        font-size: 0.88rem;
+        padding: $padding-xs $padding-sm;
+      }
+    }
+  }
+
+  .corner {
+    text-align: left !important;
+  }
+
+  .levelCol {
+    width: 100px;
+  }
+
+  .levelChip {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    min-width: 38px;
+    height: 28px;
+    padding: 0 $padding-xs;
+    border-radius: $radius-small;
+    background: rgba($accent-color, 0.15);
+    color: $accent-color;
+    font-family: $default-font-family;
+    letter-spacing: 0.06em;
+  }
+
+  .capacityCell {
+    text-align: left !important;
+    color: $primary-font;
+    font-weight: 600;
+    font-family: $default-font-family;
+    letter-spacing: 0.04em;
+  }
+
+  .boundsCell {
+    color: $secondary-font;
+    font-size: 0.85rem;
+  }
+
+  .valueCell {
+    font-family: $default-font-family;
+    color: $primary-font;
+    font-size: 1.05rem;
+    letter-spacing: 0.04em;
+  }
+
+  .uplifts {
+    list-style: none;
+    padding: 0;
+    margin: 0 0 $padding-md;
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: center;
+    gap: $padding-sm;
+
+    li {
+      display: inline-flex;
+      align-items: center;
+      gap: $padding-xs;
+      padding: 6px 12px;
+      border: 1px solid $border-color;
+      border-radius: 999px;
+      background: rgba($light-color, 0.03);
+      font-size: 0.9rem;
+    }
+  }
+
+  .upliftTag {
+    text-transform: uppercase;
+    letter-spacing: 0.16em;
+    font-size: 0.72rem;
+    padding: 3px 8px;
+    border-radius: $radius-small;
+    font-weight: 600;
+
+    &.isHybrid {
+      background: rgba($main-orange, 0.18);
+      color: $main-orange;
+    }
+
+    &.isLive {
+      background: rgba($accent-color, 0.18);
+      color: $accent-color;
+    }
+  }
+
+  .upliftValue {
+    color: $primary-font;
+    font-family: $default-font-family;
+    letter-spacing: 0.04em;
+  }
+
+  .example {
+    color: $secondary-font;
+    text-align: center;
+    margin: 0 0 $padding-md;
+    font-size: 0.92rem;
+    line-height: 1.5;
+  }
+
+  .examples {
+    margin-bottom: $padding-md;
+  }
+
+  .examplesHeader {
+    display: flex;
+    flex-wrap: wrap;
+    gap: $padding-sm;
+    align-items: center;
+    justify-content: space-between;
+    margin-bottom: $padding-sm;
+  }
+
+  .examplesTitle {
+    font-family: $default-font-family;
+    margin: 0;
+    color: $primary-font;
+    font-size: 1.05rem;
+    letter-spacing: 0.06em;
+    text-transform: uppercase;
+  }
+
+  .capacityTabs {
+    display: inline-flex;
+    gap: 4px;
+    padding: 4px;
+    border: 1px solid $border-color;
+    border-radius: 999px;
+    background: rgba($light-color, 0.04);
+  }
+
+  .capacityTab {
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    padding: 7px 14px;
+    border: none;
+    border-radius: 999px;
+    background: transparent;
+    color: $secondary-font;
+    font-family: $default-font-family;
+    letter-spacing: 0.06em;
+    cursor: pointer;
+    transition:
+      color 0.2s ease,
+      background-color 0.2s ease;
+
+    &:hover {
+      color: $primary-font;
+    }
+
+    &.isActive {
+      background: $accent-color;
+      color: $primary-color;
+    }
+  }
+
+  .capacityTabBadge {
+    font-size: 0.72rem;
+    opacity: 0.7;
+  }
+
+  .cta {
+    display: flex;
+    justify-content: center;
+  }
+}

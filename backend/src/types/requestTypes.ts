@@ -17,5 +17,8 @@ declare module "express-serve-static-core" {
     user_id?: number;
     email?: string;
     requestId?: string;
+    // Raw request body captured by express.json verify callback. Used for
+    // HMAC signature verification on incoming webhooks (e.g. Documenso).
+    rawBody?: string;
   }
 }

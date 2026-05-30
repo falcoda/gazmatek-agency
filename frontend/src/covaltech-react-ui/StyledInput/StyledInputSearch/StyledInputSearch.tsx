@@ -1,3 +1,5 @@
+import "./StyledInputSearch.scss";
+
 import { StyledInputBase } from "../StyledInput";
 import Search from "./search.svg?react";
 
@@ -36,7 +38,7 @@ const StyledInputSearch: React.FC<StyledInputSearchProps> = ({
       setValue={setValue}
       type="text"
       style={style}
-      className={className ?? ""}
+      className={`styledInputSearch ${className ?? ""}`.trim()}
       width={width}
     >
       <div className={`wrappedInput ${!isValid ? "invalid" : ""} `}>

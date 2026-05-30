@@ -1,0 +1,257 @@
+.artistCard {
+  position: relative;
+  border-radius: $radius-large;
+  background: $tertiary-color;
+  overflow: hidden;
+  border: 1px solid $border-color;
+  transition:
+    transform 0.35s cubic-bezier(0.22, 1, 0.36, 1),
+    border-color 0.35s ease,
+    box-shadow 0.35s ease;
+
+  // Electric edge glow that ignites on hover.
+  &::after {
+    content: "";
+    position: absolute;
+    inset: 0;
+    border-radius: inherit;
+    pointer-events: none;
+    box-shadow: inset 0 0 0 1px rgba($accent-color, 0);
+    transition: box-shadow 0.35s ease;
+  }
+
+  &:hover,
+  &:focus-within {
+    transform: translateY(-6px);
+    border-color: rgba($accent-color, 0.5);
+    box-shadow:
+      0 18px 40px rgba(0, 0, 0, 0.45),
+      0 0 24px rgba($accent-color, 0.18);
+
+    &::after {
+      box-shadow: inset 0 0 0 1px rgba($accent-color, 0.55);
+    }
+
+    .cover {
+      transform: scale(1.06);
+    }
+
+    .scrim {
+      opacity: 0.95;
+    }
+
+    .name {
+      color: $accent-color;
+    }
+
+    .footer .arrow {
+      transform: translateX(6px);
+    }
+
+    .footer .view::after {
+      width: 100%;
+    }
+  }
+
+  .link {
+    display: flex;
+    flex-direction: column;
+    text-decoration: none;
+    color: inherit;
+    height: 100%;
+
+    &:focus-visible {
+      outline: none;
+    }
+  }
+
+  // ---- Poster ------------------------------------------------------------
+  .poster {
+    position: relative;
+    aspect-ratio: 3 / 4;
+    overflow: hidden;
+    background: $secondary-color;
+    isolation: isolate;
+  }
+
+  .cover {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    display: block;
+    transition: transform 0.6s cubic-bezier(0.22, 1, 0.36, 1);
+  }
+
+  .placeholder {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background:
+      radial-gradient(
+        120% 120% at 30% 0%,
+        rgba($accent-color, 0.22),
+        transparent 60%
+      ),
+      $secondary-color;
+
+    span {
+      font-family: $default-font-family;
+      font-size: 5rem;
+      line-height: 1;
+      color: rgba($primary-font, 0.14);
+      text-transform: uppercase;
+    }
+  }
+
+  .scrim {
+    position: absolute;
+    inset: 0;
+    background: linear-gradient(
+      to top,
+      rgba(0, 0, 0, 0.92) 0%,
+      rgba(0, 0, 0, 0.55) 32%,
+      rgba(0, 0, 0, 0) 62%
+    );
+    opacity: 0.85;
+    transition: opacity 0.35s ease;
+    z-index: 1;
+  }
+
+  // ---- Top row : set types + tier ---------------------------------------
+  .topRow {
+    position: absolute;
+    inset: $padding-xs $padding-xs auto $padding-xs;
+    z-index: 2;
+    display: flex;
+    align-items: flex-start;
+    justify-content: space-between;
+    gap: $padding-xxs;
+  }
+
+  .setTypes {
+    list-style: none;
+    margin: 0;
+    padding: 0;
+    display: flex;
+    flex-wrap: wrap;
+    gap: $padding-xxxs;
+  }
+
+  .setType {
+    @include text-new-10-bold;
+    text-transform: uppercase;
+    letter-spacing: 0.12em;
+    padding: 5px 9px;
+    border-radius: $radius-small;
+    color: $primary-font;
+    background: rgba(0, 0, 0, 0.45);
+    border: 1px solid rgba($primary-font, 0.18);
+    backdrop-filter: blur(6px);
+
+    // Color-coded by performance format.
+    &.is-dj {
+      color: $accent-color;
+      border-color: rgba($accent-color, 0.55);
+      background: rgba($accent-color, 0.16);
+    }
+
+    &.is-live {
+      color: $main-orange;
+      border-color: rgba($main-orange, 0.55);
+      background: rgba($main-orange, 0.16);
+    }
+
+    &.is-hybrid {
+      color: $green-color;
+      border-color: rgba($green-color, 0.55);
+      background: rgba($green-color, 0.16);
+    }
+  }
+
+  .topRow .tierBadge {
+    flex-shrink: 0;
+    background: rgba(0, 0, 0, 0.5);
+    backdrop-filter: blur(6px);
+  }
+
+  // ---- Caption : genre + name -------------------------------------------
+  .caption {
+    position: absolute;
+    inset: auto $padding-md $padding-md $padding-md;
+    z-index: 2;
+    display: flex;
+    flex-direction: column;
+    gap: 6px;
+  }
+
+  .genre {
+    @include text-new-10-bold;
+    text-transform: uppercase;
+    letter-spacing: 0.22em;
+    color: $accent-color;
+  }
+
+  .name {
+    margin: 0;
+    font-family: $default-font-family;
+    font-weight: 400;
+    text-transform: uppercase;
+    letter-spacing: 0.01em;
+    line-height: 0.95;
+    font-size: clamp(1.6rem, 1.1rem + 1.6vw, 2.2rem);
+    color: $primary-font;
+    transition: color 0.3s ease;
+    overflow-wrap: anywhere;
+  }
+
+  // ---- Footer : view profile CTA ----------------------------------------
+  .footer {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: $padding-xs;
+    padding: $padding-sm $padding-md;
+    border-top: 1px solid $border-color;
+    background: $tertiary-color;
+  }
+
+  .view {
+    position: relative;
+    @include text-new-12;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 0.16em;
+    color: $primary-font;
+
+    &::after {
+      content: "";
+      position: absolute;
+      left: 0;
+      bottom: -4px;
+      height: 2px;
+      width: 0;
+      background: $accent-color;
+      transition: width 0.35s cubic-bezier(0.22, 1, 0.36, 1);
+    }
+  }
+
+  .arrow {
+    color: $accent-color;
+    font-size: 1.15rem;
+    line-height: 1;
+    transition: transform 0.35s cubic-bezier(0.22, 1, 0.36, 1);
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .artistCard,
+  .artistCard .cover,
+  .artistCard .footer .arrow,
+  .artistCard .footer .view::after {
+    transition: none;
+  }
+
+  .artistCard:hover {
+    transform: none;
+  }
+}

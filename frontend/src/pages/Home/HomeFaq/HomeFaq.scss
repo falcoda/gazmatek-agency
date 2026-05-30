@@ -1,0 +1,24 @@
+.homeFaq {
+  padding: $padding-xl $padding-md;
+  background: $tertiary-color;
+  border-top: 1px solid $border-color;
+
+  .inner {
+    max-width: 880px;
+    margin: 0 auto;
+    text-align: center;
+  }
+
+  .title {
+    font-family: $default-font-family;
+    font-size: clamp(1.6rem, 3vw, 2.4rem);
+    margin: 0 0 $padding-xs;
+    letter-spacing: 0.04em;
+    color: $primary-font;
+  }
+
+  .subtitle {
+    color: $secondary-font;
+    margin: 0 0 $padding-lg;
+  }
+}

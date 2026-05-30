@@ -10,6 +10,7 @@ interface StyledInputBaseProps<T> {
   type: string;
   children: React.ReactNode;
   className?: string;
+  variant?: "default" | "ghost";
   style?: React.CSSProperties;
   htmlFor?: string;
   width?: string | number;
@@ -19,13 +20,14 @@ export const StyledInputBase: React.FC<StyledInputBaseProps<any>> = ({
   label,
   children,
   className,
+  variant = "default",
   style,
   htmlFor,
   width = "200px",
 }) => {
   return (
     <div
-      className={`styledInput ${className || ""}`}
+      className={`styledInput ${variant} ${className || ""}`.trim()}
       style={{ ...style, width }}
     >
       {label && <label htmlFor={htmlFor}>{label}</label>}

@@ -3,17 +3,45 @@ import { useTranslation } from "react-i18next";
 
 import { I18N_ROUTING, SITE_NAME, SITE_URL } from "../../config/site";
 import { CONTACT_EMAIL, SOCIAL_LINKS } from "../../config/socials";
-import { DEFAULT_LANGUAGE, SUPPORTED_LANGUAGES } from "../../i18n/config";
+import {
+  type AppLanguage,
+  DEFAULT_LANGUAGE,
+  SUPPORTED_LANGUAGES,
+} from "../../i18n/config";
 import { isSupportedLanguage } from "../../i18n/routing";
 
 const LOGO_URL = `${SITE_URL}/logo-400x400.png`;
 
-const SeoHead = () => {
+const OG_LOCALES: Record<AppLanguage, string> = {
+  fr: "fr_BE",
+  nl: "nl_BE",
+  en: "en_US",
+};
+
+interface SeoHeadProps {
+  title?: string;
+  description?: string;
+  path?: string;
+  ogImage?: string;
+}
+
+const SeoHead = ({ title, description, path, ogImage }: SeoHeadProps) => {
   const { t, i18n } = useTranslation();
   const lang = isSupportedLanguage(i18n.resolvedLanguage)
     ? i18n.resolvedLanguage
     : DEFAULT_LANGUAGE;
-  const canonicalUrl = I18N_ROUTING ? `${SITE_URL}/${lang}/` : `${SITE_URL}/`;
+
+  const resolvedTitle = title ?? t("seo.title");
+  const resolvedDescription = description ?? t("seo.description");
+  const cleanPath = path ? (path.startsWith("/") ? path : `/${path}`) : "/";
+  const localizedPath =
+    I18N_ROUTING && cleanPath === "/"
+      ? `/${lang}/`
+      : I18N_ROUTING
+        ? `/${lang}${cleanPath}`
+        : cleanPath;
+  const canonicalUrl = `${SITE_URL}${localizedPath}`;
+  const ogImageUrl = ogImage ?? LOGO_URL;
 
   const organizationSchema = {
     "@context": "https://schema.org",
@@ -22,8 +50,8 @@ const SeoHead = () => {
     url: SITE_URL,
     logo: LOGO_URL,
     email: CONTACT_EMAIL,
-    description: t("seo.description"),
-    sameAs: Object.values(SOCIAL_LINKS).filter(Boolean),
+    description: resolvedDescription,
+    sameAs: Object.values(SOCIAL_LINKS).filter((link) => link && link !== "#"),
   };
 
   const websiteSchema = {
@@ -38,19 +66,26 @@ const SeoHead = () => {
   return (
     <Helmet>
       <html lang={lang} />
-      <title>{t("seo.title")}</title>
-      <meta name="description" content={t("seo.description")} />
+      <title>{resolvedTitle}</title>
+      <meta name="description" content={resolvedDescription} />
       <link rel="canonical" href={canonicalUrl} />
-      <meta property="og:title" content={t("seo.title")} />
-      <meta property="og:description" content={t("seo.description")} />
+      <meta property="og:site_name" content={SITE_NAME} />
+      <meta property="og:title" content={resolvedTitle} />
+      <meta property="og:description" content={resolvedDescription} />
       <meta property="og:url" content={canonicalUrl} />
-      <meta property="og:locale" content={lang === "fr" ? "fr_FR" : "en_US"} />
-      <meta
-        property="og:locale:alternate"
-        content={lang === "fr" ? "en_US" : "fr_FR"}
-      />
-      <meta name="twitter:title" content={t("seo.title")} />
-      <meta name="twitter:description" content={t("seo.description")} />
+      <meta property="og:image" content={ogImageUrl} />
+      <meta property="og:locale" content={OG_LOCALES[lang]} />
+      {SUPPORTED_LANGUAGES.filter((other) => other !== lang).map((other) => (
+        <meta
+          key={other}
+          property="og:locale:alternate"
+          content={OG_LOCALES[other]}
+        />
+      ))}
+      <meta name="twitter:card" content="summary_large_image" />
+      <meta name="twitter:title" content={resolvedTitle} />
+      <meta name="twitter:description" content={resolvedDescription} />
+      <meta name="twitter:image" content={ogImageUrl} />
       <script type="application/ld+json">
         {JSON.stringify(organizationSchema)}
       </script>

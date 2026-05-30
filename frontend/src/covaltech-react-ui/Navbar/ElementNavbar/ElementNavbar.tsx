@@ -1,6 +1,6 @@
 import React, { memo } from "react";
 import { FiExternalLink } from "react-icons/fi";
-import { NavLink, useLocation } from "react-router-dom";
+import { NavLink } from "react-router-dom";
 
 import { NavItemType } from "../Navbar";
 interface ElementNavBarProps {
@@ -18,15 +18,6 @@ const ElementNavBar: React.FC<ElementNavBarProps> = ({
   showLinkLogo = true,
   toggleNavbar,
 }) => {
-  const location = useLocation();
-
-  const match = () => {
-    if (navItem.href?.split("/")[1] === location.pathname.split("/")[1]) {
-      return true;
-    }
-    return false;
-  };
-
   const handleLinkClick = () => {
     if (navItem.link && toggleNavbar) {
       toggleNavbar();
@@ -36,23 +27,29 @@ const ElementNavBar: React.FC<ElementNavBarProps> = ({
     }
   };
 
+  // Home route: either "/" or "/:lang/" — needs exact match to avoid matching everything
+  const isHomeRoute = navItem.href === "/" || /^\/[a-z]{2}\/?$/.test(navItem.href ?? "");
+
   return (
-    <li
-      className={`nav-item ${navItem.className ?? ""} ${match() ? "active" : ""}`}
-    >
+    <li className={`nav-item ${navItem.className ?? ""}`}>
       <NavLink
         to={navItem.href ?? navItem.link ?? "/"}
-        className={`nav-link `}
+        className={`nav-link`}
         onClick={handleLinkClick}
         aria-current="page"
-        end={navItem.href === "/"}
+        end={isHomeRoute}
         target={navItem.link ? "_blank" : "_self"}
       >
         {navItem.icon && navItem.icon}
         {open && (
           <span className="link-text">
-            {navItem.text}
-            {navItem.link && showLinkLogo && <FiExternalLink />}
+            <span className="link-label">{navItem.text}</span>
+            {navItem.link && showLinkLogo && (
+              <FiExternalLink className="link-externalIcon" />
+            )}
+            {navItem.badge != null && (
+              <span className="navBadge">{navItem.badge}</span>
+            )}
           </span>
         )}
       </NavLink>

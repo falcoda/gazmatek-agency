@@ -1,66 +1,149 @@
 .hero {
+  position: relative;
+  min-height: 78vh;
+  display: flex;
+  align-items: center;
+  padding: $padding-xl $padding-md;
   overflow: hidden;
-  z-index: 3;
+  background: $primary-color;
 
-  .slider {
+  .bg {
+    position: absolute;
+    inset: 0;
+    z-index: 0;
+    background: radial-gradient(
+        ellipse at top,
+        rgba($accent-color, 0.18) 0%,
+        rgba($accent-color, 0) 55%
+      ),
+      $primary-color;
+  }
+
+  .bgGrid {
+    position: absolute;
+    inset: 0;
+    background-image:
+      linear-gradient(rgba($light-color, 0.04) 1px, transparent 1px),
+      linear-gradient(90deg, rgba($light-color, 0.04) 1px, transparent 1px);
+    background-size: 64px 64px;
+    mask-image: radial-gradient(circle at center, #000 0%, transparent 75%);
+  }
+
+  .bgGlow {
+    position: absolute;
+    border-radius: 50%;
+    filter: blur(120px);
+    opacity: 0.55;
+
+    &.isFirst {
+      width: 480px;
+      height: 480px;
+      top: -120px;
+      right: -100px;
+      background: $accent-color;
+    }
+
+    &.isSecond {
+      width: 360px;
+      height: 360px;
+      bottom: -80px;
+      left: -60px;
+      background: $main-orange;
+      opacity: 0.35;
+    }
+  }
+
+  .content {
+    position: relative;
+    z-index: 2;
+    max-width: 880px;
+    margin: 0 auto;
+    text-align: center;
+    color: $primary-font;
+  }
+
+  .eyebrow {
+    text-transform: uppercase;
+    letter-spacing: 0.22em;
+    font-size: 0.8rem;
+    color: $accent-color;
+    margin-bottom: $padding-sm;
+    display: inline-block;
+    padding: 6px 14px;
+    border: 1px solid rgba($accent-color, 0.4);
+    border-radius: 999px;
+    background: rgba($accent-color, 0.08);
+  }
+
+  .title {
+    font-family: $default-font-family;
+    font-size: clamp(2.6rem, 6.4vw, 5.5rem);
+    line-height: 0.95;
+    margin: 0 0 $padding-md;
+    letter-spacing: 0.02em;
+    text-transform: uppercase;
+    text-shadow: 0 4px 40px rgba($accent-color, 0.25);
+  }
+
+  .subtitle {
+    font-size: clamp(1.05rem, 1.5vw, 1.35rem);
+    line-height: 1.5;
+    margin: 0 auto $padding-lg;
+    max-width: 620px;
+    opacity: 0.85;
+  }
+
+  .cta {
+    display: flex;
+    justify-content: center;
+    margin-bottom: $padding-xl;
+  }
+
+  .stats {
+    list-style: none;
+    padding: 0;
+    margin: 0;
     display: grid;
-    grid-template-columns: repeat(12, 1fr);
-    grid-template-rows: 1fr;
-    z-index: 4;
-    position: relative;
+    grid-template-columns: repeat(3, 1fr);
+    gap: $padding-md;
+    max-width: 640px;
+    margin-inline: auto;
 
-    .overflow-wrap {
-      position: relative;
-      overflow: hidden;
-      grid-area: 1 / 1 / 2 / 13;
-      height: 100vh;
-      z-index: 3;
-
-      .hero-image {
-        position: absolute;
-        top: 0;
-        left: 50%;
-        transform: translateX(-50%);
-        width: 100%;
-        height: 100vh;
-        object-fit: cover;
-        opacity: 0;
-        transition: opacity 0.5s ease;
-
-        &.active {
-          opacity: 0.45;
-        }
-      }
+    li {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 4px;
+      padding: $padding-sm $padding-xs;
+      border: 1px solid rgba($light-color, 0.08);
+      border-radius: $radius-medium;
+      background: rgba($secondary-color, 0.4);
+      backdrop-filter: blur(6px);
     }
   }
 
-  .hero-text {
-    position: relative;
-    z-index: 4;
-    grid-area: 1 / 1 / 2 / 7;
-    align-self: start;
-    justify-self: start;
-    margin-top: 32%;
-    padding-left: 1em;
-    .magical-touch {
-      color: #d3d3d3;
-    }
-    .styledButton {
-      margin-top: 30px;
-    }
+  .statValue {
+    font-family: $default-font-family;
+    font-size: clamp(1.4rem, 2.4vw, 2rem);
+    color: $accent-color;
+    letter-spacing: 0.04em;
   }
-  @include maxScreen($breakpoint-md) {
-    .hero-text {
-      grid-area: 1 / 1 / 2 / 13;
-      margin-left: auto;
-      margin-right: auto;
-      padding: 0;
-      text-align: center;
-      .styledButton {
-        margin-top: 20px;
-        margin-left: auto;
-        margin-right: auto;
-      }
+
+  .statLabel {
+    color: $secondary-font;
+    font-size: 0.78rem;
+    text-transform: uppercase;
+    letter-spacing: 0.14em;
+    text-align: center;
+  }
+
+  @include maxScreen($breakpoint-md-3) {
+    min-height: 70vh;
+    padding: $padding-xl $padding-sm;
+
+    .stats {
+      grid-template-columns: repeat(3, 1fr);
+      gap: $padding-xs;
     }
   }
 }

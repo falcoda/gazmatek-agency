@@ -1,0 +1,25 @@
+.tierIndicator {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  font-family: $default-font-family;
+  font-weight: 700;
+  letter-spacing: 0.08em;
+  color: $accent-color;
+  padding: 4px 10px;
+  border-radius: $radius-small;
+  background: rgba($accent-color, 0.12);
+  border: 1px solid rgba($accent-color, 0.4);
+  font-size: 0.95rem;
+
+  &.isTier1 {
+    color: $primary-font;
+    background: rgba($light-color, 0.05);
+    border-color: rgba($light-color, 0.18);
+  }
+
+  &.isTier4 {
+    background: rgba($accent-color, 0.22);
+    border-color: rgba($accent-color, 0.6);
+  }
+}

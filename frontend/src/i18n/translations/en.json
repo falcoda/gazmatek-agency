@@ -1,16 +1,517 @@
 {
   "seo": {
-    "title": "My App — Template",
-    "description": "A production-ready web application template."
+    "title": "Gazmatek — Artist booking agency",
+    "description": "Gazmatek represents DJs, live acts and performers. Discover our artists and book your next event.",
+    "home": {
+      "title": "Gazmatek — Artist booking in Belgium",
+      "description": "Gazmatek booking agency. DJs, live acts and animations for your private and corporate events."
+    },
+    "artists": {
+      "title": "Artist catalog — Gazmatek",
+      "description": "Discover all the artists represented by the Gazmatek agency."
+    },
+    "artistDetail": {
+      "title": "{{name}} — Gazmatek",
+      "description": "Bio, photos, pricing and availability of {{name}}."
+    },
+    "contact": {
+      "title": "Contact — Gazmatek",
+      "description": "Ask the Gazmatek team a question."
+    },
+    "pricing": {
+      "title": "Price simulator — Gazmatek",
+      "description": "Estimate the cost of your booking in just a few clicks."
+    },
+    "terms": {
+      "title": "Terms of use — Gazmatek",
+      "description": "The terms governing the use of the Gazmatek website and booking services."
+    },
+    "privacy": {
+      "title": "Privacy policy — Gazmatek",
+      "description": "How Gazmatek collects, uses and protects your personal data."
+    }
   },
   "language": {
     "switcher_aria": "Switch language"
   },
   "nav": {
-    "home": "Home"
+    "home": "Home",
+    "artists": "Artists",
+    "pricing": "Pricing",
+    "contact": "Contact",
+    "bookNow": "Book now",
+    "account": "My account",
+    "myArea": "My area",
+    "login": "Sign in",
+    "adminLogin": "Admin"
+  },
+  "common": {
+    "loading": "Loading…",
+    "error": "Something went wrong",
+    "retry": "Retry",
+    "back": "Back",
+    "all": "All",
+    "from": "From",
+    "perHour": "/ hour",
+    "send": "Send",
+    "submit": "Submit",
+    "required": "Required field",
+    "currencyEur": "€",
+    "next": "Next",
+    "delete": "Delete",
+    "save": "Save",
+    "cancel": "Cancel"
+  },
+  "home": {
+    "hero": {
+      "title": "Gazmatek, your booking agency",
+      "subtitle": "DJs, live acts, performers. The tailor-made soundtrack for your events.",
+      "cta": "Book an artist",
+      "ctaAria": "Start a booking request"
+    },
+    "featured": {
+      "title": "Featured artists",
+      "subtitle": "A selection of talents we are highlighting this month.",
+      "empty": "No featured artists at the moment.",
+      "discoverAll": "Discover our artists",
+      "viewArtist": "View artist"
+    },
+    "services": {
+      "title": "Our services",
+      "subtitle": "Covering every format, from clubs to venues, from weddings to festivals.",
+      "dj": {
+        "title": "DJ Sets",
+        "description": "Club sets, weddings and private parties, from house to techno."
+      },
+      "live": {
+        "title": "Live acts",
+        "description": "Live performances, hybrid or full band, for stages and festivals."
+      },
+      "production": {
+        "title": "Production",
+        "description": "Sound and lighting direction, professional equipment provided."
+      }
+    },
+    "ctaBanner": {
+      "title": "Ready to host your event?",
+      "subtitle": "Our team will reply within 24 business hours.",
+      "button": "Start a request"
+    },
+    "hero": {
+      "title": "Gazmatek, your booking agency",
+      "subtitle": "DJs, live acts, performers. The tailor-made soundtrack for your events.",
+      "cta": "Book an artist",
+      "ctaAria": "Start a booking request",
+      "stats": {
+        "aria": "Agency key figures",
+        "artists": "Artists on the roster",
+        "events": "Events produced",
+        "reply": "Reply window"
+      }
+    },
+    "partners": {
+      "title": "They trust us"
+    },
+    "process": {
+      "eyebrow": "How it works",
+      "title": "Four steps, zero blind spots",
+      "subtitle": "From the first search to the stage, we keep things on track.",
+      "steps": {
+        "discover": {
+          "title": "Discover",
+          "desc": "Browse the roster, listen to sets and check live availability."
+        },
+        "brief": {
+          "title": "Request",
+          "desc": "Send your request in a few steps: artist, date, venue and options."
+        },
+        "confirm": {
+          "title": "Confirm",
+          "desc": "Validate your request by email, pay the deposit and sign the contract online."
+        },
+        "deliver": {
+          "title": "Deliver",
+          "desc": "T-7 coordination, on-site tech, post-event debrief."
+        }
+      }
+    },
+    "ourStory": {
+      "title": "Our story",
+      "intro": "Born in 2010 on the Belgian Plateau, Gazmatek is a self-managed collective built around sound, stage design and emerging artists. Crew, label and our own sound system — every euro is reinvested into production, gear and artists.",
+      "mission": "Our mission hasn't changed: put emerging talent on stage with uncompromising standards on sound, stage design and reliability — from the first call to the post-event debrief.",
+      "statYears": "Years active",
+      "statEvents": "Events produced",
+      "statArtists": "Artists on the roster"
+    },
+    "pricingGrid": {
+      "eyebrow": "Public pricing grid",
+      "title": "No opaque pricing — here's our formula",
+      "subtitle": "An artist fee depends on their tier (L1 → L4) and the venue capacity. Multiply by the ticket price and you get the bracket.",
+      "formula": {
+        "cachet": "Fee",
+        "multiplier": "Multiplier",
+        "ticket": "Ticket price"
+      },
+      "col": {
+        "capacity": "Capacity",
+        "bounds": "Range"
+      },
+      "example": "Example: a L3 in a 1,000-cap venue at €20 → 40 × 20 = €800 recommended fee.",
+      "examples": {
+        "title": "Example fees",
+        "col": {
+          "ticket": "Ticket price",
+          "gross": "Box office",
+          "floor": "Floor",
+          "cap": "Cap"
+        }
+      },
+      "cta": "Open the simulator"
+    },
+    "pricingTeaser": {
+      "title": "Estimate your budget in under a minute",
+      "subtitle": "Capacity, ticket price, level, format — our simulator computes a recommended fee in real time.",
+      "counter": "{{count}} active artists",
+      "cta": "Open the simulator"
+    },
+    "socialProof": {
+      "title": "What they say",
+      "subtitle": "A few testimonials from organisers we worked with recently."
+    },
+    "faq": {
+      "title": "Frequently asked questions",
+      "subtitle": "Answers to the questions we hear most often.",
+      "q1": {
+        "q": "How fast do you get back to me?",
+        "a": "Within 24 business hours on average. Short-notice events (< 14 days) are treated in priority."
+      },
+      "q2": {
+        "q": "Which areas do you cover?",
+        "a": "All of Belgium by default. Neighbouring countries (France, Netherlands, Luxembourg, Germany) on a per-quote basis."
+      },
+      "q3": {
+        "q": "How is payment handled?",
+        "a": "30% deposit on confirmation, balance 48h before the event at the latest."
+      },
+      "q4": {
+        "q": "What if we need to cancel?",
+        "a": "Conditions are detailed in the booking contract: full refund up to 30 days before, degressive afterwards. We stay flexible in case of force majeure."
+      }
+    }
+  },
+  "artists": {
+    "pageTitle": "Artist catalog",
+    "pageSubtitle": "Filter by style, budget or availability.",
+    "filters": {
+      "title": "Filters",
+      "genre": "Style",
+      "date": "Available on",
+      "apply": "Apply",
+      "reset": "Reset filters",
+      "anyGenre": "Any style"
+    },
+    "emptyTitle": "No artist matches your search",
+    "emptyText": "Try broadening your criteria or resetting the filters.",
+    "card": {
+      "from": "From",
+      "perHour": "/ hour",
+      "view": "View profile",
+      "tierLabel": "Price tier",
+      "setType": {
+        "dj": "DJ",
+        "live": "Live",
+        "hybrid": "Hybrid"
+      }
+    }
+  },
+  "artistDetail": {
+    "notFoundTitle": "Artist not found",
+    "notFoundText": "This page no longer exists or is not published.",
+    "backToCatalog": "Back to catalog",
+    "bio": "Biography",
+    "gallery": "Gallery",
+    "availability": "Availability",
+    "availabilityComingSoon": "Interactive calendar coming soon.",
+    "priceCard": {
+      "title": "Pricing",
+      "tier": "Price range",
+      "hint": "Final pricing depends on your event (capacity, ticket price, format). Run the simulator for a detailed estimate.",
+      "cta": "Book this artist",
+      "estimate": "Estimate my budget",
+      "hourlyRate": "Hourly rate",
+      "travel": "Travel fee",
+      "perKm": "/ km"
+    },
+    "services": "Services offered"
+  },
+  "pricing": {
+    "title": "Price simulator",
+    "subtitle": "Indicative estimate, not a contractual offer.",
+    "form": {
+      "artist": "Artist",
+      "selectArtist": "Select an artist",
+      "duration": "Duration (hours)",
+      "date": "Date",
+      "location": "Address / Postal code",
+      "options": "Options",
+      "estimate": "Estimate",
+      "bookNow": "Book now",
+      "capacity": "Capacity",
+      "ticketPrice": "Ticket price (€)",
+      "level": "Artist level",
+      "setType": "Set type",
+      "setTypeDj": "DJ",
+      "setTypeHybrid": "Hybrid",
+      "setTypeLive": "Live"
+    },
+    "result": {
+      "title": "Estimate",
+      "artistCost": "Artist fee",
+      "travelCost": "Travel fee",
+      "optionsCost": "Options",
+      "subtotal": "Subtotal (ex VAT)",
+      "vat": "VAT (21%)",
+      "total": "Total (incl VAT)",
+      "disclaimer": "Non-contractual estimate. The final price will be confirmed after reviewing your request.",
+      "bookCta": "Book with this estimate",
+      "outOfZone": "This area is not served. Please contact us for a custom quote.",
+      "artistFeeTitle": "Recommended fee (ticketed event)",
+      "artistFeeRecommended": "Recommended fee",
+      "artistFeeRange": "Range",
+      "artistFeeGrossShare": "i.e. {{percent}} of gross"
+    },
+    "errors": {
+      "invalidAddress": "Invalid address. Please check the postal code or address.",
+      "missingFields": "Please fill in all required fields.",
+      "artistNotFound": "Artist not found, selection was reset."
+    },
+    "calendarPreview": {
+      "title": "Artist availability",
+      "clickHint": "Click a free day to prefill the date."
+    }
   },
   "contact": {
+    "title": "Contact",
+    "subtitle": "Ask us your question, we will reply within 24 business hours.",
+    "form": {
+      "name": "Full name",
+      "namePlaceholder": "e.g. Jane Doe",
+      "email": "Email",
+      "emailPlaceholder": "you@example.com",
+      "subject": "Subject",
+      "subjectPlaceholder": "e.g. Quote request for a wedding",
+      "message": "Your message",
+      "messagePlaceholder": "Tell us about your event: date, venue, vibe you're after…",
+      "submit": "Send message",
+      "success": "Message sent. Thank you!",
+      "error": "We could not send your message right now."
+    },
+    "errors": {
+      "nameRequired": "Name is required.",
+      "emailRequired": "Email is required.",
+      "emailInvalid": "Invalid email.",
+      "subjectRequired": "Subject is required.",
+      "messageRequired": "Message is required.",
+      "messageTooShort": "Your message must contain at least 20 characters."
+    },
+    "coordinates": {
+      "title": "Contact details",
+      "email": "Email",
+      "phone": "Phone",
+      "address": "Address"
+    },
     "dropdownPlaceholder": "Subject*"
+  },
+  "bookingCta": {
+    "primary": "Book an artist",
+    "primaryAria": "Start a booking request",
+    "withArtist": "Book {{name}}",
+    "withArtistAria": "Start a booking request for {{name}}",
+    "sticky": "Book now"
+  },
+  "bookingNew": {
+    "authRequired": {
+      "title": "Sign in required",
+      "description": "To send a booking request and track your bookings, please create an account or sign in first.",
+      "signup": "Create an account",
+      "login": "I already have an account"
+    },
+    "title": "Book an artist",
+    "subtitle": "Fill in your event details and receive an instant quote.",
+    "disclaimer": "Once submitted, you'll receive an email to confirm your booking. The Gazmatek team validates your booking within 24 business hours.",
+    "artist": {
+      "title": "You'd like to book",
+      "name": "Artist",
+      "genre": "Genre",
+      "tier": "Price range",
+      "notFound": "This artist is not available for booking right now.",
+      "missingId": "Pick an artist from their profile page to start a booking."
+    },
+    "fields": {
+      "date": "Event date & time",
+      "duration": "Duration (hours)",
+      "street": "Street and number",
+      "postalCode": "Postal code",
+      "city": "City",
+      "country": "Country",
+      "capacity": "Capacity (number of seats)",
+      "ticketPrice": "Ticket price (€)",
+      "setType": "Set format",
+      "setType_dj": "DJ set",
+      "setType_hybrid": "Hybrid (DJ + instruments)",
+      "setType_live": "Live set",
+      "context": "Event details (optional)"
+    },
+    "errors": {
+      "dateRequired": "Date is required.",
+      "durationRequired": "A valid duration is required.",
+      "streetRequired": "Street is required.",
+      "postalCodeRequired": "Postal code is required.",
+      "cityRequired": "City is required.",
+      "countryRequired": "Country is required.",
+      "pricingRequired": "Capacity and ticket price are required to compute the quote.",
+      "contextTooShort": "Details are too short.",
+      "contextTooLong": "Details are too long.",
+      "artistRequired": "No artist selected."
+    },
+    "form": {
+      "submit": "Send my request",
+      "success": "Request sent — we'll be in touch shortly.",
+      "successTitle": "Request received",
+      "successBody": "Thanks! A Gazmatek team member will get back to you within one business day to confirm availability and arrange payment. A summary has been sent to your email."
+    },
+    "quote": {
+      "title": "Estimate",
+      "artistCost": "Artist fee",
+      "travelCost": "Travel fee",
+      "subtotal": "Subtotal",
+      "vat": "VAT",
+      "total": "Estimated total",
+      "disclaimer": "Indicative estimate — the final amount is confirmed after validation.",
+      "computing": "Computing quote…"
+    },
+    "calendarPreview": {
+      "title": "Artist availability",
+      "clickHint": "Click a free day to prefill the date."
+    }
+  },
+  "footer": {
+    "rights": "© {{year}} Gazmatek. All rights reserved.",
+    "tagline": "Artist booking — Belgium",
+    "legal": {
+      "terms": "Terms of use",
+      "privacy": "Privacy policy"
+    }
+  },
+  "legal": {
+    "lastUpdated": "Last updated: May 29, 2026",
+    "terms": {
+      "title": "Terms of use",
+      "intro": "These terms of use govern your access to and use of the Gazmatek website and online booking services. By browsing the site or submitting a booking request, you agree to be bound by them.",
+      "sections": [
+        {
+          "title": "1. Purpose",
+          "paragraphs": [
+            "Gazmatek is an artist booking agency that represents DJs, live acts and performers and connects them with event organisers across Belgium and neighbouring countries.",
+            "The website lets you discover our roster, estimate a budget through the price simulator and submit a booking request. Submitting a request does not constitute a confirmed booking: every request is reviewed and confirmed by our team before any contract takes effect."
+          ]
+        },
+        {
+          "title": "2. Bookings and quotes",
+          "paragraphs": [
+            "Prices displayed by the simulator are indicative and non-contractual. The final fee depends on the artist, the date, the venue capacity, the ticket price and the requested format, and is confirmed in writing after our team reviews your request.",
+            "A booking is only firm once you have received written confirmation, paid the agreed deposit and, where applicable, signed the engagement contract."
+          ]
+        },
+        {
+          "title": "3. Accounts",
+          "paragraphs": [
+            "Some features require an account. You are responsible for keeping your login credentials confidential and for all activity carried out under your account.",
+            "You agree to provide accurate information and to keep it up to date, in particular the contact and billing details used for your bookings."
+          ]
+        },
+        {
+          "title": "4. Acceptable use",
+          "paragraphs": [
+            "You agree not to misuse the site, attempt to disrupt its operation, access it through unauthorised means, or use it for any unlawful purpose.",
+            "You may not reproduce or exploit the content of the site, including artist profiles, photos and biographies, without our prior written consent."
+          ]
+        },
+        {
+          "title": "5. Intellectual property",
+          "paragraphs": [
+            "All content published on the site — trademarks, logos, texts, photographs and visuals — is protected and remains the property of Gazmatek or its partners and artists. No licence or right of use is granted beyond browsing the site."
+          ]
+        },
+        {
+          "title": "6. Liability",
+          "paragraphs": [
+            "We do our best to keep information accurate and the service available, but we cannot guarantee that the site will be free of errors or interruptions.",
+            "Gazmatek cannot be held liable for indirect damages arising from the use of the site, except in cases of gross negligence or wilful misconduct."
+          ]
+        },
+        {
+          "title": "7. Contact",
+          "paragraphs": [
+            "For any question about these terms, you can reach us at contact@gazmatek.com."
+          ]
+        }
+      ]
+    },
+    "privacy": {
+      "title": "Privacy policy",
+      "intro": "This policy explains how Gazmatek collects, uses and protects your personal data when you use our website and booking services, in accordance with the EU General Data Protection Regulation (GDPR).",
+      "sections": [
+        {
+          "title": "1. Data controller",
+          "paragraphs": [
+            "Gazmatek acts as the data controller for the personal data collected through this site. For any privacy-related request, contact us at contact@gazmatek.com."
+          ]
+        },
+        {
+          "title": "2. Data we collect",
+          "paragraphs": [
+            "Account and contact details: name, email address, phone number and, where relevant, company and billing information.",
+            "Booking details: event date, location, capacity, format and any context you share with your request.",
+            "Technical data: information collected through cookies and similar technologies to keep the site secure and measure its usage."
+          ]
+        },
+        {
+          "title": "3. How we use your data",
+          "paragraphs": [
+            "To process and confirm your booking requests and manage the related contracts and payments.",
+            "To communicate with you about your account, your bookings and our services.",
+            "To operate, secure and improve the website and, where you have consented, to measure its audience."
+          ]
+        },
+        {
+          "title": "4. Legal basis",
+          "paragraphs": [
+            "We process your data to perform the contract or pre-contractual steps you request, to comply with our legal obligations, on the basis of our legitimate interest in running the agency, and on your consent where required (for example for non-essential cookies)."
+          ]
+        },
+        {
+          "title": "5. Sharing and retention",
+          "paragraphs": [
+            "Your data may be shared with the artists involved in your booking and with the service providers that help us operate (hosting, payment, electronic signature, email). We never sell your data.",
+            "We keep your data only for as long as necessary for the purposes described above and to meet our legal and accounting obligations."
+          ]
+        },
+        {
+          "title": "6. Your rights",
+          "paragraphs": [
+            "Under the GDPR you have the right to access, rectify and erase your data, to restrict or object to its processing, and to data portability. You may also withdraw your consent at any time.",
+            "To exercise these rights, contact us at contact@gazmatek.com. You also have the right to lodge a complaint with the Belgian Data Protection Authority."
+          ]
+        },
+        {
+          "title": "7. Cookies",
+          "paragraphs": [
+            "We use strictly necessary cookies to operate the site and, subject to your consent, analytics and marketing cookies. You can review and change your choices at any time through the cookie preferences available on the site."
+          ]
+        }
+      ]
+    }
   },
   "cookieConsent": {
     "aria_label": "Cookie consent",
@@ -33,5 +534,434 @@
     "title": "Page not found",
     "text": "The page you are looking for does not exist or has been moved.",
     "back": "Back to home"
+  },
+  "availability": {
+    "free": "Available",
+    "partial": "Partially available",
+    "unavailable": "Unavailable"
+  },
+  "booking": {
+    "title": "Booking request",
+    "subtitle": "A few steps to confirm your event.",
+    "steps": {
+      "artist": "Artist",
+      "datetime": "Date",
+      "location": "Location",
+      "client": "Contact",
+      "summary": "Summary"
+    },
+    "fields": {
+      "artist": "Artist",
+      "date": "Date",
+      "time": "Time",
+      "duration": "Duration (h)",
+      "location": "Location / Address",
+      "context": "Context",
+      "contextPlaceholder": "Type of event, expected mood, constraints…",
+      "clientName": "Name",
+      "clientEmail": "Email",
+      "clientPhone": "Phone"
+    },
+    "summary": {
+      "title": "Summary",
+      "disclaimer": "Non-contractual estimate. The final price will be confirmed after review.",
+      "submit": "Send request"
+    },
+    "errors": {
+      "missingFields": "Please fill the required fields."
+    },
+    "sent": {
+      "title": "Request sent",
+      "body": "A summary has been sent to"
+    }
+  },
+  "auth": {
+    "password": "Password",
+    "signIn": "Sign in",
+    "signOut": "Sign out",
+    "invalidCredentials": "Invalid credentials",
+    "artist": { "title": "Artist sign in" },
+    "admin": { "title": "Admin sign in" }
+  },
+  "artistArea": {
+    "nav": {
+      "calendar": "My calendar",
+      "allBookings": "All my bookings",
+      "profile": "My profile"
+    },
+    "col": {
+      "location": "Location",
+      "client": "Client"
+    },
+    "dashboard": {
+      "title": "My area",
+      "welcome": "Welcome {{name}}"
+    },
+    "upcoming": {
+      "title": "Upcoming bookings",
+      "empty": "No upcoming bookings."
+    },
+    "bookings": {
+      "title": "My bookings",
+      "upcoming": "Upcoming",
+      "past": "Past"
+    },
+    "bookingDetail": {
+      "title": "Booking detail",
+      "eyebrow": "Artist booking",
+      "heroTitle": "Event on {{date}}",
+      "back": "Back to bookings",
+      "status": "Status",
+      "reference": "Internal reference",
+      "eventSection": "Event details",
+      "pricingSection": "Pricing",
+      "clientSection": "Client",
+      "statusSection": "Booking status",
+      "durationValue": "{{hours}} h",
+      "total": "Quoted total",
+      "deposit": "Deposit",
+      "remaining": "Balance due",
+      "cancelReason": "Cancellation reason",
+      "clientLabel": "Event contact",
+      "clientHiddenTitle": "Contact hidden",
+      "clientHidden": "Client information will be revealed once the deposit payment is confirmed."
+    },
+    "calendar": {
+      "title": "My calendar",
+      "add": "Add unavailability",
+      "startsAt": "Start",
+      "endsAt": "End",
+      "type": "Type",
+      "personal": "Personal",
+      "externalGig": "External gig",
+      "eventTitle": "Event title",
+      "notes": "Private notes",
+      "list": "My unavailabilities",
+      "empty": "No unavailability.",
+      "created": "Unavailability created"
+    }
+  },
+  "admin": {
+    "dashboard": {
+      "title": "Admin dashboard",
+      "welcome": "Welcome {{name}}"
+    },
+    "nav": {
+      "artists": "Artists",
+      "bookings": "Bookings",
+      "content": "Content",
+      "settings": "Settings"
+    },
+    "artists": {
+      "title": "Artist management",
+      "create": "Create artist",
+      "list": "Catalog",
+      "created": "Artist created",
+      "deleteConfirm": "Delete this artist?",
+      "publish": "Publish",
+      "unpublish": "Unpublish",
+      "published": "Published",
+      "featured": "Featured",
+      "form": {
+        "slug": "Slug",
+        "stageName": "Stage name",
+        "genre": "Style"
+      },
+      "invitations": {
+        "title": "Artist invitations",
+        "subtitle": "Send a magic link so a new artist can join the roster.",
+        "create": "Invite a new artist",
+        "list": "Sent invitations",
+        "createCta": "Send invitation",
+        "createdToast": "Invitation sent to {{email}}",
+        "createdTitle": "Invitation sent",
+        "createdHint": "Copy the link below if the artist doesn't receive the email:",
+        "linkCopied": "Link copied",
+        "copyLink": "Copy link",
+        "resendCta": "Resend",
+        "resendTitle": "Resend invitation",
+        "resendConfirm": "Send a new link to {{email}}? The previous link will be invalidated.",
+        "resentToast": "New link sent to {{email}}",
+        "revokeCta": "Revoke",
+        "revokeTitle": "Revoke invitation",
+        "revokeConfirm": "The artist will no longer be able to use the link. Continue?",
+        "revokedToast": "Invitation revoked",
+        "empty": "No invitations yet.",
+        "filterStatus": "Filter by status",
+        "filterStatusAll": "All statuses",
+        "status": {
+          "pending": "Pending",
+          "accepted": "Accepted",
+          "expired": "Expired",
+          "revoked": "Revoked"
+        },
+        "setType": {
+          "dj": "DJ",
+          "hybrid": "Hybrid",
+          "live": "Live"
+        },
+        "fields": {
+          "email": "Artist email",
+          "stageName": "Stage name",
+          "level": "Level (tier)",
+          "setType": "Primary set type",
+          "customMessage": "Custom message (optional)"
+        },
+        "col": {
+          "email": "Email",
+          "stageName": "Stage name",
+          "level": "Level",
+          "status": "Status",
+          "expiresAt": "Expires on",
+          "resendCount": "Resends",
+          "actions": "Actions"
+        }
+      }
+    },
+    "bookings": {
+      "title": "Booking requests",
+      "filterStatus": "Filter by status",
+      "empty": "No request.",
+      "approve": "Approve",
+      "reject": "Reject",
+      "approved": "Booking approved",
+      "rejected": "Booking rejected",
+      "rejectModalTitle": "Reject booking",
+      "rejectReasonOptional": "Rejection reason (optional)",
+      "rejectReasonPlaceholder": "Explain the reason for the rejection…",
+      "rejectConfirm": "Confirm rejection",
+      "markDepositPaid": "Deposit paid",
+      "markDepositPaidConfirm": "Confirm that the deposit has been received?",
+      "markDepositPaidSuccess": "Deposit marked as paid",
+      "markCompleted": "Balance paid / close",
+      "markCompletedConfirm": "Mark this booking as completed and fully paid?",
+      "markCompletedSuccess": "Booking closed",
+      "detail": {
+        "title": "Booking detail",
+        "back": "Back to list",
+        "eyebrow": "Booking",
+        "heroTitle": "{{artist}}",
+        "clientSection": "Client contact",
+        "eventSection": "Event",
+        "pricingSection": "Pricing",
+        "statusSection": "Status & history",
+        "actionsSection": "Admin actions",
+        "artist": "Artist",
+        "locale": "Language",
+        "inviteHint": "This client hasn't activated their account yet. Send them an email so they can set a password.",
+        "inviteButton": "Send invitation email",
+        "inviteSent": "Invitation email sent",
+        "alreadyClaimed": "This client has already activated their account.",
+        "status": "Status",
+        "submittedAt": "Submitted on",
+        "approvedAt": "Approved on",
+        "paidAt": "Settled on",
+        "reference": "Reference",
+        "durationValue": "{{hours}} h",
+        "total": "Total incl. VAT",
+        "deposit": "Deposit",
+        "remaining": "Remaining balance",
+        "cancelReason": "Cancel reason",
+        "noActions": "No action available for this status."
+      },
+      "col": {
+        "artist": "Artist",
+        "client": "Client",
+        "date": "Event date",
+        "status": "Status",
+        "total": "Total"
+      },
+      "calendarPreview": {
+        "title": "Artist agenda",
+        "hint": "Select an artist first to see their busy slots.",
+        "clickHint": "Click a free day to prefill the date."
+      },
+      "edit": {
+        "title": "Edit booking",
+        "saved": "Booking updated",
+        "errorMissingDate": "Please provide the event date"
+      }
+    },
+    "content": {
+      "title": "Editorial content",
+      "empty": "No block.",
+      "saved": "Block {{key}} updated"
+    },
+    "settings": {
+      "title": "Agency settings",
+      "signature": {
+        "title": "Manager signature",
+        "copy": "This signature is automatically applied to engagement contracts before they are sent to the artist. It appears in the “For the Agency” column.",
+        "loading": "Loading…",
+        "empty": "No signature saved yet — contracts will be sent without an agency signature.",
+        "previewAlt": "Agency signature preview",
+        "create": "Create my signature",
+        "replace": "Replace signature",
+        "remove": "Remove",
+        "save": "Save",
+        "hint": "Draw your signature with mouse or finger.",
+        "saved": "Signature saved",
+        "saveFailed": "Failed to save the signature",
+        "removed": "Signature removed"
+      },
+      "companyInfo": {
+        "title": "Company info",
+        "copy": "These values are prefilled in the “THE AGENCY” block of every engagement contract sent to artists.",
+        "save": "Save",
+        "saved": "Company info saved",
+        "saveFailed": "Failed to save company info",
+        "fields": {
+          "name": "Company name",
+          "representative": "Representative",
+          "address": "Address",
+          "city": "City (place of signature)",
+          "companyNumber": "Company number (BCE/KBO)",
+          "vatNumber": "VAT number",
+          "email": "Contact email",
+          "iban": "IBAN"
+        }
+      }
+    }
+  },
+  "account": {
+    "login": {
+      "title": "Sign in",
+      "forgotLink": "Forgot password?",
+      "signupLink": "Create an account"
+    },
+    "signup": {
+      "title": "Create an account",
+      "hint": "Create your client area to track your bookings and book multiple artists for the same event.",
+      "accountType": {
+        "label": "I am",
+        "individual": "Individual",
+        "company": "Company"
+      },
+      "displayName": "Full name",
+      "confirmPassword": "Confirm password",
+      "phone": "Phone",
+      "companyHint": "If you're booking on behalf of a company, add these details for invoicing. Otherwise leave blank.",
+      "companyName": "Company name",
+      "companyNumber": "Company number (BCE)",
+      "vatNumber": "VAT number",
+      "addressStreet": "Street",
+      "addressNumber": "Number",
+      "addressZip": "Postal code",
+      "addressCity": "City",
+      "addressCountry": "Country",
+      "next": "Next",
+      "back": "Back",
+      "submit": "Create my account",
+      "loginLink": "I already have an account",
+      "failed": "Account creation failed. This email may already be in use.",
+      "success": "Account created successfully",
+      "steps": {
+        "account": "Account",
+        "company": "Company",
+        "address": "Address"
+      },
+      "placeholders": {
+        "displayName": "Jane Doe",
+        "email": "your@email.com",
+        "password": "8 characters minimum",
+        "confirmPassword": "Re-type your password",
+        "companyName": "My Company Ltd",
+        "addressStreet": "Avenue Louise",
+        "addressNumber": "42",
+        "addressCity": "Brussels",
+        "phone": "+32 470 12 34 56"
+      },
+      "errors": {
+        "displayNameRequired": "Name is required.",
+        "emailRequired": "Email is required.",
+        "emailInvalid": "Invalid email address.",
+        "passwordTooShort": "Password must be at least {{min}} characters.",
+        "passwordMismatch": "Passwords do not match.",
+        "addressStreetRequired": "Street is required.",
+        "addressNumberRequired": "Number is required.",
+        "addressZipRequired": "Postal code is required.",
+        "addressCityRequired": "City is required.",
+        "addressCountryRequired": "Country is required.",
+        "phoneRequired": "Phone is required."
+      }
+    },
+    "forgot": {
+      "title": "Forgot password",
+      "hint": "Enter your email. If an account exists, we'll send a link to reset your password.",
+      "submit": "Send link",
+      "sent": "If an account exists for this email, a reset link has been sent.",
+      "loginLink": "Back to sign in"
+    },
+    "reset": {
+      "title": "New password",
+      "hint": "Choose a new password for your account.",
+      "submit": "Update",
+      "missingToken": "Invalid or expired link.",
+      "success": "Password updated"
+    },
+    "claim": {
+      "title": "Welcome! Activate your account",
+      "hint": "Choose a password to finish setting up your client area.",
+      "submit": "Activate my account",
+      "missingToken": "Invalid or expired link.",
+      "success": "Account activated. You can now sign in."
+    },
+    "dashboard": {
+      "title": "My account",
+      "welcome": "Welcome {{name}}",
+      "upcoming": "Upcoming bookings",
+      "allBookings": "All my bookings"
+    },
+    "bookings": {
+      "title": "My bookings",
+      "tabs": {
+        "upcoming": "Upcoming",
+        "past": "Past",
+        "cancelled": "Cancelled",
+        "all": "All"
+      },
+      "cancel": {
+        "action": "Cancel",
+        "modalTitle": "Cancel this booking?",
+        "reasonLabel": "Reason (optional)",
+        "reasonPlaceholder": "Briefly tell us why you are cancelling…",
+        "confirm": "Confirm cancellation",
+        "success": "Booking cancelled"
+      }
+    }
+  },
+  "onboarding": {
+    "title": "Engagement contract",
+    "statusTitle": "Contract status",
+    "statusPending": "Your engagement contract must be signed to activate your account.",
+    "statusAwaitingSignature": "Your contract is waiting to be signed in Documenso. Resume signing to complete it.",
+    "statusSigned": "Contract signed on {{date}}.",
+    "contractPreview": "Contract preview",
+    "contractPreviewBody": "Read the terms below carefully, then tick the box and sign.",
+    "providerNote": "Electronic signature is handled by Documenso. Tick the acceptance box, then click Sign — a new tab will open with your contract.",
+    "waitingForWebhook": "Waiting for signature confirmation… This page updates automatically.",
+    "downloadDraft": "Download draft PDF",
+    "downloadSigned": "Download signed PDF",
+    "acceptTerms": "I have read and accept the terms of the engagement contract.",
+    "sign": "Sign via Documenso",
+    "resumeSigning": "Resume signing",
+    "signed": "Contract signed successfully",
+    "infoTitle": "Your information",
+    "infoBody": "These details will appear on your contract. Fill them in and save before signing.",
+    "infoSaved": "Information saved",
+    "infoIncomplete": "Please fill in your full name, address and country before signing.",
+    "fields": {
+      "fullName": "Full name",
+      "phone": "Phone",
+      "address": "Address",
+      "country": "Country",
+      "vatNumber": "VAT number",
+      "companyNumber": "Company number (BCE/KBO)"
+    },
+    "errors": {
+      "mustAccept": "You must accept the terms before signing.",
+      "noSigningUrl": "Unable to get the Documenso signing link. Please try again.",
+      "saveFailed": "Failed to save your information."
+    }
   }
 }

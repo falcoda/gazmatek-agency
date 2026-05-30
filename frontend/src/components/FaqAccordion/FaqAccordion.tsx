@@ -3,6 +3,8 @@ import "./FaqAccordion.scss";
 import { useState } from "react";
 import { FiChevronDown } from "react-icons/fi";
 
+import { Card } from "@/covaltech-react-ui";
+
 export interface FaqItem {
   /** Question text. */
   q: string;
@@ -30,10 +32,7 @@ const FaqAccordion = ({ items, defaultOpenIndex = 0 }: FaqAccordionProps) => {
         const isOpen = openIndex === index;
 
         return (
-          <div
-            className={`faqItem ${isOpen ? "faqItem--open" : ""}`}
-            key={item.q}
-          >
+          <Card className={`faqItem ${isOpen ? "isOpen" : ""}`} key={item.q}>
             <button
               type="button"
               className="faqQuestion"
@@ -46,7 +45,7 @@ const FaqAccordion = ({ items, defaultOpenIndex = 0 }: FaqAccordionProps) => {
             <div className="faqAnswer">
               <p>{item.a}</p>
             </div>
-          </div>
+          </Card>
         );
       })}
     </div>

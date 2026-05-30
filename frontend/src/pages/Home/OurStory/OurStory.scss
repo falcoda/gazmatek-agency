@@ -1,0 +1,73 @@
+.ourStory {
+  padding: $padding-xl $padding-md;
+  background: $tertiary-color;
+  border-block: 1px solid $border-color;
+
+  .inner {
+    max-width: 1280px;
+    margin: 0 auto;
+    display: grid;
+    grid-template-columns: 1.2fr 1fr;
+    gap: $padding-xl;
+    align-items: center;
+
+    @include maxScreen($breakpoint-md) {
+      grid-template-columns: 1fr;
+      gap: $padding-lg;
+    }
+  }
+
+  .title {
+    font-family: $default-font-family;
+    font-size: clamp(1.6rem, 3vw, 2.4rem);
+    letter-spacing: 0.04em;
+    margin: 0 0 $padding-md;
+    color: $primary-font;
+  }
+
+  .paragraph {
+    color: $secondary-font;
+    line-height: 1.6;
+    font-size: 1rem;
+    margin: 0 0 $padding-sm;
+  }
+
+  .stats {
+    list-style: none;
+    margin: 0;
+    padding: 0;
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: $padding-sm;
+
+    @include maxScreen($breakpoint-md-3) {
+      grid-template-columns: 1fr;
+    }
+  }
+
+  .stat {
+    background: rgba($light-color, 0.04);
+    border: 1px solid $border-color;
+    border-radius: $radius-medium;
+    padding: $padding-md;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    text-align: center;
+    gap: $padding-xs;
+  }
+
+  .statValue {
+    font-family: $default-font-family;
+    font-size: clamp(2rem, 4vw, 3rem);
+    color: $accent-color;
+    letter-spacing: 0.04em;
+  }
+
+  .statLabel {
+    color: $secondary-font;
+    font-size: 0.85rem;
+    text-transform: uppercase;
+    letter-spacing: 0.18em;
+  }
+}

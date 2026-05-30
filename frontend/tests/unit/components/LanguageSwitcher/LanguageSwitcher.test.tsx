@@ -55,7 +55,7 @@ describe("LanguageSwitcher", () => {
     renderWithProviders(<LanguageSwitcher />);
 
     expect(
-      screen.getByRole("button", { name: "EN" }).classList.contains("active"),
+      screen.getByRole("button", { name: "FR" }).classList.contains("active"),
     ).toBe(true);
   });
 

@@ -1,0 +1,89 @@
+.artistDetail {
+  max-width: 1280px;
+  margin: 0 auto;
+  padding: $padding-lg $padding-md $padding-xl;
+  display: flex;
+  flex-direction: column;
+  gap: $padding-lg;
+
+  .columns {
+    display: grid;
+    grid-template-columns: minmax(0, 1fr) 320px;
+    gap: $padding-lg;
+  }
+
+  .main {
+    display: flex;
+    flex-direction: column;
+    gap: $padding-lg;
+    min-width: 0;
+  }
+
+  .aside {
+    position: sticky;
+    top: $padding-md;
+    align-self: start;
+  }
+
+  .skeleton {
+    background: linear-gradient(90deg, $secondary-color, $card-color, $secondary-color);
+    background-size: 200% 100%;
+    animation: artistDetail-shimmer 1.4s ease-in-out infinite;
+    border-radius: $radius-medium;
+
+    &.isHero {
+      height: 320px;
+    }
+
+    &.isBody {
+      height: 400px;
+    }
+  }
+
+  &.isMissing {
+    text-align: center;
+    padding: $padding-xl $padding-md;
+
+    h1 {
+      margin: 0 0 $padding-xs;
+    }
+
+    p {
+      color: $secondary-font;
+    }
+  }
+
+  .backLink {
+    margin-top: $padding-md;
+    display: inline-block;
+    color: $accent-color;
+    text-decoration: none;
+    font-weight: 600;
+  }
+
+  @include maxScreen($breakpoint-md) {
+    .columns {
+      grid-template-columns: 1fr;
+    }
+
+    .aside {
+      position: static;
+      display: flex;
+      justify-content: center;
+
+      > * {
+        width: 100%;
+        max-width: 360px;
+      }
+    }
+  }
+
+  @include maxScreen($breakpoint-md-3) {
+    padding: $padding-md $padding-sm $padding-lg;
+  }
+}
+
+@keyframes artistDetail-shimmer {
+  0% { background-position: 200% 0; }
+  100% { background-position: -200% 0; }
+}

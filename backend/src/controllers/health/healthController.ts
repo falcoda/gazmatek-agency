@@ -1,6 +1,7 @@
 import { checkDatabaseReady } from "@src/db/query/health/checkDatabaseReady";
 import { config } from "@src/helpers/config";
 import { HEALTH_STATUS } from "@src/helpers/constants";
+import { HTTP_STATUS } from "@src/helpers/error/constants";
 import { ServiceUnavailableError } from "@src/helpers/error/errors";
 import { NextFunction, Request, Response } from "express";
 import { Pool } from "pg";
@@ -9,7 +10,7 @@ export class HealthController {
   constructor(private db: Pool) {}
 
   live(_req: Request, res: Response) {
-    res.status(200).json({
+    res.status(HTTP_STATUS.OK).json({
       status: HEALTH_STATUS.ALIVE,
       service: config.app.name,
       version: config.app.version,
@@ -34,7 +35,7 @@ export class HealthController {
         return;
       }
 
-      res.status(200).json({
+      res.status(HTTP_STATUS.OK).json({
         status: HEALTH_STATUS.READY,
         checks,
       });
@@ -53,7 +54,7 @@ export class HealthController {
 
   async details(req: Request, res: Response, next: NextFunction) {
     try {
-      res.status(200).json({
+      res.status(HTTP_STATUS.OK).json({
         service: config.app.name,
         version: config.app.version,
         request_id: req.requestId,

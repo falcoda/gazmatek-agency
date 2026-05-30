@@ -1,0 +1,17 @@
+.panel {
+  .mutedNote {
+    color: $secondary-font;
+
+    &.italic {
+      font-style: italic;
+    }
+
+    &.webhookNote {
+      margin-top: $padding-xs;
+    }
+  }
+
+  .accentLink {
+    color: $accent-color;
+  }
+}

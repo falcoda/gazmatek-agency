@@ -1,0 +1,170 @@
+.publicAvailabilityCalendar {
+  padding: $padding-md;
+  color: $primary-font;
+
+  // FullCalendar theme overrides — match the Gazmatek dark palette.
+  --fc-border-color: #{$border-color};
+  --fc-page-bg-color: #{$card-color};
+  --fc-neutral-bg-color: rgba(#{$light-color}, 0.04);
+  --fc-event-bg-color: #{$accent-color};
+  --fc-event-border-color: #{$accent-color};
+  --fc-event-text-color: #{$primary-color};
+  --fc-today-bg-color: rgba(#{$accent-color}, 0.08);
+  --fc-button-bg-color: transparent;
+  --fc-button-border-color: #{$border-color};
+  --fc-button-text-color: #{$primary-font};
+  --fc-button-hover-bg-color: rgba(#{$accent-color}, 0.15);
+  --fc-button-hover-border-color: #{$accent-color};
+  --fc-button-active-bg-color: #{$accent-color};
+  --fc-button-active-border-color: #{$accent-color};
+
+  .fc-toolbar.fc-header-toolbar {
+    margin-bottom: $padding-sm;
+    gap: $padding-xs;
+    flex-wrap: wrap;
+  }
+
+  .fc-toolbar-title {
+    font-family: $default-font-family;
+    color: $primary-font;
+    text-transform: capitalize;
+    font-size: 1rem;
+  }
+
+  .fc-button {
+    font-family: $default-font-family;
+    font-size: 0.75rem;
+    padding: $padding-xxxs $padding-xs;
+    text-transform: uppercase;
+    letter-spacing: 0.06em;
+  }
+
+  .fc-daygrid-day-number,
+  .fc-col-header-cell-cushion {
+    color: $primary-font;
+    text-decoration: none;
+    font-size: 0.8rem;
+    padding: 4px 6px;
+  }
+
+  .fc-col-header-cell {
+    background: rgba($light-color, 0.03);
+
+    .fc-col-header-cell-cushion {
+      font-size: 0.7rem;
+      text-transform: uppercase;
+      letter-spacing: 0.06em;
+      color: $secondary-font;
+    }
+  }
+
+  .fc-day-other .fc-daygrid-day-number {
+    color: $secondary-font;
+  }
+
+  // Force square day cells regardless of FullCalendar's internal sizing.
+  .fc-daygrid-day {
+    height: auto !important;
+  }
+
+  .fc-daygrid-day-frame {
+    position: relative;
+    aspect-ratio: 1 / 1 !important;
+    height: auto !important;
+    min-height: 0 !important;
+    display: flex;
+    flex-direction: column;
+    cursor: pointer;
+    transition: background 0.15s ease;
+    overflow: hidden;
+  }
+
+  // Kill the inline min-height FC injects on the events container — it
+  // stretches the cells into rectangles when there is no event content.
+  .fc-daygrid-day-events,
+  .fc-daygrid-day-bg {
+    min-height: 0 !important;
+    height: auto !important;
+  }
+
+  // Keep all week rows visually equal (FC sometimes distributes height
+  // unevenly based on event count).
+  .fc-daygrid-body table tbody tr {
+    height: auto !important;
+  }
+
+  .fc-daygrid-day-top {
+    flex: 0 0 auto;
+    justify-content: flex-end;
+  }
+
+  .fc-daygrid-day-events {
+    flex: 1 1 auto;
+    min-height: 0;
+    margin: 0 !important;
+  }
+
+  .fc-daygrid-day-bottom {
+    display: none;
+  }
+
+  .fc-daygrid-day:hover .fc-daygrid-day-frame {
+    background: rgba($accent-color, 0.12);
+  }
+
+  .fc-day-today .fc-daygrid-day-frame {
+    outline: 1px solid $accent-color;
+    outline-offset: -1px;
+  }
+
+  // Availability decoration — applied as classes on the cell instead of
+  // background events, so the visual stays inside the square day frame and
+  // never overflows when multiple partial days are stacked.
+  .gz-day-busy .fc-daygrid-day-frame {
+    background: rgba(209, 27, 27, 0.32);
+    cursor: not-allowed;
+  }
+
+  .gz-day-busy:hover .fc-daygrid-day-frame {
+    background: rgba(209, 27, 27, 0.45);
+  }
+
+  .gz-day-partial .fc-daygrid-day-frame {
+    background: rgba(255, 142, 0, 0.16);
+
+    &::after {
+      content: "";
+      position: absolute;
+      bottom: 5px;
+      right: 5px;
+      width: 7px;
+      height: 7px;
+      border-radius: 50%;
+      background: $main-orange;
+      box-shadow: 0 0 0 1px rgba(0, 0, 0, 0.25);
+      pointer-events: none;
+      transition: width 0.15s ease, height 0.15s ease;
+    }
+  }
+
+  .gz-day-partial:hover .fc-daygrid-day-frame {
+    background: rgba(255, 142, 0, 0.32);
+
+    &::after {
+      width: 9px;
+      height: 9px;
+    }
+  }
+
+  .fc-day-past .fc-daygrid-day-frame {
+    opacity: 0.4;
+    cursor: not-allowed;
+    pointer-events: none;
+  }
+
+  // Hide the time-slot scrollers FullCalendar adds to the grid to keep the
+  // square cells from being stretched vertically.
+  .fc-scroller {
+    overflow: visible !important;
+  }
+}

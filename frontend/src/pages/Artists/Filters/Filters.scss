@@ -1,0 +1,29 @@
+.artistFilters {
+  background: $card-color;
+  padding: $padding-md;
+  border-radius: $radius-medium;
+  display: flex;
+  flex-direction: column;
+  gap: $padding-md;
+
+  .row {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
+    gap: $padding-sm;
+  }
+
+  // Align the StyledDropdown label on the styled-input label (typography + color)
+  // so the "Genre" and "Date" fields read identically.
+  .styledDropdown .label {
+    margin-bottom: 8px;
+    color: $input-label-color;
+    @include text(400, 14px, 15px);
+  }
+
+  .actions {
+    display: flex;
+    gap: $padding-sm;
+    justify-content: flex-end;
+    flex-wrap: wrap;
+  }
+}

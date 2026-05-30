@@ -1,8 +1,6 @@
 import { config } from "@src/helpers/config";
 import { logger } from "@src/helpers/logger";
-import { runExampleJob } from "@src/jobs/example/exampleJob";
-import { JOB_NAMES, JOB_SCHEDULES } from "@src/jobs/jobConstants";
-import cron, { type ScheduledTask } from "node-cron";
+import { type ScheduledTask } from "node-cron";
 
 let scheduledTasks: ScheduledTask[] = [];
 
@@ -37,8 +35,9 @@ const runJob = async (
  * Starts the background job scheduler. Disabled entirely unless FEATURE_JOBS is
  * on; integrated into the API lifecycle (see apps/api.ts).
  *
- * Register real jobs here following the `runExampleJob` pattern: add the name
- * and cron expression to `jobConstants.ts`, then push a `cron.schedule(...)`.
+ * Register real jobs here: add the name and cron expression to
+ * `jobConstants.ts`, then push a `cron.schedule(...)` entry that calls
+ * `runJob(name, jobFn)`.
  */
 export const startScheduler = (): void => {
   if (!config.featureFlags.jobs) {
@@ -46,15 +45,9 @@ export const startScheduler = (): void => {
     return;
   }
 
-  scheduledTasks.push(
-    cron.schedule(
-      JOB_SCHEDULES.EXAMPLE,
-      () => {
-        void runJob(JOB_NAMES.EXAMPLE, runExampleJob);
-      },
-      { name: JOB_NAMES.EXAMPLE, noOverlap: true },
-    ),
-  );
+  // No jobs registered yet. Add cron.schedule(...) calls here as needed and
+  // make sure to push the returned ScheduledTask into `scheduledTasks`.
+  void runJob;
 
   logger.info("Job scheduler started", { jobs: scheduledTasks.length });
 };

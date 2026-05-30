@@ -1,0 +1,188 @@
+// Dashboards use Inter (loaded via Google Fonts in index.html) instead of
+// the Anton display face used on the public marketing site — Anton is too
+// condensed for forms, tables and dense admin UIs.
+.artistDashboard {
+  font-family:
+    "Inter",
+    system-ui,
+    -apple-system,
+    "Segoe UI",
+    Roboto,
+    Helvetica,
+    Arial,
+    sans-serif;
+  font-feature-settings: "ss01", "cv11";
+
+  max-width: 1080px;
+  margin: 0 auto;
+  padding: $padding-xl $padding-md;
+  display: flex;
+  flex-direction: column;
+  gap: $padding-lg;
+
+  .header {
+    display: flex;
+    justify-content: space-between;
+    flex-wrap: wrap;
+    gap: $padding-md;
+
+    h1 {
+      margin: 0 0 $padding-xxs;
+    }
+
+    p {
+      margin: 0;
+      color: $secondary-font;
+    }
+  }
+
+  .actions {
+    display: flex;
+    gap: $padding-sm;
+    align-items: center;
+
+    a {
+      color: $primary-font;
+      text-decoration: none;
+      padding: $padding-xs $padding-sm;
+      border-radius: $radius-small;
+      border: 1px solid $border-color;
+    }
+
+    button {
+      padding: $padding-xs $padding-sm;
+      border-radius: $radius-small;
+      border: 1px solid $border-color;
+      background: $card-color;
+      color: $primary-font;
+      cursor: pointer;
+      font: inherit;
+    }
+  }
+
+  .panel {
+    background: $card-color;
+    padding: $padding-lg;
+    border-radius: $radius-medium;
+    border: 1px solid $border-color;
+
+    h2 {
+      margin: 0 0 $padding-sm;
+    }
+
+    ul {
+      list-style: none;
+      padding: 0;
+      margin: 0;
+      display: flex;
+      flex-direction: column;
+      gap: $padding-xs;
+    }
+
+    a {
+      color: $primary-font;
+      text-decoration: none;
+    }
+
+    a:hover {
+      color: $accent-color;
+    }
+  }
+
+  .empty {
+    margin: 0;
+    color: $secondary-font;
+  }
+}
+
+.panelStack {
+  display: flex;
+  flex-direction: column;
+  gap: $padding-lg;
+}
+
+.adminFormGrid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+  gap: $padding-md;
+  align-items: end;
+
+  .styledInput {
+    width: 100% !important;
+  }
+}
+
+.adminContentGrid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
+  gap: $padding-sm;
+
+  .styledInput {
+    width: 100% !important;
+
+    textarea {
+      width: 100% !important;
+      min-height: 90px;
+      max-width: 100%;
+      box-sizing: border-box;
+      resize: vertical;
+    }
+
+    input {
+      width: 100% !important;
+      max-width: 100%;
+      box-sizing: border-box;
+    }
+  }
+}
+
+.adminFormGrid .styledInput textarea,
+.adminFormGrid .styledInput input {
+  width: 100% !important;
+  max-width: 100%;
+  box-sizing: border-box;
+}
+
+.adminDashboardLinks {
+  display: flex;
+  flex-wrap: wrap;
+  gap: $padding-sm;
+}
+
+.adminArtistList,
+.adminBookingList {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  display: flex;
+  flex-direction: column;
+  gap: $padding-sm;
+
+  .row {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: $padding-md;
+    padding: $padding-sm;
+    border: 1px solid $border-color;
+    border-radius: $radius-small;
+    background: rgba($light-color, 0.02);
+    flex-wrap: wrap;
+  }
+
+  .info {
+    display: flex;
+    gap: $padding-sm;
+    flex-wrap: wrap;
+    color: $primary-font;
+
+    span {
+      color: $secondary-font;
+    }
+  }
+
+  .actions {
+    display: flex;
+    gap: $padding-xs;
+  }
+}

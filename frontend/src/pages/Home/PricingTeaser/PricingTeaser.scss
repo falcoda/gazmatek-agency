@@ -1,0 +1,44 @@
+.pricingTeaser {
+  padding: $padding-xl $padding-md;
+  background: linear-gradient(
+    135deg,
+    rgba($accent-color, 0.08) 0%,
+    $primary-color 60%
+  );
+
+  .inner {
+    max-width: 1280px;
+    margin: 0 auto;
+    display: flex;
+    flex-direction: column;
+    gap: $padding-lg;
+  }
+
+  .header {
+    text-align: center;
+    max-width: 720px;
+    margin: 0 auto;
+  }
+
+  .title {
+    font-family: $default-font-family;
+    font-size: clamp(1.6rem, 3vw, 2.2rem);
+    color: $primary-font;
+    margin: 0 0 $padding-xs;
+    letter-spacing: 0.03em;
+  }
+
+  .subtitle {
+    color: $secondary-font;
+    margin: 0 0 $padding-sm;
+    line-height: 1.5;
+  }
+
+  .counter {
+    margin: 0;
+    color: $accent-color;
+    font-size: 0.9rem;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+  }
+}

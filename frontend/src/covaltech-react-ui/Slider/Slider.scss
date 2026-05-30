@@ -49,7 +49,7 @@ input[type="range"] {
   color: $secondary-color;
   --thumb-height: 12px;
   --track-height: 0.125em;
-  --track-color: rgba(141, 142, 147, 0.2);
+  --track-color: rgba($border-color, 0.2);
   --brightness-hover: 180%;
   --brightness-down: 80%;
   --clip-edges: 0.125em;
@@ -59,7 +59,7 @@ input[type="range"] {
 /* === range commons === */
 input[type="range"] {
   position: relative;
-  background: #fff0;
+  background: transparent;
   overflow: hidden;
 }
 
@@ -136,7 +136,7 @@ input[type="range"]::-moz-range-thumb {
 input[type="range"]::-moz-range-track,
 input[type="range"]::-moz-range-thumb,
 input[type="range"]::-moz-range-progress {
-  background: #fff0;
+  background: transparent;
 }
 
 input[type="range"]::-moz-range-thumb {

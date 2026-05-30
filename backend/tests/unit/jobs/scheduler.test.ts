@@ -21,7 +21,6 @@ jest.mock("@src/helpers/logger", () => ({
 
 import { config } from "@src/helpers/config";
 import { logger } from "@src/helpers/logger";
-import { JOB_NAMES, JOB_SCHEDULES } from "@src/jobs/jobConstants";
 import { startScheduler, stopScheduler } from "@src/jobs/scheduler";
 
 const mLoggerInfo = logger.info as jest.Mock;
@@ -48,20 +47,14 @@ describe("startScheduler", () => {
     });
   });
 
-  it("registers the example job when FEATURE_JOBS is on", () => {
+  it("logs scheduler started when FEATURE_JOBS is on (no jobs registered yet)", () => {
     config.featureFlags.jobs = true;
-    mockSchedule.mockReturnValue({ destroy: jest.fn() });
 
     startScheduler();
 
-    expect(mockSchedule).toHaveBeenCalledTimes(1);
-    expect(mockSchedule).toHaveBeenCalledWith(
-      JOB_SCHEDULES.EXAMPLE,
-      expect.any(Function),
-      { name: JOB_NAMES.EXAMPLE, noOverlap: true },
-    );
+    expect(mockSchedule).not.toHaveBeenCalled();
     expect(mLoggerInfo).toHaveBeenCalledWith("Job scheduler started", {
-      jobs: 1,
+      jobs: 0,
     });
   });
 });
@@ -69,18 +62,6 @@ describe("startScheduler", () => {
 describe("stopScheduler", () => {
   beforeEach(() => {
     jest.clearAllMocks();
-  });
-
-  it("destroys every scheduled task and logs stopped", async () => {
-    const destroy = jest.fn().mockResolvedValue(undefined);
-    config.featureFlags.jobs = true;
-    mockSchedule.mockReturnValue({ destroy });
-
-    startScheduler();
-    await stopScheduler();
-
-    expect(destroy).toHaveBeenCalledTimes(1);
-    expect(mLoggerInfo).toHaveBeenCalledWith("Job scheduler stopped");
   });
 
   it("is a no-op when no jobs were scheduled", async () => {

@@ -1,0 +1,55 @@
+.priceCard {
+  padding: $padding-md;
+  gap: $padding-sm;
+  max-width: 360px;
+  margin: 0 auto;
+  align-items: center;
+  text-align: center;
+
+  .title {
+    margin: 0;
+    font-size: 1.1rem;
+  }
+
+  .tierRow {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: $padding-sm;
+    width: 100%;
+  }
+
+  .tierLabel {
+    color: $secondary-font;
+    font-size: 0.9rem;
+  }
+
+  .hint {
+    margin: 0;
+    color: $secondary-font;
+    font-size: 0.85rem;
+    line-height: 1.4;
+  }
+
+  .primary,
+  .secondary {
+    padding: $padding-sm $padding-md;
+    border-radius: $radius-small;
+    text-decoration: none;
+    text-align: center;
+    font-weight: 600;
+    width: 100%;
+    box-sizing: border-box;
+  }
+
+  .primary {
+    background: $accent-color;
+    color: $primary-color;
+  }
+
+  .secondary {
+    background: transparent;
+    color: $primary-font;
+    border: 1px solid $border-color;
+  }
+}

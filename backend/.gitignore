@@ -1,1 +1,5 @@
 src/build
+
+# Runtime file storage (local STORAGE_DRIVER uploads) — never commit user uploads
+/storage/
+!/storage/.gitkeep

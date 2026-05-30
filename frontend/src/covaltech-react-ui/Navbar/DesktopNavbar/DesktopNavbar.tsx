@@ -3,12 +3,10 @@ import "./DesktopNavbar.scss";
 import React, { memo, useEffect, useState } from "react";
 import { NavLink } from "react-router-dom";
 
-import { Logo } from "../../../assets/svg/svgIcons";
+import { Logo, LogoTypo } from "../../../assets/svg/svgIcons";
 import Button from "../../Button/Button";
-import ElementNavBar from "../ElementNavbar/ElementNavbar";
-import LogoJune from "../logo-june.svg?react";
 import { NavItemType } from "../Navbar";
-import SubMenuNavbar from "../SubMenuNavbar/SubMenuNavbar";
+import renderNavItems from "../renderNavItems";
 import CloseIcon from "./closeIcon.svg?react";
 import OpenIcon from "./openIcon.svg?react";
 
@@ -65,9 +63,9 @@ const DesktopNavbar = ({
             <li className="navTitleDiv">
               <NavLink to="/">
                 {open ? (
-                  <Logo className="navTitle" />
+                  <LogoTypo className="navTitle" />
                 ) : (
-                  <LogoJune className="navTitle" />
+                  <Logo className="navTitle" />
                 )}
               </NavLink>
             </li>
@@ -91,23 +89,12 @@ const DesktopNavbar = ({
             </Button>
           )}
 
-          {navItems.map((item) =>
-            item.type === "submenu" ? (
-              <SubMenuNavbar
-                key={item.text}
-                navItem={item}
-                openParent={hover || open}
-                showLinkLogo={showLinkLogo}
-              />
-            ) : (
-              <ElementNavBar
-                key={item.href + item.text}
-                navItem={item}
-                open={hover || open}
-                showLinkLogo={showLinkLogo}
-              />
-            ),
-          )}
+          {renderNavItems({
+            navItems,
+            open: hover || open,
+            showLinkLogo,
+            showSections: hover || open,
+          })}
         </ul>
         {React.isValidElement(children) &&
           React.cloneElement(

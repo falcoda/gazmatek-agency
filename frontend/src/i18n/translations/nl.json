@@ -1,0 +1,807 @@
+{
+  "seo": {
+    "title": "Gazmatek — Artistenbookingbureau",
+    "description": "Gazmatek vertegenwoordigt DJ's, live-acts en performers. Ontdek onze artiesten en boek uw volgende evenement.",
+    "home": {
+      "title": "Gazmatek — Artiestenboeking in België",
+      "description": "Bookingbureau Gazmatek. DJ's, live-acts en animaties voor privé- en bedrijfsevenementen."
+    },
+    "artists": {
+      "title": "Artiestencatalogus — Gazmatek",
+      "description": "Ontdek alle artiesten vertegenwoordigd door Gazmatek."
+    },
+    "artistDetail": {
+      "title": "{{name}} — Gazmatek",
+      "description": "Bio, foto's, tarieven en beschikbaarheid van {{name}}."
+    },
+    "contact": {
+      "title": "Contact — Gazmatek",
+      "description": "Stel uw vraag aan het Gazmatek-team."
+    },
+    "pricing": {
+      "title": "Prijssimulator — Gazmatek",
+      "description": "Schat de kostprijs van uw boeking in enkele klikken."
+    }
+  },
+  "language": {
+    "switcher_aria": "Taal wijzigen"
+  },
+  "nav": {
+    "home": "Home",
+    "artists": "Artiesten",
+    "pricing": "Tarieven",
+    "contact": "Contact",
+    "bookNow": "Boeken",
+    "account": "Mijn account",
+    "login": "Inloggen",
+    "adminLogin": "Admin"
+  },
+  "common": {
+    "loading": "Laden…",
+    "error": "Er is een fout opgetreden",
+    "retry": "Opnieuw proberen",
+    "back": "Terug",
+    "all": "Alle",
+    "from": "Vanaf",
+    "perHour": "/ uur",
+    "send": "Verzenden",
+    "submit": "Verzenden",
+    "required": "Verplicht veld",
+    "currencyEur": "€",
+    "next": "Volgende",
+    "delete": "Verwijderen",
+    "save": "Opslaan",
+    "cancel": "Annuleren"
+  },
+  "home": {
+    "hero": {
+      "title": "Gazmatek, uw bookingbureau",
+      "subtitle": "DJ's, live-acts en performers. De soundtrack op maat van uw evenement.",
+      "cta": "Een artiest boeken",
+      "ctaAria": "Een boekingsaanvraag starten"
+    },
+    "featured": {
+      "title": "Uitgelichte artiesten",
+      "subtitle": "Een selectie van talenten die we deze maand uitlichten.",
+      "empty": "Momenteel geen uitgelichte artiesten.",
+      "discoverAll": "Ontdek onze artiesten",
+      "viewArtist": "Bekijk de artiest"
+    },
+    "services": {
+      "title": "Onze diensten",
+      "subtitle": "Alle formats: clubs, zalen, bruiloften, festivals.",
+      "dj": {
+        "title": "DJ-sets",
+        "description": "Sets voor clubs, bruiloften en privéfeesten, van house tot techno."
+      },
+      "live": {
+        "title": "Live-acts",
+        "description": "Live performances, hybride of full band, voor podia en festivals."
+      },
+      "production": {
+        "title": "Productie",
+        "description": "Geluid- en lichtregie, professionele apparatuur ter beschikking."
+      }
+    },
+    "ctaBanner": {
+      "title": "Klaar om uw evenement te organiseren?",
+      "subtitle": "Ons team antwoordt binnen 24 werkuren.",
+      "button": "Een aanvraag starten"
+    },
+    "process": {
+      "eyebrow": "Hoe het werkt",
+      "title": "Vier stappen, geen blinde vlekken",
+      "subtitle": "Van de eerste zoekopdracht tot op het podium, wij houden alles op koers.",
+      "steps": {
+        "discover": {
+          "title": "Ontdekken",
+          "desc": "Doorblader het roster, beluister de sets en check de beschikbaarheid in realtime."
+        },
+        "brief": {
+          "title": "Aanvragen",
+          "desc": "Verstuur uw aanvraag in enkele stappen: artiest, datum, locatie en opties."
+        },
+        "confirm": {
+          "title": "Bevestigen",
+          "desc": "Bevestig uw aanvraag per e-mail, betaal het voorschot en onderteken het contract online."
+        },
+        "deliver": {
+          "title": "Leveren",
+          "desc": "Coördinatie T-7, techniek ter plaatse, debrief na het evenement."
+        }
+      }
+    },
+    "ourStory": {
+      "title": "Onze geschiedenis",
+      "intro": "Geboren in 2010 op het Belgische Plateau is Gazmatek een zelfbestuurd collectief, gebouwd rond geluid, scenografie en opkomende artiesten. Crew, label en eigen geluidssysteem — elke euro wordt geherinvesteerd in productie, materiaal en artiesten.",
+      "mission": "Onze missie is nog steeds dezelfde: opkomend talent op het podium brengen met compromisloze eisen aan geluid, scenografie en betrouwbaarheid — van het eerste contact tot de debriefing na het evenement.",
+      "statYears": "Jaren actief",
+      "statEvents": "Geproduceerde evenementen",
+      "statArtists": "Artiesten in het roster"
+    },
+    "pricingGrid": {
+      "eyebrow": "Publiek prijsraster",
+      "title": "Geen verborgen prijzen — hier is onze formule",
+      "subtitle": "Het cachet van een artiest hangt af van zijn niveau (L1 → L4) en de capaciteit van de locatie. Vermenigvuldig met de ticketprijs en u krijgt de marge.",
+      "formula": {
+        "cachet": "Cachet",
+        "multiplier": "Multiplicator",
+        "ticket": "Ticketprijs"
+      },
+      "col": {
+        "capacity": "Capaciteit",
+        "bounds": "Marge"
+      },
+      "example": "Voorbeeld: een L3 in een zaal van 1 000 personen bij €20 → 40 × 20 = €800 aanbevolen cachet.",
+      "examples": {
+        "title": "Voorbeeldcachets",
+        "col": {
+          "ticket": "Ticketprijs",
+          "gross": "Recette",
+          "floor": "Ondergrens",
+          "cap": "Bovengrens"
+        }
+      },
+      "cta": "Open de simulator"
+    },
+    "pricingTeaser": {
+      "title": "Schat uw budget in minder dan een minuut",
+      "subtitle": "Capaciteit, ticketprijs, niveau, formaat — onze simulator berekent een aanbevolen cachet in realtime.",
+      "counter": "{{count}} actieve artiesten",
+      "cta": "Open de simulator"
+    },
+    "socialProof": {
+      "title": "Wat ze zeggen",
+      "subtitle": "Enkele getuigenissen van organisatoren die we recent hebben begeleid."
+    },
+    "faq": {
+      "title": "Veelgestelde vragen",
+      "subtitle": "Antwoorden op de vragen die we het vaakst krijgen.",
+      "q1": {
+        "q": "Hoe snel krijg ik een antwoord?",
+        "a": "Gemiddeld binnen 24 werkuren. Korte-termijnevenementen (< 14 dagen) krijgen voorrang."
+      },
+      "q2": {
+        "q": "Welke regio's bedienen jullie?",
+        "a": "Heel België standaard. Buurlanden (Frankrijk, Nederland, Luxemburg, Duitsland) op offerte."
+      },
+      "q3": {
+        "q": "Hoe verloopt de betaling?",
+        "a": "30 % voorschot bij bevestiging, saldo uiterlijk 48u voor het evenement."
+      },
+      "q4": {
+        "q": "En als we moeten annuleren?",
+        "a": "Voorwaarden staan in het boekingscontract: volledige terugbetaling tot 30 dagen voor, daarna degressief. We blijven flexibel bij overmacht."
+      }
+    }
+  },
+  "artists": {
+    "pageTitle": "Artiestencatalogus",
+    "pageSubtitle": "Filter op stijl, budget of beschikbaarheid.",
+    "filters": {
+      "title": "Filters",
+      "genre": "Stijl",
+      "date": "Beschikbaar op",
+      "apply": "Toepassen",
+      "reset": "Filters resetten",
+      "anyGenre": "Alle stijlen"
+    },
+    "emptyTitle": "Geen artiest voldoet aan uw zoekopdracht",
+    "emptyText": "Probeer uw criteria te verbreden of reset de filters.",
+    "card": {
+      "from": "Vanaf",
+      "perHour": "/ uur",
+      "view": "Bekijk profiel"
+    }
+  },
+  "artistDetail": {
+    "notFoundTitle": "Artiest niet gevonden",
+    "notFoundText": "Deze pagina bestaat niet meer of is niet gepubliceerd.",
+    "backToCatalog": "Terug naar catalogus",
+    "bio": "Biografie",
+    "gallery": "Galerij",
+    "availability": "Beschikbaarheid",
+    "availabilityComingSoon": "Interactieve kalender binnenkort beschikbaar.",
+    "priceCard": {
+      "title": "Tarieven",
+      "tier": "Prijscategorie",
+      "hint": "De uiteindelijke prijs hangt af van uw evenement (capaciteit, ticketprijs, formaat). Start de simulator voor een gedetailleerde schatting.",
+      "cta": "Deze artiest boeken",
+      "estimate": "Mijn budget schatten",
+      "hourlyRate": "Uurtarief",
+      "travel": "Reiskosten",
+      "perKm": "/ km"
+    },
+    "services": "Aangeboden diensten"
+  },
+  "pricing": {
+    "title": "Prijssimulator",
+    "subtitle": "Indicatieve schatting, niet-contractueel.",
+    "form": {
+      "artist": "Artiest",
+      "selectArtist": "Selecteer een artiest",
+      "duration": "Duur (uren)",
+      "date": "Datum",
+      "location": "Adres / Postcode",
+      "options": "Opties",
+      "estimate": "Schatten",
+      "bookNow": "Nu boeken",
+      "capacity": "Capaciteit",
+      "ticketPrice": "Ticketprijs (€)",
+      "level": "Artiestniveau",
+      "setType": "Type set",
+      "setTypeDj": "DJ",
+      "setTypeHybrid": "Hybride",
+      "setTypeLive": "Live"
+    },
+    "result": {
+      "title": "Schatting",
+      "artistCost": "Cachet artiest",
+      "travelCost": "Reiskosten",
+      "optionsCost": "Opties",
+      "subtotal": "Subtotaal excl. btw",
+      "vat": "Btw (21%)",
+      "total": "Totaal incl. btw",
+      "disclaimer": "Niet-contractuele schatting. De definitieve prijs wordt bevestigd na bestudering van uw aanvraag.",
+      "bookCta": "Boeken met deze schatting",
+      "outOfZone": "Deze zone wordt niet bediend. Neem contact met ons op voor een persoonlijke studie.",
+      "artistFeeTitle": "Aanbevolen cachet (ticketed event)",
+      "artistFeeRecommended": "Aanbevolen cachet",
+      "artistFeeRange": "Bandbreedte",
+      "artistFeeGrossShare": "Oftewel {{percent}} van de bruto-opbrengst"
+    },
+    "errors": {
+      "invalidAddress": "Ongeldig adres. Controleer postcode of adres.",
+      "missingFields": "Vul alle verplichte velden in.",
+      "artistNotFound": "Artiest niet gevonden, de selectie werd gereset."
+    },
+    "calendarPreview": {
+      "title": "Beschikbaarheid van de artiest",
+      "clickHint": "Klik op een vrije dag om de datum vooraf in te vullen."
+    }
+  },
+  "contact": {
+    "title": "Contact",
+    "subtitle": "Stel uw vraag, wij antwoorden binnen 24 werkuren.",
+    "form": {
+      "name": "Volledige naam",
+      "email": "E-mail",
+      "subject": "Onderwerp",
+      "message": "Uw bericht",
+      "submit": "Bericht verzenden",
+      "success": "Bericht verzonden. Bedankt!",
+      "error": "Uw bericht kon op dit moment niet worden verzonden."
+    },
+    "errors": {
+      "nameRequired": "Naam is verplicht.",
+      "emailRequired": "E-mail is verplicht.",
+      "emailInvalid": "Ongeldige e-mail.",
+      "subjectRequired": "Onderwerp is verplicht.",
+      "messageRequired": "Bericht is verplicht.",
+      "messageTooShort": "Uw bericht moet minstens 20 tekens bevatten."
+    },
+    "coordinates": {
+      "title": "Contactgegevens",
+      "email": "E-mail",
+      "phone": "Telefoon",
+      "address": "Adres"
+    },
+    "dropdownPlaceholder": "Onderwerp*"
+  },
+  "bookingCta": {
+    "primary": "Een artiest boeken",
+    "primaryAria": "Een boekingsaanvraag starten",
+    "withArtist": "{{name}} boeken",
+    "withArtistAria": "Aanvraag voor {{name}} starten",
+    "sticky": "Boeken"
+  },
+  "bookingNew": {
+    "title": "Een artiest boeken",
+    "subtitle": "Vul uw evenementgegevens in en ontvang direct een offerte.",
+    "disclaimer": "Na verzending ontvangt u een e-mail om uw boeking te bevestigen. Het Gazmatek-team valideert vervolgens uw aanvraag binnen 24 werkuren.",
+    "authRequired": {
+      "title": "Inloggen vereist",
+      "description": "Maak eerst een account aan of log in om een boeking aan te vragen en je bookings op te volgen.",
+      "signup": "Account aanmaken",
+      "login": "Ik heb al een account"
+    },
+    "artist": {
+      "title": "U wenst te boeken",
+      "name": "Artiest",
+      "genre": "Genre",
+      "tier": "Prijscategorie",
+      "notFound": "Deze artiest is momenteel niet boekbaar.",
+      "missingId": "Kies een artiest vanaf zijn profielpagina om een boeking te starten."
+    },
+    "fields": {
+      "date": "Datum en tijd van het evenement",
+      "duration": "Duur (uren)",
+      "street": "Straat en nummer",
+      "postalCode": "Postcode",
+      "city": "Stad",
+      "country": "Land",
+      "capacity": "Capaciteit (aantal plaatsen)",
+      "ticketPrice": "Ticketprijs (€)",
+      "setType": "Setformaat",
+      "setType_dj": "DJ-set",
+      "setType_hybrid": "Hybride (DJ + instrumenten)",
+      "setType_live": "Live-set",
+      "context": "Details over het evenement (optioneel)"
+    },
+    "errors": {
+      "dateRequired": "Datum is verplicht.",
+      "durationRequired": "Geldige duur is verplicht.",
+      "streetRequired": "Straat is verplicht.",
+      "postalCodeRequired": "Postcode is verplicht.",
+      "cityRequired": "Stad is verplicht.",
+      "countryRequired": "Land is verplicht.",
+      "contextTooShort": "Details zijn te kort.",
+      "contextTooLong": "Details zijn te lang.",
+      "artistRequired": "Geen artiest geselecteerd.",
+      "pricingRequired": "Capaciteit en ticketprijs zijn vereist om de offerte te berekenen."
+    },
+    "form": {
+      "submit": "Aanvraag verzenden",
+      "success": "Aanvraag verzonden — we nemen snel contact met u op.",
+      "successTitle": "Aanvraag ontvangen",
+      "successBody": "Bedankt! Een teamlid van Gazmatek neemt binnen 24 werkuren contact met u op om de beschikbaarheid te bevestigen en de betaling te regelen. Een samenvatting is naar uw e-mail gestuurd."
+    },
+    "quote": {
+      "title": "Schatting",
+      "artistCost": "Artiestvergoeding",
+      "travelCost": "Reiskosten",
+      "subtotal": "Subtotaal",
+      "vat": "BTW",
+      "total": "Geschat totaal",
+      "disclaimer": "Indicatieve schatting — het uiteindelijke bedrag wordt na validatie bevestigd.",
+      "computing": "Offerte berekenen…"
+    },
+    "calendarPreview": {
+      "title": "Beschikbaarheid van de artiest",
+      "clickHint": "Klik op een vrije dag om de datum vooraf in te vullen."
+    }
+  },
+  "footer": {
+    "rights": "© {{year}} Gazmatek. Alle rechten voorbehouden.",
+    "tagline": "Artiestenboeking — België",
+    "legal": {
+      "terms": "Gebruiksvoorwaarden",
+      "privacy": "Privacybeleid",
+      "notices": "Wettelijke vermeldingen"
+    }
+  },
+  "cookieConsent": {
+    "aria_label": "Cookie-toestemming",
+    "title": "Uw privacy telt",
+    "description": "Wij gebruiken cookies om de werking, het gebruik en de ervaring te garanderen. U beslist wat u toestaat.",
+    "customize": "Aanpassen",
+    "accept_all": "Alles aanvaarden",
+    "reject_all": "Alles weigeren",
+    "save": "Mijn keuzes opslaan",
+    "category_necessary": "Strikt noodzakelijk",
+    "category_necessary_desc": "Onmisbaar voor veiligheid en basisfunctionaliteit.",
+    "category_necessary_badge": "Altijd actief",
+    "category_analytics": "Analytics",
+    "category_analytics_desc": "Helpen ons te begrijpen hoe de site wordt gebruikt.",
+    "category_marketing": "Marketing",
+    "category_marketing_desc": "Voor inhoudpersonalisatie en campagnemeting.",
+    "reopen_aria": "Cookievoorkeuren"
+  },
+  "notFound": {
+    "title": "Pagina niet gevonden",
+    "text": "De pagina die u zoekt bestaat niet of werd verplaatst.",
+    "back": "Terug naar de homepage"
+  },
+  "availability": {
+    "free": "Beschikbaar",
+    "partial": "Gedeeltelijk beschikbaar",
+    "unavailable": "Onbeschikbaar"
+  },
+  "booking": {
+    "title": "Boekingsaanvraag",
+    "subtitle": "Enkele stappen om uw evenement te bevestigen.",
+    "steps": {
+      "artist": "Artiest",
+      "datetime": "Datum",
+      "location": "Locatie",
+      "client": "Contact",
+      "summary": "Samenvatting"
+    },
+    "fields": {
+      "artist": "Artiest",
+      "date": "Datum",
+      "time": "Uur",
+      "duration": "Duur (u)",
+      "location": "Locatie / Adres",
+      "context": "Context",
+      "contextPlaceholder": "Type evenement, sfeer, beperkingen…",
+      "clientName": "Naam",
+      "clientEmail": "E-mail",
+      "clientPhone": "Telefoon"
+    },
+    "summary": {
+      "title": "Samenvatting",
+      "disclaimer": "Niet-contractuele schatting. Definitieve prijs na studie.",
+      "submit": "Aanvraag verzenden"
+    },
+    "errors": {
+      "missingFields": "Vul de verplichte velden in."
+    },
+    "sent": {
+      "title": "Aanvraag verzonden",
+      "body": "Een samenvatting is verzonden naar"
+    }
+  },
+  "auth": {
+    "password": "Wachtwoord",
+    "signIn": "Aanmelden",
+    "signOut": "Afmelden",
+    "invalidCredentials": "Ongeldige inloggegevens",
+    "artist": { "title": "Artiest aanmelden" },
+    "admin": { "title": "Admin aanmelden" }
+  },
+  "artistArea": {
+    "nav": {
+      "calendar": "Mijn agenda",
+      "allBookings": "Al mijn boekingen",
+      "profile": "Mijn profiel"
+    },
+    "dashboard": {
+      "title": "Mijn ruimte",
+      "welcome": "Welkom {{name}}"
+    },
+    "upcoming": {
+      "title": "Komende boekingen",
+      "empty": "Geen komende boekingen."
+    },
+    "bookings": {
+      "title": "Mijn boekingen",
+      "upcoming": "Komend",
+      "past": "Voorbij"
+    },
+    "bookingDetail": {
+      "title": "Boeking detail",
+      "eyebrow": "Artiestenboeking",
+      "heroTitle": "Optreden op {{date}}",
+      "back": "Terug naar boekingen",
+      "status": "Status",
+      "reference": "Interne referentie",
+      "eventSection": "Eventgegevens",
+      "pricingSection": "Tarifering",
+      "clientSection": "Klant",
+      "statusSection": "Boekingsstatus",
+      "durationValue": "{{hours}} u",
+      "total": "Geoffreerd totaal",
+      "deposit": "Voorschot",
+      "remaining": "Resterend saldo",
+      "cancelReason": "Reden van annulering",
+      "clientLabel": "Contactpersoon",
+      "clientHiddenTitle": "Contact verborgen",
+      "clientHidden": "Klantgegevens worden zichtbaar zodra de aanbetaling is bevestigd."
+    },
+    "calendar": {
+      "title": "Mijn agenda",
+      "add": "Onbeschikbaarheid toevoegen",
+      "startsAt": "Start",
+      "endsAt": "Eind",
+      "type": "Type",
+      "personal": "Persoonlijk",
+      "externalGig": "Externe gig",
+      "eventTitle": "Titel van het evenement",
+      "notes": "Privé notities",
+      "list": "Mijn onbeschikbaarheden",
+      "empty": "Geen onbeschikbaarheid.",
+      "created": "Onbeschikbaarheid aangemaakt"
+    }
+  },
+  "admin": {
+    "dashboard": {
+      "title": "Admin dashboard",
+      "welcome": "Welkom {{name}}"
+    },
+    "nav": {
+      "artists": "Artiesten",
+      "bookings": "Boekingen",
+      "content": "Inhoud",
+      "settings": "Instellingen"
+    },
+    "artists": {
+      "title": "Artistenbeheer",
+      "create": "Artiest aanmaken",
+      "list": "Catalogus",
+      "created": "Artiest aangemaakt",
+      "deleteConfirm": "Deze artiest verwijderen?",
+      "publish": "Publiceren",
+      "unpublish": "Depubliceren",
+      "published": "Gepubliceerd",
+      "featured": "Uitgelicht",
+      "invitations": {
+        "title": "Artiestuitnodigingen",
+        "subtitle": "Stuur een magic link zodat een nieuwe artiest het roster kan vervoegen.",
+        "create": "Een nieuwe artiest uitnodigen",
+        "list": "Verzonden uitnodigingen",
+        "createCta": "Uitnodiging versturen",
+        "createdToast": "Uitnodiging verzonden naar {{email}}",
+        "createdTitle": "Uitnodiging verzonden",
+        "createdHint": "Kopieer onderstaande link als de artiest de e-mail niet ontvangt:",
+        "linkCopied": "Link gekopieerd",
+        "copyLink": "Link kopiëren",
+        "resendCta": "Opnieuw verzenden",
+        "resendTitle": "Uitnodiging opnieuw verzenden",
+        "resendConfirm": "Een nieuwe link sturen naar {{email}}? De oude link wordt ongeldig.",
+        "resentToast": "Nieuwe link verzonden naar {{email}}",
+        "revokeCta": "Intrekken",
+        "revokeTitle": "Uitnodiging intrekken",
+        "revokeConfirm": "De artiest kan de link niet meer gebruiken. Doorgaan?",
+        "revokedToast": "Uitnodiging ingetrokken",
+        "empty": "Nog geen uitnodigingen.",
+        "filterStatus": "Filter op status",
+        "filterStatusAll": "Alle statussen",
+        "status": {
+          "pending": "In afwachting",
+          "accepted": "Geaccepteerd",
+          "expired": "Verlopen",
+          "revoked": "Ingetrokken"
+        },
+        "setType": {
+          "dj": "DJ",
+          "hybrid": "Hybride",
+          "live": "Live"
+        },
+        "fields": {
+          "email": "E-mail van de artiest",
+          "stageName": "Artiestennaam",
+          "level": "Niveau (tier)",
+          "setType": "Hoofdformat",
+          "customMessage": "Persoonlijke boodschap (optioneel)"
+        },
+        "col": {
+          "email": "E-mail",
+          "stageName": "Artiestennaam",
+          "level": "Niveau",
+          "status": "Status",
+          "expiresAt": "Verloopt op",
+          "resendCount": "Heropgestuurd",
+          "actions": "Acties"
+        }
+      }
+    },
+    "bookings": {
+      "title": "Boekingsaanvragen",
+      "filterStatus": "Filter op status",
+      "empty": "Geen aanvraag.",
+      "approve": "Goedkeuren",
+      "reject": "Afwijzen",
+      "approved": "Boeking goedgekeurd",
+      "rejected": "Boeking afgewezen",
+      "rejectModalTitle": "Boeking afwijzen",
+      "rejectReasonOptional": "Reden van afwijzing (optioneel)",
+      "rejectReasonPlaceholder": "Leg de reden van de afwijzing uit…",
+      "rejectConfirm": "Afwijzing bevestigen",
+      "markDepositPaid": "Voorschot ontvangen",
+      "markDepositPaidConfirm": "Bevestigen dat het voorschot ontvangen is?",
+      "markDepositPaidSuccess": "Voorschot gemarkeerd als betaald",
+      "markCompleted": "Saldo betaald / afsluiten",
+      "markCompletedConfirm": "Deze boeking markeren als volledig betaald en afgesloten?",
+      "markCompletedSuccess": "Boeking afgesloten",
+      "detail": {
+        "title": "Boekingsdetails",
+        "back": "Terug naar lijst",
+        "eyebrow": "Boeking",
+        "heroTitle": "{{artist}}",
+        "clientSection": "Klantgegevens",
+        "eventSection": "Evenement",
+        "pricingSection": "Tarifering",
+        "statusSection": "Status & historiek",
+        "actionsSection": "Admin-acties",
+        "artist": "Artiest",
+        "locale": "Taal",
+        "inviteHint": "Deze klant heeft zijn account nog niet geactiveerd. Stuur een e-mail zodat hij een wachtwoord kan instellen.",
+        "inviteButton": "Uitnodigingsmail versturen",
+        "inviteSent": "Uitnodigingsmail verstuurd",
+        "alreadyClaimed": "Deze klant heeft zijn account al geactiveerd.",
+        "status": "Status",
+        "submittedAt": "Aanvraag ontvangen op",
+        "approvedAt": "Goedgekeurd op",
+        "paidAt": "Volledig betaald op",
+        "reference": "Referentie",
+        "durationValue": "{{hours}} u",
+        "total": "Totaal incl. btw",
+        "deposit": "Voorschot",
+        "remaining": "Resterend saldo",
+        "cancelReason": "Reden van annulering",
+        "noActions": "Geen actie beschikbaar voor deze status."
+      },
+      "calendarPreview": {
+        "title": "Agenda van de artiest",
+        "hint": "Selecteer eerst een artiest om de bezette periodes te zien.",
+        "clickHint": "Klik op een vrije dag om de datum vooraf in te vullen."
+      },
+      "edit": {
+        "title": "Boeking bewerken",
+        "saved": "Boeking bijgewerkt",
+        "errorMissingDate": "Vul de datum van het evenement in"
+      }
+    },
+    "content": {
+      "title": "Editorial inhoud",
+      "empty": "Geen blok.",
+      "saved": "Blok {{key}} bijgewerkt"
+    },
+    "settings": {
+      "title": "Agentschapsinstellingen",
+      "signature": {
+        "title": "Handtekening van de manager",
+        "copy": "Deze handtekening wordt automatisch toegevoegd aan engagementcontracten voordat ze naar de artiest worden gestuurd. Ze verschijnt in de kolom „For the Agency”.",
+        "loading": "Laden…",
+        "empty": "Nog geen handtekening opgeslagen — contracten worden verstuurd zonder agentschap-handtekening.",
+        "previewAlt": "Voorbeeld van de handtekening",
+        "create": "Mijn handtekening aanmaken",
+        "replace": "Handtekening vervangen",
+        "remove": "Verwijderen",
+        "save": "Opslaan",
+        "hint": "Teken je handtekening met muis of vinger.",
+        "saved": "Handtekening opgeslagen",
+        "saveFailed": "Opslaan van de handtekening mislukt",
+        "removed": "Handtekening verwijderd"
+      },
+      "companyInfo": {
+        "title": "Bedrijfsinformatie",
+        "copy": "Deze waarden worden vooringevuld in het blok „THE AGENCY” van elk engagementcontract dat naar artiesten wordt verstuurd.",
+        "save": "Opslaan",
+        "saved": "Bedrijfsinformatie opgeslagen",
+        "saveFailed": "Opslaan van de bedrijfsinformatie mislukt",
+        "fields": {
+          "name": "Bedrijfsnaam",
+          "representative": "Vertegenwoordiger",
+          "address": "Adres",
+          "companyNumber": "Ondernemingsnummer (KBO/BCE)",
+          "vatNumber": "BTW-nummer",
+          "email": "Contactmail",
+          "iban": "IBAN"
+        }
+      }
+    }
+  },
+  "account": {
+    "login": {
+      "title": "Inloggen",
+      "forgotLink": "Wachtwoord vergeten?",
+      "signupLink": "Account aanmaken"
+    },
+    "signup": {
+      "title": "Account aanmaken",
+      "hint": "Maak je klantruimte aan om je bookings te volgen en meerdere artiesten voor één avond te boeken.",
+      "accountType": {
+        "label": "Ik ben",
+        "individual": "Particulier",
+        "company": "Bedrijf"
+      },
+      "displayName": "Volledige naam",
+      "confirmPassword": "Wachtwoord bevestigen",
+      "phone": "Telefoon",
+      "companyHint": "Als je voor een bedrijf boekt, vul deze gegevens in voor de facturatie. Laat anders leeg.",
+      "companyName": "Bedrijfsnaam",
+      "companyNumber": "Ondernemingsnummer (KBO)",
+      "vatNumber": "Btw-nummer",
+      "addressStreet": "Straat",
+      "addressNumber": "Nummer",
+      "addressZip": "Postcode",
+      "addressCity": "Stad",
+      "addressCountry": "Land",
+      "next": "Volgende",
+      "back": "Terug",
+      "submit": "Mijn account aanmaken",
+      "loginLink": "Ik heb al een account",
+      "failed": "Aanmaak mislukt. Dit e-mailadres is mogelijk al in gebruik.",
+      "success": "Account aangemaakt",
+      "steps": {
+        "account": "Account",
+        "company": "Bedrijf",
+        "address": "Adres"
+      },
+      "placeholders": {
+        "displayName": "Jan Janssen",
+        "email": "uw@email.com",
+        "password": "Minimaal 8 tekens",
+        "confirmPassword": "Wachtwoord opnieuw invoeren",
+        "companyName": "Mijn bedrijf BV",
+        "addressStreet": "Louizalaan",
+        "addressNumber": "42",
+        "addressCity": "Brussel",
+        "phone": "+32 470 12 34 56"
+      },
+      "errors": {
+        "displayNameRequired": "Naam is verplicht.",
+        "emailRequired": "E-mail is verplicht.",
+        "emailInvalid": "Ongeldig e-mailadres.",
+        "passwordTooShort": "Wachtwoord moet minstens {{min}} tekens bevatten.",
+        "passwordMismatch": "Wachtwoorden komen niet overeen.",
+        "addressStreetRequired": "Straat is verplicht.",
+        "addressNumberRequired": "Nummer is verplicht.",
+        "addressZipRequired": "Postcode is verplicht.",
+        "addressCityRequired": "Stad is verplicht.",
+        "addressCountryRequired": "Land is verplicht.",
+        "phoneRequired": "Telefoon is verplicht."
+      }
+    },
+    "forgot": {
+      "title": "Wachtwoord vergeten",
+      "hint": "Voer je e-mailadres in. Als er een account bestaat sturen we een link om je wachtwoord opnieuw in te stellen.",
+      "submit": "Link versturen",
+      "sent": "Als er een account bestaat voor dit e-mailadres is er een reset-link verstuurd.",
+      "loginLink": "Terug naar inloggen"
+    },
+    "reset": {
+      "title": "Nieuw wachtwoord",
+      "hint": "Kies een nieuw wachtwoord voor je account.",
+      "submit": "Bijwerken",
+      "missingToken": "Ongeldige of verlopen link.",
+      "success": "Wachtwoord bijgewerkt"
+    },
+    "claim": {
+      "title": "Welkom! Activeer je account",
+      "hint": "Kies een wachtwoord om je klantruimte af te ronden.",
+      "submit": "Mijn account activeren",
+      "missingToken": "Ongeldige of verlopen link.",
+      "success": "Account geactiveerd. Je kan nu inloggen."
+    },
+    "dashboard": {
+      "title": "Mijn account",
+      "welcome": "Welkom {{name}}",
+      "upcoming": "Komende bookings",
+      "allBookings": "Al mijn bookings"
+    },
+    "bookings": {
+      "title": "Mijn bookings",
+      "tabs": {
+        "upcoming": "Komend",
+        "past": "Voorbij",
+        "cancelled": "Geannuleerd",
+        "all": "Alle"
+      },
+      "cancel": {
+        "action": "Annuleren",
+        "modalTitle": "Deze boeking annuleren?",
+        "reasonLabel": "Reden (optioneel)",
+        "reasonPlaceholder": "Vertel ons kort waarom je annuleert…",
+        "confirm": "Annulering bevestigen",
+        "success": "Boeking geannuleerd"
+      }
+    }
+  },
+  "onboarding": {
+    "title": "Engagementcontract",
+    "statusTitle": "Status van het contract",
+    "statusPending": "Je engagementcontract moet ondertekend worden om je account te activeren.",
+    "statusAwaitingSignature": "Je contract wacht op ondertekening in Documenso. Hervat de ondertekening om het af te ronden.",
+    "statusSigned": "Contract ondertekend op {{date}}.",
+    "contractPreview": "Voorbeeld van het contract",
+    "contractPreviewBody": "Lees de voorwaarden hieronder zorgvuldig door, vink het vakje aan en onderteken.",
+    "providerNote": "De elektronische ondertekening verloopt via Documenso. Vink de bevestiging aan en klik op Ondertekenen — er opent een nieuw tabblad met je contract.",
+    "waitingForWebhook": "Wachten op de bevestiging van de ondertekening… Deze pagina wordt automatisch bijgewerkt.",
+    "downloadDraft": "Concept-PDF downloaden",
+    "downloadSigned": "Ondertekende PDF downloaden",
+    "acceptTerms": "Ik heb de voorwaarden van het engagementcontract gelezen en aanvaard.",
+    "sign": "Ondertekenen via Documenso",
+    "resumeSigning": "Ondertekening hervatten",
+    "signed": "Contract succesvol ondertekend",
+    "infoTitle": "Jouw gegevens",
+    "infoBody": "Deze gegevens komen op je contract te staan. Vul ze in en sla op vóór de ondertekening.",
+    "infoSaved": "Gegevens opgeslagen",
+    "infoIncomplete": "Vul je volledige naam, adres en land in vóór je ondertekent.",
+    "fields": {
+      "fullName": "Volledige naam",
+      "phone": "Telefoon",
+      "address": "Adres",
+      "country": "Land",
+      "vatNumber": "Btw-nummer",
+      "companyNumber": "Ondernemingsnummer (KBO/BCE)"
+    },
+    "errors": {
+      "mustAccept": "Je moet de voorwaarden aanvaarden voor je kan ondertekenen.",
+      "noSigningUrl": "De Documenso-handtekeninglink kan niet worden opgehaald. Probeer opnieuw.",
+      "saveFailed": "Opslaan van je gegevens is mislukt."
+    }
+  }
+}

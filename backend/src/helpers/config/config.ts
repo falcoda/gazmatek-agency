@@ -18,6 +18,13 @@ import fs from "fs";
 import path from "path";
 import { z } from "zod";
 
+// Signature provider names (Rule 4: no magic strings). `documenso` requires a
+// webhook secret so the webhook handler can authenticate inbound callbacks.
+const SIGNATURE_PROVIDER = {
+  STUB: "stub",
+  DOCUMENSO: "documenso",
+} as const;
+
 const toBoolean = (value: unknown, defaultValue: boolean): boolean => {
   if (value === undefined) {
     return defaultValue;
@@ -176,6 +183,16 @@ const envSchema = z
     MAILER_SMTP_SECURE: booleanFromEnv(false),
     MAILER_SMTP_USER: optionalString,
     MAILER_SMTP_PASSWORD: optionalString,
+
+    SIGNATURE_PROVIDER: z.string().default(SIGNATURE_PROVIDER.STUB),
+    SIGNATURE_WEBHOOK_SECRET: optionalString,
+
+    DOCUMENSO_URL: optionalString,
+    DOCUMENSO_API_KEY: optionalString,
+    DOCUMENSO_WEBHOOK_SECRET: optionalString,
+    PUPPETEER_BROWSER_WS_ENDPOINT: optionalString,
+    PUPPETEER_EXECUTABLE_PATH: optionalString,
+    MINIO_LOCAL_ENDPOINT: optionalString,
   })
   .superRefine((env, ctx) => {
     if (
@@ -236,6 +253,19 @@ const envSchema = z
           });
         }
       }
+    }
+
+    if (
+      env.SIGNATURE_PROVIDER === SIGNATURE_PROVIDER.DOCUMENSO &&
+      (!env.DOCUMENSO_WEBHOOK_SECRET ||
+        env.DOCUMENSO_WEBHOOK_SECRET.trim().length === 0)
+    ) {
+      ctx.addIssue({
+        code: z.ZodIssueCode.custom,
+        path: ["DOCUMENSO_WEBHOOK_SECRET"],
+        message:
+          "DOCUMENSO_WEBHOOK_SECRET is required when SIGNATURE_PROVIDER is documenso",
+      });
     }
   });
 
@@ -381,6 +411,20 @@ export const config = {
       user: parsedEnv.MAILER_SMTP_USER ?? "",
       password: parsedEnv.MAILER_SMTP_PASSWORD ?? "",
     },
+  },
+  signature: {
+    provider: parsedEnv.SIGNATURE_PROVIDER,
+    webhookSecret: parsedEnv.SIGNATURE_WEBHOOK_SECRET ?? "",
+  },
+  documenso: {
+    url: parsedEnv.DOCUMENSO_URL ?? "",
+    apiKey: parsedEnv.DOCUMENSO_API_KEY ?? "",
+    webhookSecret: parsedEnv.DOCUMENSO_WEBHOOK_SECRET ?? "",
+    minioLocalEndpoint: parsedEnv.MINIO_LOCAL_ENDPOINT ?? "",
+  },
+  puppeteer: {
+    browserWsEndpoint: parsedEnv.PUPPETEER_BROWSER_WS_ENDPOINT ?? "",
+    executablePath: parsedEnv.PUPPETEER_EXECUTABLE_PATH ?? "",
   },
   featureFlags,
 };

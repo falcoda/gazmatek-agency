@@ -1,14 +1,6 @@
 .home {
-  z-index: 2;
   position: relative;
-  .lineAgenda {
-    z-index: 2;
-    position: absolute;
-    // left: -100px;
-    width: 100vw;
-    @include maxScreen($breakpoint-sm) {
-      transform: scale(0.7);
-      left: -100px;
-    }
-  }
+  z-index: 2;
+  display: flex;
+  flex-direction: column;
 }

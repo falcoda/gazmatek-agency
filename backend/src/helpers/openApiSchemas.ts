@@ -3,12 +3,6 @@ import {
   refreshBodySchema,
   registerBodySchema,
 } from "@src/schemas/auth";
-import {
-  createExampleBodySchema,
-  deleteExampleBodySchema,
-  listExamplesQuerySchema,
-  updateExampleBodySchema,
-} from "@src/schemas/example";
 import { z } from "zod";
 
 /**
@@ -89,19 +83,6 @@ export const openApiSchemas: Record<string, Record<string, unknown>> = {
     },
   },
 
-  // ── Example ───────────────────────────────────────────────────────────────
-
-  ExampleItem: {
-    type: "object",
-    required: ["example_id", "name"],
-    properties: {
-      example_id: { type: "integer" },
-      name: { type: "string" },
-      description: { type: "string", nullable: true },
-      created_at: { type: "string", format: "date-time" },
-    },
-  },
-
   PaginationMeta: {
     type: "object",
     required: ["page", "limit", "total", "totalPages"],
@@ -110,57 +91,6 @@ export const openApiSchemas: Record<string, Record<string, unknown>> = {
       limit: { type: "integer", minimum: 1 },
       total: { type: "integer", minimum: 0 },
       totalPages: { type: "integer", minimum: 0 },
-    },
-  },
-
-  CreateExampleBody: toSchema(createExampleBodySchema),
-
-  CreateExampleResponse: {
-    type: "object",
-    required: ["message", "example"],
-    properties: {
-      message: { type: "string", example: "example added successfully" },
-      example: { $ref: "#/components/schemas/ExampleItem" },
-    },
-  },
-
-  ListExamplesQuery: toSchema(listExamplesQuerySchema),
-
-  ListExampleResponse: {
-    type: "object",
-    required: ["data", "pagination"],
-    properties: {
-      data: {
-        type: "array",
-        items: { $ref: "#/components/schemas/ExampleItem" },
-      },
-      pagination: { $ref: "#/components/schemas/PaginationMeta" },
-    },
-  },
-
-  UpdateExampleBody: toSchema(updateExampleBodySchema),
-
-  UpdateExampleResponse: {
-    type: "object",
-    required: ["message", "example"],
-    properties: {
-      message: { type: "string", example: "example updated successfully" },
-      example: { $ref: "#/components/schemas/ExampleItem" },
-    },
-  },
-
-  DeleteExampleBody: toSchema(deleteExampleBodySchema),
-
-  DeleteExampleResponse: {
-    type: "object",
-    required: ["message", "example"],
-    properties: {
-      message: { type: "string", example: "example deleted successfully" },
-      example: {
-        type: "object",
-        required: ["example_id"],
-        properties: { example_id: { type: "integer" } },
-      },
     },
   },
 };

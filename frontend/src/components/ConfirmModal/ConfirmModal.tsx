@@ -24,16 +24,6 @@ interface ConfirmModalProps {
 }
 
 /**
- * Closes the open `covaltech-react-ui` Modal. That Modal exposes no imperative
- * close handle to its footer slot, but it listens for an `Escape` keydown on
- * `document`, so dispatching one is the supported way to close it after a
- * successful confirm.
- */
-const closeOpenModal = () => {
-  document.dispatchEvent(new KeyboardEvent("keydown", { code: "Escape" }));
-};
-
-/**
  * Generic confirmation modal. Wraps the `covaltech-react-ui` Modal and exposes
  * title, content, confirm label and confirm handler through props.
  */
@@ -51,7 +41,7 @@ const ConfirmModal = ({
       modalButton={trigger}
       modalTitle={modalTitle}
       modalContent={modalContent}
-      modalFooterButton={
+      modalFooterButton={({ onClose }) => (
         <Button
           label={confirmLabel}
           style={confirmStyle}
@@ -59,11 +49,11 @@ const ConfirmModal = ({
           onClick={async () => {
             const result = await onConfirm();
             if (result !== false) {
-              closeOpenModal();
+              onClose();
             }
           }}
         />
-      }
+      )}
     />
   );
 };

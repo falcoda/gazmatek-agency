@@ -1,0 +1,28 @@
+.authPage {
+  max-width: 480px;
+  margin: 0 auto;
+  padding: $padding-xl $padding-md;
+
+  h1 {
+    margin: 0 0 $padding-md;
+    text-align: center;
+  }
+}
+
+.authForm {
+  background: $card-color;
+  border: 1px solid $border-color;
+  border-radius: $radius-medium;
+  padding: $padding-lg;
+  display: flex;
+  flex-direction: column;
+  gap: $padding-md;
+
+  .input {
+    width: 100%;
+  }
+
+  .styledInput {
+    width: 100% !important;
+  }
+}

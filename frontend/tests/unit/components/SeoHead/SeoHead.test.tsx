@@ -3,12 +3,16 @@ import { describe, expect, it } from "vitest";
 
 import SeoHead from "@/components/SeoHead/SeoHead";
 
+const EXPECTED_TITLE = "Gazmatek — Artist booking agency";
+const EXPECTED_DESCRIPTION =
+  "Gazmatek represents DJs, live acts and performers. Discover our artists and book your next event.";
+
 describe("SeoHead", () => {
   it("sets the document title from the translation", async () => {
     renderWithProviders(<SeoHead />);
 
     await waitFor(() => {
-      expect(document.title).toBe("My App — Template");
+      expect(document.title).toBe(EXPECTED_TITLE);
     });
   });
 
@@ -19,9 +23,7 @@ describe("SeoHead", () => {
       const description = document.head.querySelector(
         'meta[name="description"]',
       );
-      expect(description?.getAttribute("content")).toBe(
-        "A production-ready web application template.",
-      );
+      expect(description?.getAttribute("content")).toBe(EXPECTED_DESCRIPTION);
     });
   });
 
@@ -30,7 +32,9 @@ describe("SeoHead", () => {
 
     await waitFor(() => {
       const canonical = document.head.querySelector('link[rel="canonical"]');
-      expect(canonical?.getAttribute("href")).toBe("https://example.com/en/");
+      expect(canonical?.getAttribute("href")).toBe(
+        "https://booking.Gazmatek.com/en/",
+      );
     });
   });
 
@@ -42,7 +46,7 @@ describe("SeoHead", () => {
         document.head
           .querySelector('meta[property="og:title"]')
           ?.getAttribute("content"),
-      ).toBe("My App — Template");
+      ).toBe(EXPECTED_TITLE);
       expect(
         document.head
           .querySelector('meta[property="og:locale"]')
@@ -52,7 +56,7 @@ describe("SeoHead", () => {
         document.head
           .querySelector('meta[name="twitter:title"]')
           ?.getAttribute("content"),
-      ).toBe("My App — Template");
+      ).toBe(EXPECTED_TITLE);
     });
   });
 

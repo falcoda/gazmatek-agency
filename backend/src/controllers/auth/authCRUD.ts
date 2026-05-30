@@ -11,6 +11,7 @@ import {
   ResetPasswordBody,
   ResetPasswordResponse,
 } from "@src/controllers/auth/types";
+import { HTTP_STATUS } from "@src/helpers/error/constants";
 import { logger } from "@src/helpers/logger";
 import { AUTH_SUCCESS_MESSAGES } from "@src/helpers/messages";
 import AuthService from "@src/services/auth/authService";
@@ -28,7 +29,7 @@ export class AuthCRUD {
       const result = await this.authService.register(req.body);
 
       logger.info("User registered", { email: req.body.email });
-      res.status(201).json(result);
+      res.status(HTTP_STATUS.CREATED).json(result);
     } catch (error) {
       next(error);
     }
@@ -43,7 +44,7 @@ export class AuthCRUD {
       const result = await this.authService.login(req.body);
 
       logger.info("User logged in", { email: req.body.email });
-      res.status(200).json(result);
+      res.status(HTTP_STATUS.OK).json(result);
     } catch (error) {
       next(error);
     }
@@ -56,7 +57,7 @@ export class AuthCRUD {
   ): Promise<void> {
     try {
       const tokens = await this.authService.refresh(req.body.refreshToken);
-      res.status(200).json(tokens);
+      res.status(HTTP_STATUS.OK).json(tokens);
     } catch (error) {
       next(error);
     }
@@ -71,7 +72,9 @@ export class AuthCRUD {
       await this.authService.logout(req.body.refreshToken);
 
       logger.info("User logged out", { user_id: req.user_id });
-      res.status(200).json({ message: AUTH_SUCCESS_MESSAGES.LOGGED_OUT });
+      res
+        .status(HTTP_STATUS.OK)
+        .json({ message: AUTH_SUCCESS_MESSAGES.LOGGED_OUT });
     } catch (error) {
       next(error);
     }
@@ -86,7 +89,7 @@ export class AuthCRUD {
       await this.authService.forgotPassword(req.body);
 
       res
-        .status(200)
+        .status(HTTP_STATUS.OK)
         .json({ message: AUTH_SUCCESS_MESSAGES.PASSWORD_RESET_REQUESTED });
     } catch (error) {
       next(error);
@@ -102,7 +105,9 @@ export class AuthCRUD {
       await this.authService.resetPassword(req.body);
 
       logger.info("User password reset");
-      res.status(200).json({ message: AUTH_SUCCESS_MESSAGES.PASSWORD_RESET });
+      res
+        .status(HTTP_STATUS.OK)
+        .json({ message: AUTH_SUCCESS_MESSAGES.PASSWORD_RESET });
     } catch (error) {
       next(error);
     }

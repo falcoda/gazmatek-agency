@@ -1,19 +1,21 @@
 import "./MobileNavbar.scss";
 
 import React, {
+  type CSSProperties,
   cloneElement,
   isValidElement,
   memo,
   ReactElement,
+  useEffect,
+  useId,
   useState,
 } from "react";
-import { NavLink } from "react-router-dom";
+import { NavLink, useLocation } from "react-router-dom";
 
 import { Logo } from "../../../assets/svg/svgIcons";
 import useHeaderBannerStore from "../../stores/HeaderBannerStore";
-import ElementNavBar from "../ElementNavbar/ElementNavbar";
 import { NavItemType } from "../Navbar";
-import SubMenuNavbar from "../SubMenuNavbar/SubMenuNavbar";
+import renderNavItems from "../renderNavItems";
 import BurgerClose from "./burger-close.svg?react";
 import BurgerOpen from "./burger-open.svg?react";
 
@@ -31,68 +33,118 @@ const MobileNavbar: React.FC<MobileNavbarProps> = ({
   showLinkLogo,
   scrollToContainer = false,
 }) => {
-  const [collapsed, setCollapsed] = useState(false);
+  const [isOpen, setIsOpen] = useState(false);
   const { visible, height } = useHeaderBannerStore();
+  const location = useLocation();
+  const collapseId = useId();
+  const navbarOffset = visible ? height : 0;
+
+  const closeNavbar = () => {
+    setIsOpen(false);
+  };
 
   const toggleNavbar = () => {
-    setCollapsed(!collapsed);
-    // scroll to the .container if the navbar is collapsed and scrollToContainer is true
-    if (collapsed && scrollToContainer) {
-      const container = document.querySelector(".container");
-      if (container) {
-        container.scrollIntoView({ behavior: "smooth" });
+    setIsOpen((previouslyOpen) => {
+      const nextOpen = !previouslyOpen;
+
+      // Scroll to the main container after closing the menu if requested.
+      if (previouslyOpen && !nextOpen && scrollToContainer) {
+        const container = document.querySelector(".container");
+        if (container) {
+          requestAnimationFrame(() => {
+            container.scrollIntoView({ behavior: "smooth" });
+          });
+        }
       }
-    }
+
+      return nextOpen;
+    });
   };
+
+  useEffect(() => {
+    closeNavbar();
+  }, [location.pathname]);
+
+  useEffect(() => {
+    if (!isOpen) return;
+
+    const handleKeyDown = (event: KeyboardEvent) => {
+      if (event.key === "Escape") {
+        closeNavbar();
+      }
+    };
+
+    const previousOverflow = document.body.style.overflow;
+    document.body.style.overflow = "hidden";
+    window.addEventListener("keydown", handleKeyDown);
+
+    return () => {
+      document.body.style.overflow = previousOverflow;
+      window.removeEventListener("keydown", handleKeyDown);
+    };
+  }, [isOpen]);
+
+  const navbarStyle: CSSProperties = {
+    marginTop: navbarOffset,
+    "--mobile-navbar-offset": `${navbarOffset}px`,
+  } as CSSProperties;
 
   return (
     <nav
       className={`mobileNavbar`}
       role="navigation"
       aria-label="Site Navigation"
-      style={{ marginTop: visible ? height : 0 }}
+      style={navbarStyle}
     >
       <div className="navbar-toggler">
-        <NavLink to="/">
+        <NavLink to="/" onClick={closeNavbar}>
           <Logo />
         </NavLink>
-        {collapsed ? (
-          <BurgerClose onClick={toggleNavbar} className={`burger-close-btn`} />
-        ) : (
-          <BurgerOpen onClick={toggleNavbar} className={`burger-open-btn`} />
-        )}
+        <button
+          type="button"
+          className="navbar-toggleButton"
+          onClick={toggleNavbar}
+          aria-expanded={isOpen}
+          aria-controls={collapseId}
+          aria-label={isOpen ? "Close navigation menu" : "Open navigation menu"}
+        >
+          {isOpen ? (
+            <BurgerClose className="burger-close-btn" />
+          ) : (
+            <BurgerOpen className="burger-open-btn" />
+          )}
+        </button>
       </div>
-      <div className={`navbar-collapse ${collapsed ? "show" : ""}`}>
+      <button
+        type="button"
+        className={`navbar-backdrop ${isOpen ? "show" : ""}`}
+        onClick={closeNavbar}
+        aria-label="Close navigation menu"
+        tabIndex={isOpen ? 0 : -1}
+      />
+      <div
+        id={collapseId}
+        className={`navbar-collapse ${isOpen ? "show" : ""}`}
+      >
         <ul className="navbar-nav">
           {isValidElement(mobileBeforeChildren) &&
             cloneElement(
               mobileBeforeChildren as ReactElement,
               {
-                open,
-                toggleNavbar,
+                open: isOpen,
+                toggleNavbar: closeNavbar,
               } as any,
             )}
 
-          {navItems.map((item) =>
-            item.type === "submenu" ? (
-              <SubMenuNavbar
-                key={item.text}
-                navItem={item}
-                showLinkLogo={showLinkLogo}
-                toggleNavbar={toggleNavbar}
-              />
-            ) : (
-              <ElementNavBar
-                key={item.href + item.text}
-                navItem={item}
-                showLinkLogo={showLinkLogo}
-                onLinkClick={toggleNavbar}
-              />
-            ),
-          )}
+          {renderNavItems({
+            navItems,
+            showLinkLogo,
+            toggleNavbar,
+            onLinkClick: toggleNavbar,
+          })}
         </ul>
         {/* pass toggleNavbar to children */}
-        {children &&
+        {isValidElement(children) &&
           cloneElement(children as ReactElement, { toggleNavbar } as any)}
       </div>
     </nav>

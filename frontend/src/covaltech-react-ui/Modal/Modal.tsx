@@ -14,12 +14,15 @@ interface ModalProps {
   modalCloseIcon?: boolean;
   modalContent: React.ReactElement;
   modalGap?: string;
-  modalFooterButton: React.ReactElement;
+  modalFooterButton:
+    | React.ReactElement
+    | ((props: { onClose: () => void }) => React.ReactElement);
   modalFooterClass?: string;
   onClick?: () => void;
   modalCancel?: boolean;
   className?: string;
   defaultOpen?: boolean;
+  variant?: "default" | "drawer";
 }
 
 const Modal: React.FC<ModalProps> = ({
@@ -34,6 +37,7 @@ const Modal: React.FC<ModalProps> = ({
   onClick,
   modalCancel = true,
   defaultOpen = false,
+  variant = "default",
 }) => {
   const [showConfirmDialog, setShowConfirmDialog] = useState(defaultOpen);
   const modalRef = useRef<HTMLDivElement>(null);
@@ -80,6 +84,11 @@ const Modal: React.FC<ModalProps> = ({
   }, []);
 
   const ModalButton = modalButton;
+  const variantClassName = variant === "drawer" ? "drawer" : "";
+  const footerButtonElement =
+    typeof modalFooterButton === "function"
+      ? modalFooterButton({ onClose: handleCloseModal })
+      : modalFooterButton;
 
   return (
     <>
@@ -88,14 +97,14 @@ const Modal: React.FC<ModalProps> = ({
       {createPortal(
         showConfirmDialog && (
           <div
-            className={`modalContainer ${className ?? ""}`}
+            className={`modalContainer ${variantClassName} ${className ?? ""}`.trim()}
             onClick={(e) => {
               // Stop React synthetic events
               e.stopPropagation();
             }}
           >
             <div
-              className="modal"
+              className={`modal ${variantClassName}`.trim()}
               ref={modalRef}
               style={{ gap: modalGap }}
               onClick={(e) => {
@@ -118,12 +127,12 @@ const Modal: React.FC<ModalProps> = ({
                 )}
               </div>
 
-              <div>{modalContent}</div>
+              <div className="modalBody">{modalContent}</div>
               {(modalFooterButton || modalCancel) && (
                 <div
                   className={`buttonWrapper ${modalFooterClass ? modalFooterClass : ""}`}
                 >
-                  {modalFooterButton}
+                  {footerButtonElement}
                   {modalCancel && (
                     <Button
                       onClick={(e) => {

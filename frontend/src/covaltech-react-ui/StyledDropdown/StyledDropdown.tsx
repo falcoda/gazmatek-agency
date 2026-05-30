@@ -77,7 +77,7 @@ const StyledDropdown = <T extends { [key: string]: any }>({
 
   return (
     <div
-      className={`styledDropdown ${disabled ? "disabled" : ""} ${className}`}
+      className={`styledDropdown ${disabled ? "styledDropdownDisabled disabled" : ""} ${className}`}
       style={{ width: width }}
     >
       {label && <span className="label">{label}</span>}

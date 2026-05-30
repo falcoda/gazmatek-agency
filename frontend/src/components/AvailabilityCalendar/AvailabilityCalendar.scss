@@ -1,0 +1,54 @@
+.availabilityCalendar {
+  padding: $padding-md;
+  color: $primary-font;
+
+  // FullCalendar theme overrides — match the Gazmatek dark palette.
+  --fc-border-color: #{$border-color};
+  --fc-page-bg-color: #{$card-color};
+  --fc-neutral-bg-color: rgba(#{$light-color}, 0.04);
+  --fc-list-event-hover-bg-color: rgba(#{$accent-color}, 0.12);
+  --fc-event-bg-color: #{$accent-color};
+  --fc-event-border-color: #{$accent-color};
+  --fc-event-text-color: #{$primary-color};
+  --fc-today-bg-color: rgba(#{$accent-color}, 0.08);
+  --fc-button-bg-color: transparent;
+  --fc-button-border-color: #{$border-color};
+  --fc-button-text-color: #{$primary-font};
+  --fc-button-hover-bg-color: rgba(#{$accent-color}, 0.15);
+  --fc-button-hover-border-color: #{$accent-color};
+  --fc-button-active-bg-color: #{$accent-color};
+  --fc-button-active-border-color: #{$accent-color};
+
+  .fc-toolbar-title {
+    font-family: $default-font-family;
+    color: $primary-font;
+    text-transform: capitalize;
+  }
+
+  .fc-button {
+    font-family: $default-font-family;
+    font-size: 0.85rem;
+    text-transform: uppercase;
+    letter-spacing: 0.06em;
+  }
+
+  .fc-daygrid-day-number,
+  .fc-col-header-cell-cushion {
+    color: $primary-font;
+    text-decoration: none;
+  }
+
+  .fc-day-other .fc-daygrid-day-number {
+    color: $secondary-font;
+  }
+
+  .fc-event {
+    border-radius: $radius-small;
+    padding: 2px 4px;
+    font-size: 0.8rem;
+  }
+
+  &.isPublic .fc-event {
+    cursor: default;
+  }
+}

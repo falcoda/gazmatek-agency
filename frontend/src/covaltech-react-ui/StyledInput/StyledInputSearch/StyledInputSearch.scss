@@ -1,0 +1,17 @@
+.styledInputSearch {
+  .wrappedInput {
+    outline: 1px solid $border-color;
+
+    &:hover {
+      outline: 1px solid $secondary-font;
+    }
+
+    &:focus-within {
+      outline: 1px solid $secondary-font;
+    }
+
+    &.invalid {
+      outline: 1px solid $lock-color;
+    }
+  }
+}

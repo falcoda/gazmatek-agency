@@ -1,0 +1,58 @@
+.adminBookingNew {
+  &.artistDashboard {
+    max-width: 1320px;
+  }
+
+  .layout {
+    display: grid;
+    grid-template-columns: minmax(0, 1fr) 380px;
+    gap: $padding-lg;
+    align-items: start;
+  }
+
+  .formColumn {
+    display: flex;
+    flex-direction: column;
+    gap: $padding-lg;
+    min-width: 0;
+  }
+
+  .sideColumn {
+    position: sticky;
+    top: $padding-md;
+    display: flex;
+    flex-direction: column;
+    gap: $padding-sm;
+  }
+
+  .sidePanel {
+    padding: $padding-md;
+
+    h2 {
+      margin: 0 0 $padding-sm;
+      font-size: 1rem;
+    }
+  }
+
+  .sideHint {
+    margin: 0 0 $padding-sm;
+    color: $secondary-font;
+    font-size: 0.85rem;
+  }
+
+  .miniCalendar {
+    .publicAvailabilityCalendar {
+      padding: $padding-sm;
+    }
+  }
+
+  @include maxScreen($breakpoint-md) {
+    .layout {
+      grid-template-columns: 1fr;
+    }
+
+    .sideColumn {
+      position: static;
+    }
+  }
+}

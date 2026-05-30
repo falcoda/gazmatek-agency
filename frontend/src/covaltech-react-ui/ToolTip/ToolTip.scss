@@ -8,6 +8,11 @@
     gap: 5px;
     border-radius: 5px;
     cursor: pointer;
+
+    @include maxScreen($breakpoint-md-4) {
+      font-size: 12px;
+      line-height: 15px;
+    }
   }
 }
 

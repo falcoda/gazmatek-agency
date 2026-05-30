@@ -102,6 +102,7 @@ const DynamicTable: React.FC<DynamicTableProps> = memo(
     }
 
     const { windowWidth } = useWindowWidth();
+    const isServerPaginated = pagined && typeof onPaginate === "function";
     const [sortState, setSortState] = useState<{
       column: string;
       direction: "asc" | "desc";
@@ -223,14 +224,14 @@ const DynamicTable: React.FC<DynamicTableProps> = memo(
     }, [paginatedData]);
 
     useEffect(() => {
-      if (!maxRows || !pagined) {
+      if (!maxRows || !pagined || isServerPaginated) {
         setPaginatedData(filteredData);
         return;
       }
       setPaginatedData(
         filteredData.slice((currentPage - 1) * maxRows, currentPage * maxRows),
       );
-    }, [filteredData, currentPage, maxRows, pagined]);
+    }, [filteredData, currentPage, isServerPaginated, maxRows, pagined]);
 
     const handleSort = (col: Column) => {
       if (col.sortable) {

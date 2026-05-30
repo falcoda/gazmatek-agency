@@ -1,0 +1,24 @@
+.publicLayout {
+  display: flex;
+  flex-direction: column;
+  min-height: 100vh;
+  width: 100%;
+  background-color: $primary-color;
+
+  > .main {
+    flex: 1 0 auto;
+    width: 100%;
+    // The PublicNavbar is position:fixed with ~120px height including padding.
+    // Push first-section content below it so the hero / page header is visible.
+    padding-top: 140px;
+
+    @include maxScreen($breakpoint-md-3) {
+      // Mobile burger header is ~96px including padding.
+      padding-top: 110px;
+    }
+
+    @include maxScreen($breakpoint-xs) {
+      padding-top: 96px;
+    }
+  }
+}

@@ -5,3 +5,8 @@
   width: 100%;
   @include card();
 }
+
+// Recessed dark card — deeper than the page surface, for emphasis blocks.
+.card.card--dark {
+  background-color: $primary-background-color;
+}

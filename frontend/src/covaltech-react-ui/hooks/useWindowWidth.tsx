@@ -22,19 +22,22 @@ const useWindowWidth = () => {
     getBreakpoint(window.innerWidth),
   );
 
-  const handleWindowResize = () => {
-    const newWidth = window.innerWidth;
-    const newBreakpoint = getBreakpoint(newWidth);
-    if (newBreakpoint !== breakpoint) {
-      setWindowWidth(newWidth);
-      setBreakpoint(newBreakpoint);
-    }
-  };
-
   useEffect(() => {
+    const handleWindowResize = () => {
+      const newWidth = window.innerWidth;
+      const newBreakpoint = getBreakpoint(newWidth);
+
+      setWindowWidth(newWidth);
+      setBreakpoint((previousBreakpoint) =>
+        previousBreakpoint === newBreakpoint ? previousBreakpoint : newBreakpoint,
+      );
+    };
+
+    handleWindowResize();
     window.addEventListener("resize", handleWindowResize);
+
     return () => window.removeEventListener("resize", handleWindowResize);
-  }, [breakpoint]);
+  }, []);
 
   const isMobile = windowWidth <= breakpoints["breakpoint-md-4"];
   const isTabelet = windowWidth <= breakpoints["breakpoint-md-2"];

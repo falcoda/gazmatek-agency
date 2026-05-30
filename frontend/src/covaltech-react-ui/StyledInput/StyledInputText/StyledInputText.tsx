@@ -12,6 +12,10 @@ const StyledInputText: React.FC<{
   width?: string | number;
   disabled?: boolean;
   valid?: boolean;
+  variant?: "default" | "ghost";
+  onBlur?: React.FocusEventHandler<HTMLInputElement>;
+  onFocus?: React.FocusEventHandler<HTMLInputElement>;
+  onKeyDown?: React.KeyboardEventHandler<HTMLInputElement>;
 }> = ({
   label,
   value,
@@ -24,6 +28,10 @@ const StyledInputText: React.FC<{
   width,
   disabled = false,
   valid = true,
+  variant = "default",
+  onBlur,
+  onFocus,
+  onKeyDown,
 }) => (
   <StyledInputBase
     label={label}
@@ -31,6 +39,7 @@ const StyledInputText: React.FC<{
     setValue={setValue}
     type="text"
     className={className ?? ""}
+    variant={variant}
     width={width}
   >
     <input
@@ -43,6 +52,9 @@ const StyledInputText: React.FC<{
       style={style}
       id={id}
       disabled={disabled}
+      onBlur={onBlur}
+      onFocus={onFocus}
+      onKeyDown={onKeyDown}
     />
   </StyledInputBase>
 );

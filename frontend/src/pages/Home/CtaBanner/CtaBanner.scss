@@ -1,0 +1,25 @@
+.ctaBanner {
+  padding: $padding-xl $padding-md;
+  background: linear-gradient(135deg, $primary-color, $secondary-color);
+
+  .inner {
+    max-width: 720px;
+    margin: 0 auto;
+    text-align: center;
+    color: $primary-font;
+    display: flex;
+    flex-direction: column;
+    gap: $padding-sm;
+    align-items: center;
+  }
+
+  .title {
+    font-size: clamp(1.75rem, 3vw, 2.5rem);
+    margin: 0;
+  }
+
+  .subtitle {
+    margin: 0 0 $padding-sm;
+    color: $secondary-font;
+  }
+}

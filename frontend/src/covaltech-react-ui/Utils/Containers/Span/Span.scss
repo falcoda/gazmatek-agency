@@ -8,9 +8,9 @@
 }
 
 .spanContainer.primary {
-  border: 1px solid #0c90ff;
-  color: #0c90ff;
-  background: #061a38;
+  border: 1px solid $accent-color;
+  color: $accent-color;
+  background: rgba($accent-color, 0.1);
 }
 
 .spanContainer.secondary {
@@ -19,22 +19,22 @@
 }
 
 .spanContainer.valid {
-  background: rgba(56, 199, 105, 0.1);
+  background: rgba($green-color, 0.1);
   color: $green-color;
 }
 
 .spanContainer.lock {
-  border: 1px solid rgba(242, 80, 80, 0.7);
-  background: rgba(242, 80, 80, 0.2);
+  border: 1px solid rgba($lock-color, 0.7);
+  background: rgba($lock-color, 0.2);
 }
 
 .spanContainer.yellow {
-  background: rgba(255, 229, 0, 0.1);
-  color: #ffe500;
+  background: rgba($main-orange, 0.1);
+  color: $main-orange;
 }
 .spanContainer.neutral {
-  background: rgba(255, 255, 255, 0.1);
-  border: 1px solid rgba(255, 255, 255, 0.5);
+  background: rgba($secondary-background-color, 0.1);
+  border: 1px solid $border-color;
   color: $primary-font;
 }
 

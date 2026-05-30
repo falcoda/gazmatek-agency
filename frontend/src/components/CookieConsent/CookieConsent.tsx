@@ -4,7 +4,7 @@ import { useEffect, useId, useState } from "react";
 import { useTranslation } from "react-i18next";
 import { LuChevronDown, LuCookie } from "react-icons/lu";
 
-import { StyledSwitch } from "@/covaltech-react-ui";
+import { Button, StyledSwitch } from "@/covaltech-react-ui";
 import { useCookieConsentStore } from "@/stores/CookieConsentStore";
 
 // Kept in sync with the exit transition duration in CookieConsent.scss.
@@ -73,54 +73,50 @@ const CookieConsent = () => {
 
   return (
     <div
-      className={`cookieConsent ${isEntered ? "cookieConsent--entered" : ""}`}
+      className={`cookieConsent ${isEntered ? "isEntered" : ""}`}
       role="dialog"
       aria-modal="false"
       aria-labelledby={titleId}
       aria-describedby={descriptionId}
       aria-label={t("cookieConsent.aria_label")}
     >
-      <div className="cookieConsent__card">
-        <div className="cookieConsent__header">
-          <span className="cookieConsent__icon" aria-hidden="true">
+      <div className="card">
+        <div className="header">
+          <span className="icon" aria-hidden="true">
             <LuCookie />
           </span>
-          <div className="cookieConsent__heading">
-            <h2 id={titleId} className="cookieConsent__title">
+          <div className="heading">
+            <h2 id={titleId} className="title">
               {t("cookieConsent.title")}
             </h2>
-            <p id={descriptionId} className="cookieConsent__text">
+            <p id={descriptionId} className="text">
               {t("cookieConsent.description")}
             </p>
           </div>
         </div>
 
-        <div
-          className={`cookieConsent__details ${
-            showDetails ? "cookieConsent__details--open" : ""
-          }`}
-        >
-          <div className="cookieConsent__detailsInner">
-            <div className="cookieConsent__category">
-              <div className="cookieConsent__categoryInfo">
-                <span className="cookieConsent__categoryName">
+        <div className={`details ${showDetails ? "isOpen" : ""}`}>
+          <div className="detailsInner">
+            <div className="category">
+              <div className="categoryInfo">
+                <span className="categoryName">
                   {t("cookieConsent.category_necessary")}
                 </span>
-                <span className="cookieConsent__categoryDesc">
+                <span className="categoryDesc">
                   {t("cookieConsent.category_necessary_desc")}
                 </span>
               </div>
-              <span className="cookieConsent__badge">
+              <span className="badge">
                 {t("cookieConsent.category_necessary_badge")}
               </span>
             </div>
 
-            <div className="cookieConsent__category">
-              <div className="cookieConsent__categoryInfo">
-                <span className="cookieConsent__categoryName">
+            <div className="category">
+              <div className="categoryInfo">
+                <span className="categoryName">
                   {t("cookieConsent.category_analytics")}
                 </span>
-                <span className="cookieConsent__categoryDesc">
+                <span className="categoryDesc">
                   {t("cookieConsent.category_analytics_desc")}
                 </span>
               </div>
@@ -130,12 +126,12 @@ const CookieConsent = () => {
               />
             </div>
 
-            <div className="cookieConsent__category">
-              <div className="cookieConsent__categoryInfo">
-                <span className="cookieConsent__categoryName">
+            <div className="category">
+              <div className="categoryInfo">
+                <span className="categoryName">
                   {t("cookieConsent.category_marketing")}
                 </span>
-                <span className="cookieConsent__categoryDesc">
+                <span className="categoryDesc">
                   {t("cookieConsent.category_marketing_desc")}
                 </span>
               </div>
@@ -147,12 +143,10 @@ const CookieConsent = () => {
           </div>
         </div>
 
-        <div className="cookieConsent__actions">
+        <div className="actions">
           <button
             type="button"
-            className={`cookieConsent__customize ${
-              showDetails ? "cookieConsent__customize--open" : ""
-            }`}
+            className={`customize ${showDetails ? "isOpen" : ""}`}
             onClick={() => setShowDetails((value) => !value)}
             aria-expanded={showDetails}
           >
@@ -160,30 +154,30 @@ const CookieConsent = () => {
             <LuChevronDown aria-hidden="true" />
           </button>
 
-          <div className="cookieConsent__buttons">
-            <button
+          <div className="buttons">
+            <Button
               type="button"
-              className="cookieConsent__btn"
+              className="btn"
+              style="undefined"
+              label={t("cookieConsent.reject_all")}
               onClick={() => dismissWith(rejectAll)}
-            >
-              {t("cookieConsent.reject_all")}
-            </button>
+            />
             {showDetails ? (
-              <button
+              <Button
                 type="button"
-                className="cookieConsent__btn"
+                className="btn"
+                style="undefined"
+                label={t("cookieConsent.save")}
                 onClick={handleSave}
-              >
-                {t("cookieConsent.save")}
-              </button>
+              />
             ) : (
-              <button
+              <Button
                 type="button"
-                className="cookieConsent__btn"
+                className="btn"
+                style="undefined"
+                label={t("cookieConsent.accept_all")}
                 onClick={() => dismissWith(acceptAll)}
-              >
-                {t("cookieConsent.accept_all")}
-              </button>
+              />
             )}
           </div>
         </div>

@@ -1,0 +1,21 @@
+.artistDashboard {
+  .mutedNote {
+    color: $secondary-font;
+
+    &.italic {
+      font-style: italic;
+    }
+
+    &.webhookNote {
+      margin-top: $padding-xs;
+    }
+  }
+
+  .warningNote {
+    color: $main-orange;
+  }
+
+  .accentLink {
+    color: $accent-color;
+  }
+}
