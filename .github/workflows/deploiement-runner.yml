@@ -121,6 +121,9 @@ jobs:
           REPO_PATH="$HOME/PROD-${{ github.event.repository.name }}"
           DOT_ENV="$REPO_PATH/docker/.env"
 
+          # Ensure the target exists on first deploy so find does not fail.
+          mkdir -p "$REPO_PATH"
+
           # Wipe only backend-owned dirs; exclude frontend build and
           # docker/ (contains postgres data and .env that must never be deleted)
           find "$REPO_PATH" -mindepth 1 -maxdepth 1 \

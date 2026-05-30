@@ -36,6 +36,7 @@ export const MAIL_DRIVERS = [
   MAIL_DRIVER.SMTP,
   MAIL_DRIVER.DISABLED,
 ] as const;
+
 export const LOG_LEVELS = [
   "trace",
   "debug",
