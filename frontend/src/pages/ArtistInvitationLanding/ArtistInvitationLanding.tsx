@@ -1,4 +1,4 @@
-import "@/pages/ArtistLogin/ArtistLogin.scss";
+import "@/components/AuthLoginForm/AuthLoginForm.scss";
 
 import { useEffect, useState } from "react";
 import toast from "react-hot-toast";
