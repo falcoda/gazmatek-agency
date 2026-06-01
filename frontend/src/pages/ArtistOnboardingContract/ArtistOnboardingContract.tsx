@@ -51,6 +51,7 @@ const profileToInfo = (profile: ArtistProfileDto): PersonalInfoForm => ({
 
 const requiredFieldsFilled = (info: PersonalInfoForm): boolean =>
   info.fullName.trim() !== "" &&
+  info.phone.trim() !== "" &&
   info.address.trim() !== "" &&
   info.country.trim() !== "";
 
@@ -217,6 +218,7 @@ const ArtistOnboardingContract = () => {
                 value={info.phone}
                 setValue={(v) => setInfo({ ...info, phone: v })}
                 placeholder="+32 4xx xx xx xx"
+                required
               />
               <StyledInputText
                 label={t("onboarding.fields.address")}
@@ -254,7 +256,7 @@ const ArtistOnboardingContract = () => {
             >
               <Button
                 label={t("common.save")}
-                style="transparent"
+                style="blue"
                 isLoading={savingInfo}
                 onClick={saveInfo}
               />

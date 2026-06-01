@@ -949,7 +949,7 @@
     "infoTitle": "Your information",
     "infoBody": "These details will appear on your contract. Fill them in and save before signing.",
     "infoSaved": "Information saved",
-    "infoIncomplete": "Please fill in your full name, address and country before signing.",
+    "infoIncomplete": "Please fill in your full name, phone, address and country before signing.",
     "fields": {
       "fullName": "Full name",
       "phone": "Phone",

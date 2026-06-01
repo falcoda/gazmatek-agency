@@ -41,4 +41,6 @@ export const ERROR_MESSAGES = {
   REFRESH_TOKEN_REQUIRED: "refreshToken is required",
   INVALID_DOCUMENSO_SIGNATURE: "Invalid Documenso signature",
   MISSING_DOCUMENT_ID: "Missing document id in webhook payload",
+  ENGAGEMENT_INFO_INCOMPLETE:
+    "Artist profile is incomplete: full name, phone, address and country are required before signing the engagement contract",
 } as const;

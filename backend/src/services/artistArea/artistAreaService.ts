@@ -14,6 +14,7 @@ import { recordAudit } from "@src/helpers/audit";
 import { hashPassword, verifyPassword } from "@src/helpers/auth/password";
 import { config } from "@src/helpers/config";
 import { AUDIT_ACTION, AUDIT_ACTOR_KIND } from "@src/helpers/constants/domain";
+import { ERROR_MESSAGES } from "@src/helpers/error/constants";
 import {
   ForbiddenError,
   NotFoundError,
@@ -25,6 +26,7 @@ import type {
   ListArtistBookingsQuery,
   UpdateArtistProfileBody,
 } from "@src/schemas/artistArea";
+import { engagementSignableProfileSchema } from "@src/schemas/artistArea";
 import { getAgencyInfo } from "@src/services/agency/agencyInfoService";
 import { getAgencySignatureDataUrl } from "@src/services/agency/agencySignatureService";
 import { BOOKING_STATUS } from "@src/services/bookings/bookingConstants";
@@ -473,6 +475,9 @@ export class ArtistAreaService {
     const profileRows = await getArtistSelfProfile.run({ artistId }, this.db);
     if (profileRows.length === 0) throw new NotFoundError("Artist not found");
     const profile = profileRows[0];
+    // Gate the signature on a complete profile: we never want to send a
+    // binding contract to Documenso with blank legal fields.
+    this.assertEngagementInfoComplete(profile);
     const signerName =
       profile.full_name ?? profile.stage_name ?? "Artiste Gazmatek";
     const title = `Contrat d'engagement — ${profile.stage_name}`;
@@ -567,6 +572,24 @@ export class ArtistAreaService {
       signingUrl,
       signedAt: null,
     };
+  }
+
+  // Enforces the "all artist info present" rule before an engagement contract
+  // can be signed, via the shared Zod schema. Failing fields are surfaced as
+  // `missingFields` for the client. VAT and company numbers stay optional by
+  // design (see engagementSignableProfileSchema).
+  private assertEngagementInfoComplete(profile: {
+    full_name: string | null;
+    phone: string | null;
+    address: string | null;
+    country: string | null;
+  }): void {
+    const result = engagementSignableProfileSchema.safeParse(profile);
+    if (!result.success) {
+      throw new ValidationError(ERROR_MESSAGES.ENGAGEMENT_INFO_INCOMPLETE, {
+        missingFields: result.error.issues.map((issue) => issue.path.join(".")),
+      });
+    }
   }
 
   private async requireOwnedBooking(artistId: string, bookingId: string) {

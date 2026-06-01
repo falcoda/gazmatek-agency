@@ -141,9 +141,13 @@ jobs:
           REPO_PATH="$HOME/PROD-${{ github.event.repository.name }}"
           COMPOSE_FILE="$REPO_PATH/docker/docker-compose.yml"
           cd "$REPO_PATH/docker"
-          docker compose -f "$COMPOSE_FILE" down
 
-          # Start only PostgreSQL first so migrations run before app boot.
+          # Only recreate the website container; leave db (and its data) running.
+          # Downing the whole stack would needlessly stop PostgreSQL.
+          docker compose -f "$COMPOSE_FILE" stop website
+          docker compose -f "$COMPOSE_FILE" rm -f website
+
+          # Ensure PostgreSQL is up (idempotent) so migrations run before app boot.
           docker compose -f "$COMPOSE_FILE" up -d db
 
       - name: Wait for PostgreSQL

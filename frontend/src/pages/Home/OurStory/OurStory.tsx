@@ -4,7 +4,7 @@ import { useTranslation } from "react-i18next";
 
 import AnimatedCounter from "@/components/AnimatedCounter/AnimatedCounter";
 
-const FOUNDED_YEAR = 2010;
+const FOUNDED_YEAR = 2016;
 
 const OurStory = () => {
   const { t } = useTranslation();

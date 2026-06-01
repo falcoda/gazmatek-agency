@@ -1089,7 +1089,7 @@
     "infoTitle": "Vos informations",
     "infoBody": "Ces informations apparaîtront dans votre contrat. Complétez-les puis enregistrez avant de signer.",
     "infoSaved": "Informations enregistrées",
-    "infoIncomplete": "Veuillez renseigner votre nom complet, votre adresse et votre pays avant de signer.",
+    "infoIncomplete": "Veuillez renseigner votre nom complet, votre téléphone, votre adresse et votre pays avant de signer.",
     "fields": {
       "fullName": "Nom complet",
       "phone": "Téléphone",

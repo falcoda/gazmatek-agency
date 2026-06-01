@@ -25,6 +25,19 @@ export const updateArtistProfileBodySchema = z.object({
   company_number: z.string().trim().max(50).nullish(),
 });
 
+// POST /api/artist/onboarding/engagement/sign — completeness gate, not a
+// request body. The engagement contract is legally binding and must not go out
+// with blanks, so these profile fields must all be present before signing. VAT
+// and company numbers stay optional by design (a natural-person artist may have
+// neither). Validated against the stored profile inside the service, so a
+// failing field surfaces as an empty/missing value.
+export const engagementSignableProfileSchema = z.object({
+  full_name: z.string().trim().min(1),
+  phone: z.string().trim().min(1),
+  address: z.string().trim().min(1),
+  country: z.string().trim().min(1),
+});
+
 // POST /api/artist/profile/password
 export const changeArtistPasswordBodySchema = z.object({
   currentPassword: z.string().min(1).max(200),

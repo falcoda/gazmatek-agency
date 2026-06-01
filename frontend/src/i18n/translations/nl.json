@@ -789,7 +789,7 @@
     "infoTitle": "Jouw gegevens",
     "infoBody": "Deze gegevens komen op je contract te staan. Vul ze in en sla op vóór de ondertekening.",
     "infoSaved": "Gegevens opgeslagen",
-    "infoIncomplete": "Vul je volledige naam, adres en land in vóór je ondertekent.",
+    "infoIncomplete": "Vul je volledige naam, telefoon, adres en land in vóór je ondertekent.",
     "fields": {
       "fullName": "Volledige naam",
       "phone": "Telefoon",
