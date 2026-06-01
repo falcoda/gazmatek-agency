@@ -1,7 +1,15 @@
+import { FRONTEND_ASSETS_PREFIX } from "@src/helpers/constants";
 import { logger } from "@src/helpers/logger";
 import { RequestHandler } from "express";
 
 export const requestLoggerMiddleware: RequestHandler = (req, res, next) => {
+  // Skip the hashed frontend assets: they flood the access log on every page
+  // load and carry no useful signal.
+  if (req.path.startsWith(FRONTEND_ASSETS_PREFIX)) {
+    next();
+    return;
+  }
+
   const start = process.hrtime.bigint();
 
   res.on("finish", () => {

@@ -26,6 +26,7 @@ describe("requestLoggerMiddleware", () => {
       requestId: "id-1",
       method: "GET",
       originalUrl: "/api/health/live",
+      path: "/api/health/live",
     } as unknown as Request;
     const res = makeRes();
     const next = jest.fn() as NextFunction;
@@ -35,11 +36,30 @@ describe("requestLoggerMiddleware", () => {
     expect(next).toHaveBeenCalled();
   });
 
+  it("does not log requests for hashed frontend assets", () => {
+    const req = {
+      requestId: "asset-id",
+      method: "GET",
+      originalUrl: "/assets/index-MAXsLawZ.js",
+      path: "/assets/index-MAXsLawZ.js",
+    } as unknown as Request;
+    const res = makeRes(200);
+    const next = jest.fn() as NextFunction;
+
+    requestLoggerMiddleware(req, res, next);
+    (res as unknown as { triggerFinish: () => void }).triggerFinish();
+
+    expect(next).toHaveBeenCalled();
+    expect(res.on).not.toHaveBeenCalled();
+    expect(logger.info).not.toHaveBeenCalled();
+  });
+
   it("logs the request after the response finishes", () => {
     const req = {
       requestId: "test-req-id",
       method: "GET",
       originalUrl: "/api/health/live",
+      path: "/api/health/live",
     } as unknown as Request;
     const res = makeRes(200);
 
@@ -62,6 +82,7 @@ describe("requestLoggerMiddleware", () => {
       requestId: "dur-id",
       method: "POST",
       originalUrl: "/api/example",
+      path: "/api/example",
     } as unknown as Request;
     const res = makeRes(201);
 

@@ -30,3 +30,8 @@ export const API_PREFIX = "/api";
 
 // Entry document of the built frontend single-page application.
 export const FRONTEND_INDEX_FILE = "index.html";
+
+// URL prefix under which Vite serves the hashed frontend assets (JS, CSS,
+// fonts, images). Requests to these paths are noise in the HTTP access log, so
+// the request logger skips them.
+export const FRONTEND_ASSETS_PREFIX = "/assets/";
