@@ -19,12 +19,18 @@ const isBackendPath = (requestPath: string): boolean =>
 
 // Resolve the frontend build directory. An explicit directory wins; otherwise
 // probe locations relative to the process working directory so the same binary
-// works both in local dev (cwd = backend/) and in Docker (cwd = repo root).
+// works across environments:
+// - local dev: backend cwd -> ../frontend/build
+// - monorepo root cwd -> frontend/build
+// - PROD deploy: the CI copies the frontend build to <REPO_PATH>/build, and the
+//   container runs with cwd = REPO_PATH, so the build sits at ./build
+//   (see .github/workflows/deploiement-runner.yml).
 const resolveFrontendDir = (buildDir?: string): string | null => {
   const candidates = [
     buildDir,
     path.resolve(process.cwd(), "..", "frontend", "build"),
     path.resolve(process.cwd(), "frontend", "build"),
+    path.resolve(process.cwd(), "build"),
   ].filter((candidate): candidate is string => Boolean(candidate));
 
   for (const candidate of candidates) {
