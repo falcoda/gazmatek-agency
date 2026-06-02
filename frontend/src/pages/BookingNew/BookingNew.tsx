@@ -5,7 +5,9 @@ import toast from "react-hot-toast";
 import { useTranslation } from "react-i18next";
 import { useLocation, useNavigate, useSearchParams } from "react-router-dom";
 
+import Bounded from "@/components/Bounded/Bounded";
 import PublicAvailabilityCalendar from "@/components/PublicAvailabilityCalendar/PublicAvailabilityCalendar";
+import Section from "@/components/Section/Section";
 import SeoHead from "@/components/SeoHead/SeoHead";
 import TierIndicator, {
   tierFromLevel,
@@ -382,290 +384,300 @@ const BookingNew = () => {
   const heroSubtitle = t("bookingNew.subtitle");
 
   return (
-    <div className="bookingNew">
-      <SeoHead
-        title={heroTitle}
-        description={heroSubtitle}
-        path="/booking/new"
-      />
-      <header className="header">
-        <h1>{heroTitle}</h1>
-        <p>{heroSubtitle}</p>
-      </header>
+    <Section>
+      <Bounded width="wide" className="bookingNew">
+        <SeoHead
+          title={heroTitle}
+          description={heroSubtitle}
+          path="/booking/new"
+        />
+        <Bounded as="header" width="narrow" className="header">
+          <h1>{heroTitle}</h1>
+          <p>{heroSubtitle}</p>
+        </Bounded>
 
-      <div className="layout">
-        <Card className="panel">
-          {submitted ? null : artistSlug ? (
-            artistLoading ? (
-              <p>{t("common.loading")}</p>
-            ) : artist ? (
+        <div className="layout">
+          <Card className="panel">
+            {submitted ? null : artistSlug ? (
+              artistLoading ? (
+                <p>{t("common.loading")}</p>
+              ) : artist ? (
+                <div className="summary">
+                  <h2>{t("bookingNew.artist.title")}</h2>
+                  <dl>
+                    <dt>{t("bookingNew.artist.name")}</dt>
+                    <dd>{artist.stageName}</dd>
+                    {artist.genre ? (
+                      <>
+                        <dt>{t("bookingNew.artist.genre")}</dt>
+                        <dd>{artist.genre}</dd>
+                      </>
+                    ) : null}
+                    <dt>{t("bookingNew.artist.tier")}</dt>
+                    <dd>
+                      <TierIndicator tier={tierFromLevel(artist.level)} />
+                    </dd>
+                  </dl>
+                </div>
+              ) : artistMissing ? (
+                <p className="disclaimer">{t("bookingNew.artist.notFound")}</p>
+              ) : null
+            ) : (
+              <p className="disclaimer">{t("bookingNew.artist.missingId")}</p>
+            )}
+
+            {submitted ? (
               <div className="summary">
-                <h2>{t("bookingNew.artist.title")}</h2>
-                <dl>
-                  <dt>{t("bookingNew.artist.name")}</dt>
-                  <dd>{artist.stageName}</dd>
-                  {artist.genre ? (
-                    <>
-                      <dt>{t("bookingNew.artist.genre")}</dt>
-                      <dd>{artist.genre}</dd>
-                    </>
-                  ) : null}
-                  <dt>{t("bookingNew.artist.tier")}</dt>
-                  <dd>
-                    <TierIndicator tier={tierFromLevel(artist.level)} />
-                  </dd>
-                </dl>
+                <h2>{t("bookingNew.form.successTitle")}</h2>
+                <p className="disclaimer">{t("bookingNew.form.successBody")}</p>
               </div>
-            ) : artistMissing ? (
-              <p className="disclaimer">{t("bookingNew.artist.notFound")}</p>
-            ) : null
-          ) : (
-            <p className="disclaimer">{t("bookingNew.artist.missingId")}</p>
-          )}
-
-          {submitted ? (
-            <div className="summary">
-              <h2>{t("bookingNew.form.successTitle")}</h2>
-              <p className="disclaimer">{t("bookingNew.form.successBody")}</p>
-            </div>
-          ) : !clientToken ? (
-            <div className="authRequired">
-              <h2>{t("bookingNew.authRequired.title")}</h2>
-              <p className="disclaimer">
-                {t("bookingNew.authRequired.description")}
-              </p>
-              <div className="actions">
-                <Button
-                  label={t("bookingNew.authRequired.signup")}
-                  style="blue"
-                  onClick={goToSignup}
-                  width="100%"
-                />
-                <Button
-                  label={t("bookingNew.authRequired.login")}
-                  style="bordered"
-                  onClick={goToLogin}
-                  width="100%"
-                />
-              </div>
-            </div>
-          ) : (
-            <form onSubmit={handleSubmit} noValidate>
-              <div className="row">
-                <div className="field">
-                  <StyledInputBase
-                    label={t("bookingNew.fields.date")}
-                    value={form.eventDate}
-                    setValue={(v: string) => handleChange("eventDate", v)}
-                    type="datetime-local"
+            ) : !clientToken ? (
+              <div className="authRequired">
+                <h2>{t("bookingNew.authRequired.title")}</h2>
+                <p className="disclaimer">
+                  {t("bookingNew.authRequired.description")}
+                </p>
+                <div className="actions">
+                  <Button
+                    label={t("bookingNew.authRequired.signup")}
+                    style="blue"
+                    onClick={goToSignup}
                     width="100%"
-                  >
-                    <input
-                      type="datetime-local"
+                  />
+                  <Button
+                    label={t("bookingNew.authRequired.login")}
+                    style="bordered"
+                    onClick={goToLogin}
+                    width="100%"
+                  />
+                </div>
+              </div>
+            ) : (
+              <form onSubmit={handleSubmit} noValidate>
+                <div className="row">
+                  <div className="field">
+                    <StyledInputBase
+                      label={t("bookingNew.fields.date")}
                       value={form.eventDate}
-                      onChange={(e) =>
-                        handleChange("eventDate", e.target.value)
-                      }
+                      setValue={(v: string) => handleChange("eventDate", v)}
+                      type="datetime-local"
+                      width="100%"
+                    >
+                      <input
+                        type="datetime-local"
+                        value={form.eventDate}
+                        onChange={(e) =>
+                          handleChange("eventDate", e.target.value)
+                        }
+                        required
+                      />
+                    </StyledInputBase>
+                    {errors.eventDate ? <span>{errors.eventDate}</span> : null}
+                  </div>
+                  <div className="field">
+                    <StyledInputNumber
+                      label={t("bookingNew.fields.duration")}
+                      value={form.durationHours}
+                      setValue={(v) => handleChange("durationHours", v ?? "")}
+                      min="0.5"
+                      max="24"
+                    />
+                    {errors.durationHours ? (
+                      <span>{errors.durationHours}</span>
+                    ) : null}
+                  </div>
+                </div>
+
+                <div className="field">
+                  <StyledInputText
+                    label={t("bookingNew.fields.street")}
+                    value={form.street}
+                    setValue={(v) => handleChange("street", v)}
+                    required
+                  />
+                  {errors.street ? <span>{errors.street}</span> : null}
+                </div>
+
+                <div className="row">
+                  <div className="field">
+                    <StyledInputText
+                      label={t("bookingNew.fields.postalCode")}
+                      value={form.postalCode}
+                      setValue={(v) => handleChange("postalCode", v)}
                       required
                     />
-                  </StyledInputBase>
-                  {errors.eventDate ? <span>{errors.eventDate}</span> : null}
+                    {errors.postalCode ? (
+                      <span>{errors.postalCode}</span>
+                    ) : null}
+                  </div>
+                  <div className="field">
+                    <StyledInputText
+                      label={t("bookingNew.fields.city")}
+                      value={form.city}
+                      setValue={(v) => handleChange("city", v)}
+                      required
+                    />
+                    {errors.city ? <span>{errors.city}</span> : null}
+                  </div>
                 </div>
-                <div className="field">
-                  <StyledInputNumber
-                    label={t("bookingNew.fields.duration")}
-                    value={form.durationHours}
-                    setValue={(v) => handleChange("durationHours", v ?? "")}
-                    min="0.5"
-                    max="24"
-                  />
-                  {errors.durationHours ? (
-                    <span>{errors.durationHours}</span>
-                  ) : null}
-                </div>
-              </div>
 
-              <div className="field">
-                <StyledInputText
-                  label={t("bookingNew.fields.street")}
-                  value={form.street}
-                  setValue={(v) => handleChange("street", v)}
-                  required
-                />
-                {errors.street ? <span>{errors.street}</span> : null}
-              </div>
-
-              <div className="row">
                 <div className="field">
                   <StyledInputText
-                    label={t("bookingNew.fields.postalCode")}
-                    value={form.postalCode}
-                    setValue={(v) => handleChange("postalCode", v)}
+                    label={t("bookingNew.fields.country")}
+                    value={form.country}
+                    setValue={(v) => handleChange("country", v)}
                     required
                   />
-                  {errors.postalCode ? <span>{errors.postalCode}</span> : null}
+                  {errors.country ? <span>{errors.country}</span> : null}
                 </div>
+
+                <div className="row">
+                  <div className="field">
+                    <StyledInputNumber
+                      label={t("bookingNew.fields.capacity")}
+                      value={form.capacity}
+                      setValue={(v) => handleChange("capacity", v ?? "")}
+                      min="0"
+                    />
+                  </div>
+                  <div className="field">
+                    <StyledInputNumber
+                      label={t("bookingNew.fields.ticketPrice")}
+                      value={form.ticketPrice}
+                      setValue={(v) => handleChange("ticketPrice", v ?? "")}
+                      min="0"
+                    />
+                  </div>
+                </div>
+
                 <div className="field">
+                  <StyledDropdown<{ id: ArtistSetType; name: string }>
+                    label={t("bookingNew.fields.setType")}
+                    value={
+                      {
+                        id: form.setType,
+                        name: t(`bookingNew.fields.setType_${form.setType}`),
+                      } as { id: ArtistSetType; name: string }
+                    }
+                    setValue={(opt) =>
+                      setForm((prev) => ({
+                        ...prev,
+                        setType: opt?.id ?? supportedSetTypes[0],
+                      }))
+                    }
+                    itemList={supportedSetTypes.map((id) => ({
+                      id,
+                      name: t(`bookingNew.fields.setType_${id}`),
+                    }))}
+                    itemIdKey="id"
+                    itemLabelKey="name"
+                    disabled={supportedSetTypes.length <= 1}
+                    width="100%"
+                  />
+                </div>
+
+                <div className="field">
+                  <StyledInputTextArea
+                    label={t("bookingNew.fields.context")}
+                    value={form.context}
+                    setValue={(v) => handleChange("context", v)}
+                    style={{ minHeight: "120px" }}
+                  />
+                  {errors.context ? <span>{errors.context}</span> : null}
+                </div>
+
+                <div
+                  className="field"
+                  aria-hidden="true"
+                  style={{
+                    position: "absolute",
+                    left: -9999,
+                    height: 0,
+                    width: 0,
+                  }}
+                >
                   <StyledInputText
-                    label={t("bookingNew.fields.city")}
-                    value={form.city}
-                    setValue={(v) => handleChange("city", v)}
-                    required
-                  />
-                  {errors.city ? <span>{errors.city}</span> : null}
-                </div>
-              </div>
-
-              <div className="field">
-                <StyledInputText
-                  label={t("bookingNew.fields.country")}
-                  value={form.country}
-                  setValue={(v) => handleChange("country", v)}
-                  required
-                />
-                {errors.country ? <span>{errors.country}</span> : null}
-              </div>
-
-              <div className="row">
-                <div className="field">
-                  <StyledInputNumber
-                    label={t("bookingNew.fields.capacity")}
-                    value={form.capacity}
-                    setValue={(v) => handleChange("capacity", v ?? "")}
-                    min="0"
+                    label="Website"
+                    value={form.website}
+                    setValue={(v) => handleChange("website", v)}
                   />
                 </div>
-                <div className="field">
-                  <StyledInputNumber
-                    label={t("bookingNew.fields.ticketPrice")}
-                    value={form.ticketPrice}
-                    setValue={(v) => handleChange("ticketPrice", v ?? "")}
-                    min="0"
+
+                <p className="disclaimer">{t("bookingNew.disclaimer")}</p>
+
+                <div className="actions">
+                  <Button
+                    label={t("bookingNew.form.submit")}
+                    type="submit"
+                    style="blue"
+                    isLoading={submitting}
+                    disabled={!artistSlug || artistMissing}
+                    width="100%"
                   />
                 </div>
-              </div>
+              </form>
+            )}
+          </Card>
 
-              <div className="field">
-                <StyledDropdown<{ id: ArtistSetType; name: string }>
-                  label={t("bookingNew.fields.setType")}
-                  value={
-                    {
-                      id: form.setType,
-                      name: t(`bookingNew.fields.setType_${form.setType}`),
-                    } as { id: ArtistSetType; name: string }
-                  }
-                  setValue={(opt) =>
-                    setForm((prev) => ({
-                      ...prev,
-                      setType: opt?.id ?? supportedSetTypes[0],
-                    }))
-                  }
-                  itemList={supportedSetTypes.map((id) => ({
-                    id,
-                    name: t(`bookingNew.fields.setType_${id}`),
-                  }))}
-                  itemIdKey="id"
-                  itemLabelKey="name"
-                  disabled={supportedSetTypes.length <= 1}
-                  width="100%"
-                />
-              </div>
-
-              <div className="field">
-                <StyledInputTextArea
-                  label={t("bookingNew.fields.context")}
-                  value={form.context}
-                  setValue={(v) => handleChange("context", v)}
-                  style={{ minHeight: "120px" }}
-                />
-                {errors.context ? <span>{errors.context}</span> : null}
-              </div>
-
-              <div
-                className="field"
-                aria-hidden="true"
-                style={{
-                  position: "absolute",
-                  left: -9999,
-                  height: 0,
-                  width: 0,
-                }}
-              >
-                <StyledInputText
-                  label="Website"
-                  value={form.website}
-                  setValue={(v) => handleChange("website", v)}
-                />
-              </div>
-
-              <p className="disclaimer">{t("bookingNew.disclaimer")}</p>
-
-              <div className="actions">
-                <Button
-                  label={t("bookingNew.form.submit")}
-                  type="submit"
-                  style="blue"
-                  isLoading={submitting}
-                  disabled={!artistSlug || artistMissing}
-                  width="100%"
-                />
-              </div>
-            </form>
-          )}
-        </Card>
-
-        {artist && !submitted ? (
-          <aside className="sideColumn">
-            <Card className="panel sidePanel">
-              <h2>{t("bookingNew.calendarPreview.title")}</h2>
-              <p className="sideHint">
-                {t("bookingNew.calendarPreview.clickHint")}
-              </p>
-              <div className="miniCalendar">
-                <PublicAvailabilityCalendar
-                  artistId={artist.id}
-                  monthsAhead={2}
-                  onDayClick={handleCalendarDayClick}
-                />
-              </div>
-            </Card>
-
-            {estimate ? (
-              <Card className="panel sidePanel summary">
-                <h2>{t("bookingNew.quote.title")}</h2>
-                <dl>
-                  <dt>{t("bookingNew.quote.artistCost")}</dt>
-                  <dd>
-                    {formatPriceCents(estimate.artistCostCents, language)}
-                  </dd>
-                  <dt>{t("bookingNew.quote.travelCost")}</dt>
-                  <dd>
-                    {formatPriceCents(estimate.travelCostCents, language)}
-                  </dd>
-                  <dt>{t("bookingNew.quote.subtotal")}</dt>
-                  <dd>{formatPriceCents(estimate.subtotalCents, language)}</dd>
-                  <dt>{t("bookingNew.quote.vat")}</dt>
-                  <dd>{formatPriceCents(estimate.vatCents, language)}</dd>
-                  <dt>
-                    <strong>{t("bookingNew.quote.total")}</strong>
-                  </dt>
-                  <dd>
-                    <strong>
-                      {formatPriceCents(estimate.totalCents, language)}
-                    </strong>
-                  </dd>
-                </dl>
-                <p className="disclaimer">{t("bookingNew.quote.disclaimer")}</p>
-              </Card>
-            ) : estimating ? (
+          {artist && !submitted ? (
+            <aside className="sideColumn">
               <Card className="panel sidePanel">
-                <p className="disclaimer">{t("bookingNew.quote.computing")}</p>
+                <h2>{t("bookingNew.calendarPreview.title")}</h2>
+                <p className="sideHint">
+                  {t("bookingNew.calendarPreview.clickHint")}
+                </p>
+                <div className="miniCalendar">
+                  <PublicAvailabilityCalendar
+                    artistId={artist.id}
+                    monthsAhead={2}
+                    onDayClick={handleCalendarDayClick}
+                  />
+                </div>
               </Card>
-            ) : null}
-          </aside>
-        ) : null}
-      </div>
-    </div>
+
+              {estimate ? (
+                <Card className="panel sidePanel summary">
+                  <h2>{t("bookingNew.quote.title")}</h2>
+                  <dl>
+                    <dt>{t("bookingNew.quote.artistCost")}</dt>
+                    <dd>
+                      {formatPriceCents(estimate.artistCostCents, language)}
+                    </dd>
+                    <dt>{t("bookingNew.quote.travelCost")}</dt>
+                    <dd>
+                      {formatPriceCents(estimate.travelCostCents, language)}
+                    </dd>
+                    <dt>{t("bookingNew.quote.subtotal")}</dt>
+                    <dd>
+                      {formatPriceCents(estimate.subtotalCents, language)}
+                    </dd>
+                    <dt>{t("bookingNew.quote.vat")}</dt>
+                    <dd>{formatPriceCents(estimate.vatCents, language)}</dd>
+                    <dt>
+                      <strong>{t("bookingNew.quote.total")}</strong>
+                    </dt>
+                    <dd>
+                      <strong>
+                        {formatPriceCents(estimate.totalCents, language)}
+                      </strong>
+                    </dd>
+                  </dl>
+                  <p className="disclaimer">
+                    {t("bookingNew.quote.disclaimer")}
+                  </p>
+                </Card>
+              ) : estimating ? (
+                <Card className="panel sidePanel">
+                  <p className="disclaimer">
+                    {t("bookingNew.quote.computing")}
+                  </p>
+                </Card>
+              ) : null}
+            </aside>
+          ) : null}
+        </div>
+      </Bounded>
+    </Section>
   );
 };
 

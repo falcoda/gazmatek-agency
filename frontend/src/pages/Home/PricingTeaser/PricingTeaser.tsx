@@ -3,7 +3,9 @@ import "./PricingTeaser.scss";
 import { useEffect, useState } from "react";
 import { useTranslation } from "react-i18next";
 
+import Bounded from "@/components/Bounded/Bounded";
 import PriceSimulator from "@/components/PriceSimulator/PriceSimulator";
+import Section from "@/components/Section/Section";
 import { useOptionalLanguage } from "@/hooks/useLanguage";
 import {
   type ArtistSummaryDto,
@@ -32,23 +34,23 @@ const PricingTeaser = () => {
   }, [language]);
 
   return (
-    <section className="pricingTeaser fi" data-section="pricingTeaser">
-      <div className="inner">
-        <header className="header">
+    <Section className="pricingTeaser fi" data-section="pricingTeaser">
+      <Bounded width="wide" className="inner">
+        <Bounded as="header" width="text" className="header">
           <h2 className="title">{t("home.pricingTeaser.title")}</h2>
           <p className="subtitle">{t("home.pricingTeaser.subtitle")}</p>
           <p className="counter">
             {t("home.pricingTeaser.counter", { count: artists.length })}
           </p>
-        </header>
+        </Bounded>
 
         <PriceSimulator
           artists={artists}
           loading={loading}
           language={language}
         />
-      </div>
-    </section>
+      </Bounded>
+    </Section>
   );
 };
 

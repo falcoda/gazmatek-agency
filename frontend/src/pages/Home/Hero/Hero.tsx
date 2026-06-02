@@ -4,6 +4,7 @@ import { useEffect, useState } from "react";
 import { useTranslation } from "react-i18next";
 
 import BookingCta from "@/components/BookingCta/BookingCta";
+import Bounded from "@/components/Bounded/Bounded";
 import {
   fetchHomeStats,
   type HomeStats,
@@ -40,7 +41,7 @@ const Hero = () => {
         <div className="bgGlow isSecond" />
       </div>
 
-      <div className="content">
+      <Bounded width="narrow" className="content">
         <p className="eyebrow">{t("footer.tagline")}</p>
         <h1 id="hero-title" className="title">
           {t("home.hero.title")}
@@ -68,7 +69,7 @@ const Hero = () => {
             <span className="statLabel">{t("home.hero.stats.reply")}</span>
           </li>
         </ul>
-      </div>
+      </Bounded>
     </section>
   );
 };

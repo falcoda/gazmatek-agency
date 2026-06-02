@@ -1,0 +1,24 @@
+.bounded {
+  width: 100%;
+  margin-inline: auto;
+
+  &--wide {
+    max-width: $container-wide;
+  }
+
+  &--medium {
+    max-width: $container-medium;
+  }
+
+  &--narrow {
+    max-width: $container-narrow;
+  }
+
+  &--text {
+    max-width: $container-text;
+  }
+
+  &--compact {
+    max-width: $container-compact;
+  }
+}

@@ -88,3 +88,18 @@ $breakpoint-md-4: 640px;
 
 $breakpoint-sm: 576px;
 $breakpoint-xs: 393px;
+
+// LAYOUT
+// Centered content container scale — the only widths public pages should use.
+$container-wide: 1280px; // full grids (services, artists, process, ...)
+$container-medium: 1080px; // dense tables / two-column blocks
+$container-narrow: 880px; // text-first pages and hero content
+$container-text: 720px; // centered prose (faq, cta, teasers)
+$container-compact: 640px; // confirmation / single-message screens
+
+// Section rhythm — vertical/horizontal padding shared by every public section.
+$section-block: $padding-xl; // 40px desktop vertical rhythm
+$section-block-mobile: $padding-lg; // 30px mobile vertical rhythm
+$section-inline: $padding-md; // 20px desktop horizontal padding
+$section-inline-mobile: $padding-sm; // 14px mobile horizontal padding
+$section-gap: $padding-lg; // 30px gap between header and content blocks

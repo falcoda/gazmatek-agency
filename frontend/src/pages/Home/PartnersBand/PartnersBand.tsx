@@ -2,6 +2,9 @@ import "./PartnersBand.scss";
 
 import { useTranslation } from "react-i18next";
 
+import Bounded from "@/components/Bounded/Bounded";
+import Section from "@/components/Section/Section";
+
 const PARTNERS = [
   "BOTANIQUE",
   "FUSE",
@@ -17,8 +20,8 @@ const PartnersBand = () => {
   const { t } = useTranslation();
 
   return (
-    <section className="partnersBand fi" data-section="partnersBand">
-      <div className="inner">
+    <Section className="partnersBand fi" data-section="partnersBand">
+      <Bounded width="wide" className="inner">
         <p className="title">{t("home.partners.title")}</p>
         <ul className="list">
           {PARTNERS.map((partner) => (
@@ -27,8 +30,8 @@ const PartnersBand = () => {
             </li>
           ))}
         </ul>
-      </div>
-    </section>
+      </Bounded>
+    </Section>
   );
 };
 

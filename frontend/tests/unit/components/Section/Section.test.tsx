@@ -36,4 +36,11 @@ describe("Section", () => {
       "section",
     );
   });
+
+  it("renders a custom element when `as` is provided", () => {
+    const { container } = render(<Section as="div">content</Section>);
+
+    expect(container.querySelector("div.section")).not.toBeNull();
+    expect(container.querySelector("section")).toBeNull();
+  });
 });

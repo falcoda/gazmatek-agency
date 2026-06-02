@@ -4,6 +4,8 @@ import { useEffect, useMemo, useState } from "react";
 import { useTranslation } from "react-i18next";
 import { useSearchParams } from "react-router-dom";
 
+import Bounded from "@/components/Bounded/Bounded";
+import Section from "@/components/Section/Section";
 import SeoHead from "@/components/SeoHead/SeoHead";
 import { useOptionalLanguage } from "@/hooks/useLanguage";
 import useScrollAnimation from "@/hooks/useScrollAnimation";
@@ -79,32 +81,34 @@ const Artists = () => {
   };
 
   return (
-    <div className="artistsPage">
-      <SeoHead
-        title={t("seo.artists.title")}
-        description={t("seo.artists.description")}
-        path="/artists"
-      />
+    <Section>
+      <Bounded width="wide" className="artistsPage">
+        <SeoHead
+          title={t("seo.artists.title")}
+          description={t("seo.artists.description")}
+          path="/artists"
+        />
 
-      <header className="header">
-        <h1>{t("artists.pageTitle")}</h1>
-        <p>{t("artists.pageSubtitle")}</p>
-      </header>
+        <header className="header">
+          <h1>{t("artists.pageTitle")}</h1>
+          <p>{t("artists.pageSubtitle")}</p>
+        </header>
 
-      <Filters
-        value={filters}
-        onChange={handleFiltersChange}
-        onReset={handleReset}
-      />
+        <Filters
+          value={filters}
+          onChange={handleFiltersChange}
+          onReset={handleReset}
+        />
 
-      <ArtistGrid
-        data={data}
-        loading={loading}
-        language={language}
-        onReset={handleReset}
-        onPageChange={handlePageChange}
-      />
-    </div>
+        <ArtistGrid
+          data={data}
+          loading={loading}
+          language={language}
+          onReset={handleReset}
+          onPageChange={handlePageChange}
+        />
+      </Bounded>
+    </Section>
   );
 };
 

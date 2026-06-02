@@ -1,10 +1,7 @@
 .pricingPage {
-  max-width: 880px;
-  margin: 0 auto;
-  padding: $padding-xl $padding-md;
   display: flex;
   flex-direction: column;
-  gap: $padding-lg;
+  gap: $section-gap;
 
   .header {
     text-align: center;
@@ -18,9 +15,5 @@
       margin: 0;
       color: $secondary-font;
     }
-  }
-
-  @include maxScreen($breakpoint-md-3) {
-    padding: $padding-lg $padding-sm;
   }
 }

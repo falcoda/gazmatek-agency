@@ -8,6 +8,10 @@ import {
   FaSearch,
 } from "react-icons/fa";
 
+import Bounded from "@/components/Bounded/Bounded";
+import Section from "@/components/Section/Section";
+import Surface from "@/components/Surface/Surface";
+
 const STEPS = [
   { key: "discover", icon: <FaSearch aria-hidden /> },
   { key: "brief", icon: <FaCommentDots aria-hidden /> },
@@ -19,17 +23,17 @@ const Process = () => {
   const { t } = useTranslation();
 
   return (
-    <section className="process fi" data-section="process">
-      <div className="inner">
-        <header className="header">
+    <Section className="process fi" data-section="process">
+      <Bounded width="wide" className="inner">
+        <Bounded as="header" width="text" className="header">
           <p className="eyebrow">{t("home.process.eyebrow")}</p>
           <h2 className="title">{t("home.process.title")}</h2>
           <p className="subtitle">{t("home.process.subtitle")}</p>
-        </header>
+        </Bounded>
 
         <ol className="steps">
           {STEPS.map((step, index) => (
-            <li key={step.key} className="step fi">
+            <Surface as="li" key={step.key} className="step fi">
               <div className="stepIndex">{`${index + 1}`.padStart(2, "0")}</div>
               <div className="stepIcon">{step.icon}</div>
               <h3 className="stepTitle">
@@ -38,11 +42,11 @@ const Process = () => {
               <p className="stepDesc">
                 {t(`home.process.steps.${step.key}.desc`)}
               </p>
-            </li>
+            </Surface>
           ))}
         </ol>
-      </div>
-    </section>
+      </Bounded>
+    </Section>
   );
 };
 

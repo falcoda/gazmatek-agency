@@ -3,6 +3,7 @@ import "./NotFound.scss";
 import { useTranslation } from "react-i18next";
 import { Link } from "react-router-dom";
 
+import Section from "@/components/Section/Section";
 import { getPagePath } from "@/config/pages";
 import { isSupportedLanguage } from "@/i18n/routing";
 
@@ -16,7 +17,7 @@ const NotFound = () => {
   );
 
   return (
-    <div className="notFound">
+    <Section className="notFound">
       <div className="notFoundInner">
         <span className="notFoundCode" aria-hidden="true">
           404
@@ -27,7 +28,7 @@ const NotFound = () => {
           {t("notFound.back")}
         </Link>
       </div>
-    </div>
+    </Section>
   );
 };
 

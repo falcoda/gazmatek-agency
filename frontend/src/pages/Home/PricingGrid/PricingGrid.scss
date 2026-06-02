@@ -1,5 +1,4 @@
 .pricingGrid {
-  padding: $padding-xl $padding-md;
   background: $primary-color;
   position: relative;
 
@@ -16,15 +15,13 @@
   }
 
   .inner {
-    max-width: 1080px;
-    margin: 0 auto;
     position: relative;
     z-index: 1;
   }
 
   .header {
     text-align: center;
-    margin-bottom: $padding-lg;
+    margin-bottom: $section-gap;
   }
 
   .eyebrow {

@@ -5,6 +5,8 @@ import toast from "react-hot-toast";
 import { useTranslation } from "react-i18next";
 import { FaEnvelope, FaMapMarkerAlt, FaPhone } from "react-icons/fa";
 
+import Bounded from "@/components/Bounded/Bounded";
+import Section from "@/components/Section/Section";
 import SeoHead from "@/components/SeoHead/SeoHead";
 import {
   CONTACT_ADDRESS,
@@ -91,149 +93,155 @@ const Contact = () => {
   };
 
   return (
-    <div className="contactPage">
-      <SeoHead
-        title={t("seo.contact.title")}
-        description={t("seo.contact.description")}
-        path="/contact"
-      />
-      <header className="header">
-        <h1>{t("contact.title")}</h1>
-        <p>{t("contact.subtitle")}</p>
-      </header>
+    <Section>
+      <Bounded width="wide" className="contactPage">
+        <SeoHead
+          title={t("seo.contact.title")}
+          description={t("seo.contact.description")}
+          path="/contact"
+        />
+        <Bounded as="header" width="text" className="header">
+          <h1>{t("contact.title")}</h1>
+          <p>{t("contact.subtitle")}</p>
+        </Bounded>
 
-      <div className="grid">
-        <form className="contactForm" onSubmit={handleSubmit} noValidate>
-          <div className="row row--split">
+        <div className="grid">
+          <form className="contactForm" onSubmit={handleSubmit} noValidate>
+            <div className="row row--split">
+              <div className="field">
+                <StyledInputText
+                  label={t("contact.form.name")}
+                  placeholder={t("contact.form.namePlaceholder")}
+                  value={form.name}
+                  setValue={(v) => handleChange("name", v)}
+                  required
+                  width="100%"
+                />
+                {errors.name ? <p className="error">{errors.name}</p> : null}
+              </div>
+
+              <div className="field">
+                <StyledInputEmail
+                  label={t("contact.form.email")}
+                  placeholder={t("contact.form.emailPlaceholder")}
+                  value={form.email}
+                  setValue={(v) => handleChange("email", v)}
+                  required
+                  width="100%"
+                />
+                {errors.email ? <p className="error">{errors.email}</p> : null}
+              </div>
+            </div>
+
             <div className="field">
               <StyledInputText
-                label={t("contact.form.name")}
-                placeholder={t("contact.form.namePlaceholder")}
-                value={form.name}
-                setValue={(v) => handleChange("name", v)}
+                label={t("contact.form.subject")}
+                placeholder={t("contact.form.subjectPlaceholder")}
+                value={form.subject}
+                setValue={(v) => handleChange("subject", v)}
                 required
                 width="100%"
               />
-              {errors.name ? <p className="error">{errors.name}</p> : null}
+              {errors.subject ? (
+                <p className="error">{errors.subject}</p>
+              ) : null}
             </div>
 
-            <div className="field">
-              <StyledInputEmail
-                label={t("contact.form.email")}
-                placeholder={t("contact.form.emailPlaceholder")}
-                value={form.email}
-                setValue={(v) => handleChange("email", v)}
+            <div className="field field--message">
+              <StyledInputTextArea
+                label={t("contact.form.message")}
+                placeholder={t("contact.form.messagePlaceholder")}
+                value={form.message}
+                setValue={(v) => handleChange("message", v)}
                 required
                 width="100%"
+                style={{ minHeight: "200px", maxWidth: "100%" }}
               />
-              {errors.email ? <p className="error">{errors.email}</p> : null}
+              {errors.message ? (
+                <p className="error">{errors.message}</p>
+              ) : null}
             </div>
-          </div>
 
-          <div className="field">
-            <StyledInputText
-              label={t("contact.form.subject")}
-              placeholder={t("contact.form.subjectPlaceholder")}
-              value={form.subject}
-              setValue={(v) => handleChange("subject", v)}
-              required
+            <div className="honeypot" aria-hidden="true">
+              <StyledInputText
+                label="Website"
+                value={form.website}
+                setValue={(v) => handleChange("website", v)}
+              />
+            </div>
+
+            <Button
+              type="submit"
+              label={t("contact.form.submit")}
+              style="blue"
+              isLoading={submitting}
               width="100%"
             />
-            {errors.subject ? <p className="error">{errors.subject}</p> : null}
-          </div>
+          </form>
 
-          <div className="field field--message">
-            <StyledInputTextArea
-              label={t("contact.form.message")}
-              placeholder={t("contact.form.messagePlaceholder")}
-              value={form.message}
-              setValue={(v) => handleChange("message", v)}
-              required
-              width="100%"
-              style={{ minHeight: "200px", maxWidth: "100%" }}
-            />
-            {errors.message ? <p className="error">{errors.message}</p> : null}
-          </div>
-
-          <div className="honeypot" aria-hidden="true">
-            <StyledInputText
-              label="Website"
-              value={form.website}
-              setValue={(v) => handleChange("website", v)}
-            />
-          </div>
-
-          <Button
-            type="submit"
-            label={t("contact.form.submit")}
-            style="blue"
-            isLoading={submitting}
-            width="100%"
-          />
-        </form>
-
-        <aside className="contactCoordinates">
-          <h2>{t("contact.coordinates.title")}</h2>
-          <ul>
-            <li>
-              <span className="icon" aria-hidden>
-                <FaEnvelope />
-              </span>
-              <div className="meta">
-                <span className="metaLabel">
-                  {t("contact.coordinates.email")}
+          <aside className="contactCoordinates">
+            <h2>{t("contact.coordinates.title")}</h2>
+            <ul>
+              <li>
+                <span className="icon" aria-hidden>
+                  <FaEnvelope />
                 </span>
-                <a href={`mailto:${CONTACT_EMAIL}`}>{CONTACT_EMAIL}</a>
-              </div>
-            </li>
-            <li>
-              <span className="icon" aria-hidden>
-                <FaPhone />
-              </span>
-              <div className="meta">
-                <span className="metaLabel">
-                  {t("contact.coordinates.phone")}
+                <div className="meta">
+                  <span className="metaLabel">
+                    {t("contact.coordinates.email")}
+                  </span>
+                  <a href={`mailto:${CONTACT_EMAIL}`}>{CONTACT_EMAIL}</a>
+                </div>
+              </li>
+              <li>
+                <span className="icon" aria-hidden>
+                  <FaPhone />
                 </span>
-                <a href={`tel:${CONTACT_PHONE.replace(/\s/g, "")}`}>
-                  {CONTACT_PHONE}
-                </a>
-              </div>
-            </li>
-            <li>
-              <span className="icon" aria-hidden>
-                <FaMapMarkerAlt />
-              </span>
-              <div className="meta">
-                <span className="metaLabel">
-                  {t("contact.coordinates.address")}
+                <div className="meta">
+                  <span className="metaLabel">
+                    {t("contact.coordinates.phone")}
+                  </span>
+                  <a href={`tel:${CONTACT_PHONE.replace(/\s/g, "")}`}>
+                    {CONTACT_PHONE}
+                  </a>
+                </div>
+              </li>
+              <li>
+                <span className="icon" aria-hidden>
+                  <FaMapMarkerAlt />
                 </span>
-                <address>
-                  {CONTACT_ADDRESS.street}
-                  <br />
-                  {CONTACT_ADDRESS.postalCode} {CONTACT_ADDRESS.city}
-                  <br />
-                  {CONTACT_ADDRESS.country}
-                </address>
-              </div>
-            </li>
-          </ul>
-          <div className="socials">
-            {Object.entries(SOCIAL_LINKS)
-              .filter(([, url]) => url && url !== "#")
-              .map(([platform, url]) => (
-                <a
-                  key={platform}
-                  href={url}
-                  target="_blank"
-                  rel="noopener noreferrer"
-                >
-                  {platform}
-                </a>
-              ))}
-          </div>
-        </aside>
-      </div>
-    </div>
+                <div className="meta">
+                  <span className="metaLabel">
+                    {t("contact.coordinates.address")}
+                  </span>
+                  <address>
+                    {CONTACT_ADDRESS.street}
+                    <br />
+                    {CONTACT_ADDRESS.postalCode} {CONTACT_ADDRESS.city}
+                    <br />
+                    {CONTACT_ADDRESS.country}
+                  </address>
+                </div>
+              </li>
+            </ul>
+            <div className="socials">
+              {Object.entries(SOCIAL_LINKS)
+                .filter(([, url]) => url && url !== "#")
+                .map(([platform, url]) => (
+                  <a
+                    key={platform}
+                    href={url}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                  >
+                    {platform}
+                  </a>
+                ))}
+            </div>
+          </aside>
+        </div>
+      </Bounded>
+    </Section>
   );
 };
 

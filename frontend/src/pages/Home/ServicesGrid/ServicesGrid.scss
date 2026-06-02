@@ -1,12 +1,7 @@
 .servicesGrid {
-  padding: $padding-xl $padding-md;
-  max-width: 1280px;
-  margin: 0 auto;
-  width: 100%;
-
   .header {
     text-align: center;
-    margin-bottom: $padding-lg;
+    margin-bottom: $section-gap;
   }
 
   .title {
@@ -54,9 +49,5 @@
     color: $secondary-font;
     font-size: 0.95rem;
     line-height: 1.5;
-  }
-
-  @include maxScreen($breakpoint-md-3) {
-    padding: $padding-lg $padding-sm;
   }
 }

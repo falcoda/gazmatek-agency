@@ -1,2 +1,7 @@
 .section {
+  padding: $section-block $section-inline;
+
+  @include maxScreen($breakpoint-md-3) {
+    padding: $section-block-mobile $section-inline-mobile;
+  }
 }

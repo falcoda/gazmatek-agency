@@ -2,6 +2,10 @@ import "./SocialProof.scss";
 
 import { useTranslation } from "react-i18next";
 
+import Bounded from "@/components/Bounded/Bounded";
+import Section from "@/components/Section/Section";
+import Surface from "@/components/Surface/Surface";
+
 interface Testimonial {
   id: string;
   who: string;
@@ -33,23 +37,23 @@ const SocialProof = () => {
   const { t } = useTranslation();
 
   return (
-    <section className="socialProof fi" data-section="socialProof">
-      <div className="inner">
+    <Section className="socialProof fi" data-section="socialProof">
+      <Bounded width="wide" className="inner">
         <h2 className="title">{t("home.socialProof.title")}</h2>
         <p className="subtitle">{t("home.socialProof.subtitle")}</p>
 
         <ul className="list">
           {TESTIMONIALS.map((item) => (
-            <li key={item.id} className="card fi">
+            <Surface as="li" key={item.id} className="card fi">
               <blockquote>
                 <p>&laquo;&nbsp;{item.quote}&nbsp;&raquo;</p>
                 <footer>{item.who}</footer>
               </blockquote>
-            </li>
+            </Surface>
           ))}
         </ul>
-      </div>
-    </section>
+      </Bounded>
+    </Section>
   );
 };
 

@@ -2,9 +2,11 @@ import "./HomeFaq.scss";
 
 import { useTranslation } from "react-i18next";
 
+import Bounded from "@/components/Bounded/Bounded";
 import FaqAccordion, {
   type FaqItem,
 } from "@/components/FaqAccordion/FaqAccordion";
+import Section from "@/components/Section/Section";
 
 const HomeFaq = () => {
   const { t } = useTranslation();
@@ -17,13 +19,13 @@ const HomeFaq = () => {
   ];
 
   return (
-    <section className="homeFaq fi" data-section="homeFaq">
-      <div className="inner">
+    <Section className="homeFaq fi" data-section="homeFaq">
+      <Bounded width="narrow" className="inner">
         <h2 className="title">{t("home.faq.title")}</h2>
         <p className="subtitle">{t("home.faq.subtitle")}</p>
         <FaqAccordion items={items} defaultOpenIndex={0} />
-      </div>
-    </section>
+      </Bounded>
+    </Section>
   );
 };
 

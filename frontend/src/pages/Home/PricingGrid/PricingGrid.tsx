@@ -4,6 +4,8 @@ import { useEffect, useState } from "react";
 import { useTranslation } from "react-i18next";
 import { useNavigate } from "react-router-dom";
 
+import Bounded from "@/components/Bounded/Bounded";
+import Section from "@/components/Section/Section";
 import { getPagePath } from "@/config/pages";
 import { Button } from "@/covaltech-react-ui";
 import { useLanguage } from "@/hooks/useLanguage";
@@ -53,8 +55,8 @@ const PricingGrid = () => {
   const isLarge = (capacity: number) => capacity >= grid.largeCapacityThreshold;
 
   return (
-    <section className="pricingGrid fi" data-section="pricingGrid">
-      <div className="inner">
+    <Section className="pricingGrid fi" data-section="pricingGrid">
+      <Bounded width="medium" className="inner">
         <header className="header">
           <p className="eyebrow">{t("home.pricingGrid.eyebrow")}</p>
           <h2 className="title">{t("home.pricingGrid.title")}</h2>
@@ -208,8 +210,8 @@ const PricingGrid = () => {
             onClick={() => navigate(getPagePath("pricing", language))}
           />
         </div>
-      </div>
-    </section>
+      </Bounded>
+    </Section>
   );
 };
 

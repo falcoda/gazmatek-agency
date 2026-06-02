@@ -1,10 +1,7 @@
 .ctaBanner {
-  padding: $padding-xl $padding-md;
   background: linear-gradient(135deg, $primary-color, $secondary-color);
 
   .inner {
-    max-width: 720px;
-    margin: 0 auto;
     text-align: center;
     color: $primary-font;
     display: flex;

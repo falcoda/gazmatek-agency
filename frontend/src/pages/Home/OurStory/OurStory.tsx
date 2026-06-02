@@ -3,6 +3,8 @@ import "./OurStory.scss";
 import { useTranslation } from "react-i18next";
 
 import AnimatedCounter from "@/components/AnimatedCounter/AnimatedCounter";
+import Bounded from "@/components/Bounded/Bounded";
+import Section from "@/components/Section/Section";
 
 const FOUNDED_YEAR = 2016;
 
@@ -11,8 +13,8 @@ const OurStory = () => {
   const yearsActive = new Date().getFullYear() - FOUNDED_YEAR;
 
   return (
-    <section className="ourStory fi" data-section="ourStory">
-      <div className="inner">
+    <Section className="ourStory fi" data-section="ourStory">
+      <Bounded width="wide" className="inner">
         <div className="copy">
           <h2 className="title">{t("home.ourStory.title")}</h2>
           <p className="paragraph">{t("home.ourStory.intro")}</p>
@@ -32,8 +34,8 @@ const OurStory = () => {
             <span className="statLabel">{t("home.ourStory.statArtists")}</span>
           </li>
         </ul>
-      </div>
-    </section>
+      </Bounded>
+    </Section>
   );
 };
 

@@ -5,6 +5,7 @@ import { useTranslation } from "react-i18next";
 import { Link, useNavigate, useParams } from "react-router-dom";
 
 import BookingCta from "@/components/BookingCta/BookingCta";
+import Bounded from "@/components/Bounded/Bounded";
 import SeoHead from "@/components/SeoHead/SeoHead";
 import { getPagePath } from "@/config/pages";
 import useScrollAnimation from "@/hooks/useScrollAnimation";
@@ -76,7 +77,7 @@ const ArtistDetail = () => {
 
   if (notFound || !artist) {
     return (
-      <div className="artistDetail isMissing">
+      <Bounded width="wide" className="artistDetail isMissing">
         <SeoHead
           title={t("artistDetail.notFoundTitle")}
           description={t("artistDetail.notFoundText")}
@@ -93,12 +94,12 @@ const ArtistDetail = () => {
         >
           ← {t("artistDetail.backToCatalog")}
         </Link>
-      </div>
+      </Bounded>
     );
   }
 
   return (
-    <div className="artistDetail">
+    <Bounded width="wide" className="artistDetail">
       <SeoHead
         title={t("seo.artistDetail.title", { name: artist.stageName })}
         description={t("seo.artistDetail.description", {
@@ -126,7 +127,7 @@ const ArtistDetail = () => {
         artistName={artist.stageName}
         variant="sticky"
       />
-    </div>
+    </Bounded>
   );
 };
 

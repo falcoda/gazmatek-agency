@@ -5,7 +5,9 @@ import toast from "react-hot-toast";
 import { useTranslation } from "react-i18next";
 import { useSearchParams } from "react-router-dom";
 
+import Bounded from "@/components/Bounded/Bounded";
 import PriceSimulator from "@/components/PriceSimulator/PriceSimulator";
+import Section from "@/components/Section/Section";
 import SeoHead from "@/components/SeoHead/SeoHead";
 import { PRICING_QUERY_PARAM } from "@/config/pages";
 import { useOptionalLanguage } from "@/hooks/useLanguage";
@@ -80,25 +82,27 @@ const Pricing = () => {
   };
 
   return (
-    <div className="pricingPage">
-      <SeoHead
-        title={t("seo.pricing.title")}
-        description={t("seo.pricing.description")}
-        path="/pricing"
-      />
-      <header className="header">
-        <h1>{t("pricing.title")}</h1>
-        <p>{t("pricing.subtitle")}</p>
-      </header>
+    <Section>
+      <Bounded width="narrow" className="pricingPage">
+        <SeoHead
+          title={t("seo.pricing.title")}
+          description={t("seo.pricing.description")}
+          path="/pricing"
+        />
+        <header className="header">
+          <h1>{t("pricing.title")}</h1>
+          <p>{t("pricing.subtitle")}</p>
+        </header>
 
-      <PriceSimulator
-        artists={artists}
-        loading={loading}
-        language={language}
-        presetArtistId={presetArtistId}
-        onArtistChange={handleArtistChange}
-      />
-    </div>
+        <PriceSimulator
+          artists={artists}
+          loading={loading}
+          language={language}
+          presetArtistId={presetArtistId}
+          onArtistChange={handleArtistChange}
+        />
+      </Bounded>
+    </Section>
   );
 };
 

@@ -56,8 +56,6 @@
   .content {
     position: relative;
     z-index: 2;
-    max-width: 880px;
-    margin: 0 auto;
     text-align: center;
     color: $primary-font;
   }
@@ -106,7 +104,7 @@
     display: grid;
     grid-template-columns: repeat(3, 1fr);
     gap: $padding-md;
-    max-width: 640px;
+    max-width: $container-compact;
     margin-inline: auto;
 
     li {

@@ -1,11 +1,7 @@
 .artistsPage {
-  padding: $padding-xl $padding-md;
-  max-width: 1280px;
-  margin: 0 auto;
-  width: 100%;
   display: flex;
   flex-direction: column;
-  gap: $padding-lg;
+  gap: $section-gap;
 
   .header {
     text-align: center;
@@ -19,9 +15,5 @@
       margin: 0;
       color: $secondary-font;
     }
-  }
-
-  @include maxScreen($breakpoint-md-3) {
-    padding: $padding-lg $padding-sm;
   }
 }

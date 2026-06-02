@@ -3,6 +3,8 @@ import "./BookingSent.scss";
 import { useTranslation } from "react-i18next";
 import { Link, useSearchParams } from "react-router-dom";
 
+import Bounded from "@/components/Bounded/Bounded";
+import Section from "@/components/Section/Section";
 import SeoHead from "@/components/SeoHead/SeoHead";
 import { getPagePath } from "@/config/pages";
 import { useOptionalLanguage } from "@/hooks/useLanguage";
@@ -14,20 +16,22 @@ const BookingSent = () => {
   const email = searchParams.get("email");
 
   return (
-    <div className="bookingSent">
-      <SeoHead
-        title={t("booking.sent.title")}
-        description=""
-        path="/booking/sent"
-      />
-      <h1>{t("booking.sent.title")}</h1>
-      <p>
-        {t("booking.sent.body")} {email ? <strong>{email}</strong> : null}
-      </p>
-      <Link to={getPagePath("main", language)} className="back">
-        ← {t("notFound.back")}
-      </Link>
-    </div>
+    <Section>
+      <Bounded width="compact" className="bookingSent">
+        <SeoHead
+          title={t("booking.sent.title")}
+          description=""
+          path="/booking/sent"
+        />
+        <h1>{t("booking.sent.title")}</h1>
+        <p>
+          {t("booking.sent.body")} {email ? <strong>{email}</strong> : null}
+        </p>
+        <Link to={getPagePath("main", language)} className="back">
+          ← {t("notFound.back")}
+        </Link>
+      </Bounded>
+    </Section>
   );
 };
 

@@ -1,11 +1,10 @@
-.partnersBand {
-  padding: $padding-lg $padding-md;
+// Thin partner band: tighter vertical rhythm than a standard section.
+.section.partnersBand {
+  padding-block: $padding-lg;
   background: $secondary-color;
   border-block: 1px solid $border-color;
 
   .inner {
-    max-width: 1280px;
-    margin: 0 auto;
     display: flex;
     flex-direction: column;
     gap: $padding-md;

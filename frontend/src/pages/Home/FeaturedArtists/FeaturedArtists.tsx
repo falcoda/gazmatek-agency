@@ -4,6 +4,8 @@ import { useEffect, useState } from "react";
 import { useTranslation } from "react-i18next";
 import { Link } from "react-router-dom";
 
+import Bounded from "@/components/Bounded/Bounded";
+import Section from "@/components/Section/Section";
 import { getPagePath } from "@/config/pages";
 import { useOptionalLanguage } from "@/hooks/useLanguage";
 import {
@@ -51,35 +53,37 @@ const FeaturedArtists = () => {
   const hasArtists = !!artists && artists.length > 0;
 
   return (
-    <section className="featuredArtists" aria-labelledby="featured-title">
-      <header className="header">
-        <h2 id="featured-title" className="title">
-          {t("home.featured.title")}
-        </h2>
-        <p className="subtitle">{t("home.featured.subtitle")}</p>
-      </header>
+    <Section aria-labelledby="featured-title">
+      <Bounded width="wide" className="featuredArtists">
+        <header className="header">
+          <h2 id="featured-title" className="title">
+            {t("home.featured.title")}
+          </h2>
+          <p className="subtitle">{t("home.featured.subtitle")}</p>
+        </header>
 
-      {loading ? (
-        <div className="grid" aria-busy="true">
-          {Array.from({ length: 4 }).map((_, idx) => (
-            <div key={idx} className="card isSkeleton" aria-hidden="true" />
-          ))}
-        </div>
-      ) : !hasArtists ? (
-        <div className="empty">
-          <p>{error ? t("common.error") : t("home.featured.empty")}</p>
-          <Link to={catalogPath} className="discoverLink">
-            {t("home.featured.discoverAll")}
-          </Link>
-        </div>
-      ) : (
-        <ul className="grid" aria-label={t("home.featured.title")}>
-          {artists!.map((artist) => (
-            <ArtistCard key={artist.id} artist={artist} language={language} />
-          ))}
-        </ul>
-      )}
-    </section>
+        {loading ? (
+          <div className="grid" aria-busy="true">
+            {Array.from({ length: 4 }).map((_, idx) => (
+              <div key={idx} className="card isSkeleton" aria-hidden="true" />
+            ))}
+          </div>
+        ) : !hasArtists ? (
+          <div className="empty">
+            <p>{error ? t("common.error") : t("home.featured.empty")}</p>
+            <Link to={catalogPath} className="discoverLink">
+              {t("home.featured.discoverAll")}
+            </Link>
+          </div>
+        ) : (
+          <ul className="grid" aria-label={t("home.featured.title")}>
+            {artists!.map((artist) => (
+              <ArtistCard key={artist.id} artist={artist} language={language} />
+            ))}
+          </ul>
+        )}
+      </Bounded>
+    </Section>
   );
 };
 
