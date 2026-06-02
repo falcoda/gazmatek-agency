@@ -15,7 +15,6 @@ import { listBookingsAdmin } from "@src/db/query/booking/listBookingsAdmin.types
 import { markBookingCompleted } from "@src/db/query/booking/markBookingCompleted.types";
 import { markBookingDepositPaid } from "@src/db/query/booking/markBookingDepositPaid.types";
 import { rejectBookingAdmin } from "@src/db/query/booking/rejectBookingAdmin.types";
-import { updateBookingAdmin } from "@src/db/query/booking/updateBookingAdmin.types";
 import { listContentBlocks } from "@src/db/query/content/listContentBlocks.types";
 import { upsertContentBlock } from "@src/db/query/content/upsertContentBlock.types";
 import { deleteEngagementContractByArtist } from "@src/db/query/contract/deleteEngagementContractByArtist.types";
@@ -55,6 +54,7 @@ import {
   createAdminArtistBodySchema,
   updateAdminArtistBodySchema,
 } from "@src/schemas/adminArtist";
+import { updateAgencyInfoBodySchema } from "@src/schemas/agency";
 import { loginBodySchema } from "@src/schemas/artistAuth";
 import {
   artistInvitationIdParamsSchema,
@@ -102,6 +102,16 @@ const bookingService = new BookingService(pool);
 const clientAuthService = new ClientAuthService(pool);
 const unavailabilityService = new UnavailabilityService(pool);
 const artistInvitationService = new ArtistInvitationService(pool);
+
+// Postgres unique-violation code. Used to translate a duplicate artist slug into
+// a 409 instead of leaking a 500 (#29).
+const PG_UNIQUE_VIOLATION = "23505";
+const mapSlugConflict = (error: unknown): unknown => {
+  if ((error as { code?: string } | null)?.code === PG_UNIQUE_VIOLATION) {
+    return new ConflictError("slug already in use");
+  }
+  return error;
+};
 
 // Public sub-routes (login)
 adminRouter.post(
@@ -254,23 +264,27 @@ const pickAgencyInfo = (body: Record<string, unknown>): AgencyInfo => {
   };
 };
 
-adminRouter.put("/agency/info", async (req, res, next) => {
-  try {
-    const body = (req.body ?? {}) as Record<string, unknown>;
-    const info = await saveAgencyInfo(pickAgencyInfo(body));
+adminRouter.put(
+  "/agency/info",
+  validateRequest({ body: updateAgencyInfoBodySchema }),
+  async (req, res, next) => {
+    try {
+      const body = (req.body ?? {}) as Record<string, unknown>;
+      const info = await saveAgencyInfo(pickAgencyInfo(body));
 
-    await recordAudit({
-      actorKind: AUDIT_ACTOR_KIND.ADMIN,
-      actorId: req.identity?.sub,
-      action: AUDIT_ACTION.AGENCY_INFO_UPDATE,
-      targetKind: AUDIT_TARGET_KIND.AGENCY_SETTINGS,
-    });
+      await recordAudit({
+        actorKind: AUDIT_ACTOR_KIND.ADMIN,
+        actorId: req.identity?.sub,
+        action: AUDIT_ACTION.AGENCY_INFO_UPDATE,
+        targetKind: AUDIT_TARGET_KIND.AGENCY_SETTINGS,
+      });
 
-    res.status(HTTP_STATUS.OK).json(info);
-  } catch (error) {
-    next(error);
-  }
-});
+      res.status(HTTP_STATUS.OK).json(info);
+    } catch (error) {
+      next(error);
+    }
+  },
+);
 
 // --- Artists CRUD (S-22) ---
 adminRouter.get(
@@ -368,7 +382,8 @@ adminRouter.post(
       });
       res.status(HTTP_STATUS.CREATED).json(inserted);
     } catch (error) {
-      next(error);
+      // #29 — a duplicate slug hits the UNIQUE index; surface a 409 instead of 500.
+      next(mapSlugConflict(error));
     }
   },
 );
@@ -409,7 +424,8 @@ adminRouter.put(
       });
       res.status(HTTP_STATUS.OK).json(rows[0]);
     } catch (error) {
-      next(error);
+      // #29 — a duplicate slug hits the UNIQUE index; surface a 409 instead of 500.
+      next(mapSlugConflict(error));
     }
   },
 );
@@ -692,6 +708,7 @@ adminRouter.post(
         quotedTotalCents?: number;
         depositAmountCents?: number;
         initialStatus?: string;
+        internalNote?: string;
         skipEmails: boolean;
         overrideConflict: boolean;
         locale: EmailLocale;
@@ -721,6 +738,7 @@ adminRouter.post(
         initialStatus: body.initialStatus,
         quotedTotalCents: body.quotedTotalCents,
         depositAmountCents: body.depositAmountCents,
+        internalNote: body.internalNote,
         skipEmails: body.skipEmails,
         overrideConflict: body.overrideConflict,
         locale: body.locale,
@@ -861,20 +879,22 @@ adminRouter.put(
         eventContext?: string | null;
         quotedTotalCents?: number;
         depositAmountCents?: number;
+        overrideConflict?: boolean;
       };
-      const rows = await updateBookingAdmin.run(
+      // #9 — routed through the service: overlap/unavailability re-check on a
+      // date/duration change plus the deposit<=total guard live there.
+      const updated = await bookingService.updateForAdmin(
+        req.params.id as string,
         {
-          bookingId: req.params.id as string,
-          eventDate: body.eventDate ?? null,
-          eventDurationHours: body.eventDurationHours ?? null,
-          eventLocationAddress: body.eventLocationAddress ?? null,
-          eventContext: body.eventContext ?? null,
-          quotedTotalCents: body.quotedTotalCents ?? null,
-          depositAmountCents: body.depositAmountCents ?? null,
+          eventDate: body.eventDate,
+          eventDurationHours: body.eventDurationHours,
+          eventLocationAddress: body.eventLocationAddress,
+          eventContext: body.eventContext,
+          quotedTotalCents: body.quotedTotalCents,
+          depositAmountCents: body.depositAmountCents,
+          overrideConflict: body.overrideConflict,
         },
-        pool,
       );
-      if (rows.length === 0) throw new NotFoundError("Booking not found");
       await recordAudit({
         actorKind: AUDIT_ACTOR_KIND.ADMIN,
         actorId: req.identity?.sub,
@@ -883,7 +903,7 @@ adminRouter.put(
         targetId: req.params.id as string,
         metadata: { fields: Object.keys(body) },
       });
-      res.status(HTTP_STATUS.OK).json(rows[0]);
+      res.status(HTTP_STATUS.OK).json(updated);
     } catch (error) {
       next(error);
     }
@@ -898,6 +918,12 @@ adminRouter.post(
   }),
   async (req, res, next) => {
     try {
+      const approveBody = req.body as { note?: string };
+      // #24 — re-check unavailability before committing the transition: an
+      // unavailability added after the request was submitted must block approval.
+      const current = await bookingService.getById(req.params.id as string);
+      await bookingService.assertNoUnavailabilityConflict(current);
+
       const rows = await approveBookingAdmin.run(
         { bookingId: req.params.id as string },
         pool,
@@ -925,6 +951,8 @@ adminRouter.post(
         action: AUDIT_ACTION.BOOKING_APPROVE,
         targetKind: AUDIT_TARGET_KIND.BOOKING,
         targetId: req.params.id as string,
+        // #27 — persist the admin's approval note instead of discarding it.
+        ...(approveBody.note ? { metadata: { note: approveBody.note } } : {}),
       });
       res.status(HTTP_STATUS.OK).json(rows[0]);
     } catch (error) {
@@ -985,6 +1013,11 @@ adminRouter.post(
   validateRequest({ params: adminArtistIdParamsSchema }),
   async (req, res, next) => {
     try {
+      // #24 — re-check unavailability before confirming: the slot must still be
+      // free of any unavailability window added since the booking was approved.
+      const current = await bookingService.getById(req.params.id as string);
+      await bookingService.assertNoUnavailabilityConflict(current);
+
       const rows = await markBookingDepositPaid.run(
         { bookingId: req.params.id as string },
         pool,

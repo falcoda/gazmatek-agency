@@ -1,9 +1,9 @@
 import { getBookingById } from "@src/db/query/booking/getBookingById.types";
 import { cancelBookingByClient } from "@src/db/query/clientAccount/cancelBookingByClient.types";
-import { claimStubByEmail } from "@src/db/query/clientAccount/claimStubByEmail.types";
 import { consumeClientPasswordResetToken } from "@src/db/query/clientAccount/consumeClientPasswordResetToken.types";
 import { createClientAccount } from "@src/db/query/clientAccount/createClientAccount.types";
 import { createStubClientAccount } from "@src/db/query/clientAccount/createStubClientAccount.types";
+import { editBookingByClient } from "@src/db/query/clientAccount/editBookingByClient.types";
 import { getClientAccountByEmail } from "@src/db/query/clientAccount/getClientAccountByEmail.types";
 import { getClientAccountById } from "@src/db/query/clientAccount/getClientAccountById.types";
 import { incrementClientFailedAttempts } from "@src/db/query/clientAccount/incrementClientFailedAttempts.types";
@@ -33,6 +33,7 @@ import {
 import {
   consumeRefreshToken,
   issueRefreshToken,
+  revokeAllForSubject,
   revokeRefreshToken,
 } from "@src/services/auth/identityRefreshService";
 import {
@@ -149,42 +150,14 @@ export class ClientAuthService {
 
     const passwordHash = await hashPassword(input.password);
 
-    // If the email already belongs to a claimed account we reject. If it
-    // matches an unclaimed stub (admin-created), the user is allowed to claim
-    // it through this signup — we upgrade the stub in place.
+    // An email that already maps to an account — claimed or an admin-created
+    // stub — cannot be registered through the public signup. Claimed accounts
+    // already exist; unclaimed stubs must be activated through the invitation
+    // link (which proves email ownership), never by anyone who guesses the email
+    // here. We return the same generic conflict in both cases so signup does not
+    // leak which emails are already known to the agency.
     if (existing.length > 0) {
-      const account = existing[0];
-      if (account.claimed_at) {
-        throw new ConflictError(ERROR_MESSAGES.USER_ALREADY_EXISTS);
-      }
-      const claimed = await claimStubByEmail.run(
-        {
-          clientId: account.id,
-          passwordHash,
-          displayName: input.displayName.trim(),
-          phone: input.phone?.trim() || null,
-          companyName: input.companyName?.trim() || null,
-          companyNumber: input.companyNumber?.trim() || null,
-          vatNumber: input.vatNumber?.trim() || null,
-          addressStreet: input.addressStreet?.trim() || null,
-          addressNumber: input.addressNumber?.trim() || null,
-          addressZip: input.addressZip?.trim() || null,
-          addressCity: input.addressCity?.trim() || null,
-          addressCountry: input.addressCountry?.trim() || null,
-        },
-        this.db,
-      );
-      if (claimed.length === 0) {
-        throw new ConflictError(ERROR_MESSAGES.USER_ALREADY_EXISTS);
-      }
-      await recordAudit({
-        actorKind: AUDIT_ACTOR_KIND.CLIENT,
-        actorId: claimed[0].id,
-        action: AUDIT_ACTION.CLIENT_CLAIM,
-        targetKind: AUDIT_TARGET_KIND.CLIENT_ACCOUNT,
-        targetId: claimed[0].id,
-      });
-      return this.issueTokens(claimed[0]);
+      throw new ConflictError(ERROR_MESSAGES.USER_ALREADY_EXISTS);
     }
 
     const created = await createClientAccount.run(
@@ -392,13 +365,29 @@ export class ClientAuthService {
   }
 
   async forgotPassword(email: string, locale: EmailLocale): Promise<void> {
+    // Only fully activated accounts may receive a reset link. Issuing a reset
+    // for an unclaimed admin-created stub would let anyone who knows the email
+    // claim the account through the reset flow (the consume query backfills
+    // claimed_at). Stub activation must go exclusively through the invitation
+    // link, so we silently no-op here for stubs, unknown, and disabled emails.
+    const normalizedEmail = email.toLowerCase();
+    const accounts = await getClientAccountByEmail.run(
+      { email: normalizedEmail },
+      this.db,
+    );
+    const account = accounts[0];
+    if (!account || !account.claimed_at || !account.is_active) {
+      // Silent — do NOT reveal whether the email exists or its state.
+      return;
+    }
+
     const rawToken = generateRawToken();
     const tokenHash = hashToken(rawToken);
     const expiresAt = new Date(Date.now() + PASSWORD_RESET_TTL_MS);
 
     const rows = await setClientPasswordResetToken.run(
       {
-        email: email.toLowerCase(),
+        email: normalizedEmail,
         tokenHash,
         expiresAt,
       },
@@ -433,6 +422,10 @@ export class ClientAuthService {
     if (rows.length === 0) {
       throw new UnauthorizedError(ERROR_MESSAGES.INVALID_RESET_TOKEN);
     }
+    // Invalidate every outstanding session: a password reset must defeat a
+    // stolen refresh token, otherwise the attacker keeps access for the full
+    // 30-day refresh TTL despite the victim resetting their password.
+    await revokeAllForSubject(this.db, IDENTITY_KIND.CLIENT, rows[0].id);
     return { email: rows[0].email };
   }
 
@@ -504,6 +497,85 @@ export class ClientAuthService {
       status: updated[0].status,
       cancelReason: updated[0].cancel_reason ?? finalReason,
     };
+  }
+
+  /**
+   * #30 — edit a booking owned by `clientId`, restricted to `pending_validation`.
+   * Ownership and status are enforced in SQL (mirrors cancelBookingByClient): a
+   * 0-row update is translated into a specific 404/409. A date/duration change
+   * may collide with the active-booking EXCLUDE constraint (#5), surfaced as a
+   * ConflictError. The response reuses the existing client booking summary shape.
+   */
+  async editBooking(
+    clientId: string,
+    bookingId: string,
+    input: {
+      eventDate?: string;
+      durationHours?: number;
+      location?: { address: string; lat?: number; lng?: number };
+      context?: string | null;
+      capacity?: number;
+      ticketPriceCents?: number;
+    },
+  ): Promise<ClientBookingSummary> {
+    let updated;
+    try {
+      updated = await editBookingByClient.run(
+        {
+          bookingId,
+          clientId,
+          eventDate: input.eventDate ? new Date(input.eventDate) : null,
+          eventDurationHours: input.durationHours ?? null,
+          eventLocationAddress: input.location?.address ?? null,
+          eventLocationLat: input.location?.lat ?? null,
+          eventLocationLng: input.location?.lng ?? null,
+          eventContext: input.context ?? null,
+          capacity: input.capacity ?? null,
+          ticketPriceCents: input.ticketPriceCents ?? null,
+        },
+        this.db,
+      );
+    } catch (error) {
+      // The EXCLUDE constraint (#5) rejects a slot that now overlaps another
+      // active booking; translate it into a friendly conflict.
+      const code = (error as { code?: string } | null)?.code;
+      if (code === "23P01" || code === "23505") {
+        throw new ConflictError("Artist is not available at this time");
+      }
+      throw error;
+    }
+
+    if (updated.length === 0) {
+      const existing = await getBookingById.run({ bookingId }, this.db);
+      if (existing.length === 0 || existing[0].client_account_id !== clientId) {
+        throw new NotFoundError("Booking not found");
+      }
+      if (existing[0].status !== BOOKING_STATUS.PENDING_VALIDATION) {
+        throw new ConflictError(
+          `Booking can only be edited while pending validation (status ${existing[0].status})`,
+        );
+      }
+      throw new ConflictError("Booking cannot be edited");
+    }
+
+    await recordAudit({
+      actorKind: AUDIT_ACTOR_KIND.CLIENT,
+      actorId: clientId,
+      action: AUDIT_ACTION.BOOKING_UPDATE,
+      targetKind: AUDIT_TARGET_KIND.BOOKING,
+      targetId: bookingId,
+      metadata: { fields: Object.keys(input) },
+    });
+
+    // Reuse the canonical client summary shape (includes artist cover) by
+    // re-reading from the client's own booking list.
+    const summaries = await this.listBookings(clientId);
+    const summary = summaries.find((b) => b.id === bookingId);
+    if (!summary) {
+      // Defensive: the booking was just updated, it must be in the list.
+      throw new NotFoundError("Booking not found");
+    }
+    return summary;
   }
 
   async listBookings(clientId: string): Promise<ClientBookingSummary[]> {

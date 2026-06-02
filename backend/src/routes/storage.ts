@@ -7,6 +7,15 @@ import path from "path";
 
 const storageRouter = Router();
 
+// Only these prefixes are world-readable through this public endpoint.
+// Everything else under the storage root (agency signatures, signed contract
+// PDFs, …) must be served via an authenticated, ownership-checked route — never
+// here. Unknown prefixes return 404 so we never confirm a private file exists.
+const PUBLIC_STORAGE_PREFIXES = ["artists/"] as const;
+
+const isPublicStoragePath = (relativePath: string): boolean =>
+  PUBLIC_STORAGE_PREFIXES.some((prefix) => relativePath.startsWith(prefix));
+
 /**
  * @swagger
  * /api/storage/{path}:
@@ -37,6 +46,12 @@ storageRouter.get("/*splat", async (req, res, next) => {
     const relativePath = Array.isArray(rel) ? rel.join("/") : (rel ?? "");
     if (!relativePath || relativePath.includes("..")) {
       throw new ValidationError("Invalid path");
+    }
+    // Public endpoint only exposes an allowlist of prefixes. The driver also
+    // enforces root containment as defense in depth.
+    if (!isPublicStoragePath(relativePath)) {
+      res.status(HTTP_STATUS.NOT_FOUND).end();
+      return;
     }
     const buffer = await getStorageService().readBuffer(relativePath);
     if (!buffer) {

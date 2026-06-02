@@ -3,9 +3,13 @@ import { HTTP_STATUS } from "@src/helpers/error/constants";
 import { UnauthorizedError } from "@src/helpers/error/errors";
 import { validateRequest } from "@src/helpers/validation";
 import { requireClient } from "@src/middleware/auth/requireKind";
-import { authRateLimiter } from "@src/middleware/security/rateLimit";
+import {
+  authAccountRateLimiter,
+  authRateLimiter,
+} from "@src/middleware/security/rateLimit";
 import {
   accountBookingCancelBodySchema,
+  accountBookingEditBodySchema,
   accountBookingIdParamsSchema,
   forgotPasswordBodySchema,
   loginBodySchema,
@@ -69,6 +73,7 @@ accountRouter.post(
 accountRouter.post(
   "/login",
   authRateLimiter,
+  authAccountRateLimiter,
   validateRequest({ body: loginBodySchema }),
   async (req, res, next) => {
     try {
@@ -138,6 +143,7 @@ accountRouter.post("/logout", async (req, res, next) => {
 accountRouter.post(
   "/forgot-password",
   authRateLimiter,
+  authAccountRateLimiter,
   validateRequest({ body: forgotPasswordBodySchema }),
   async (req, res, next) => {
     try {
@@ -269,6 +275,63 @@ accountRouter.post(
         clientId,
         req.params.id as string,
         body.reason,
+      );
+      res.status(HTTP_STATUS.OK).json(result);
+    } catch (error) {
+      next(error);
+    }
+  },
+);
+
+/**
+ * @swagger
+ * /api/account/bookings/{id}:
+ *   put:
+ *     summary: Edit a booking owned by the authenticated client (pending only)
+ *     tags:
+ *       - Account
+ *     security:
+ *       - bearerAuth: []
+ *     parameters:
+ *       - in: path
+ *         name: id
+ *         required: true
+ *         schema:
+ *           type: string
+ *           format: uuid
+ *     responses:
+ *       200:
+ *         description: Updated booking summary
+ *       404:
+ *         description: Booking not found (or not owned by the client)
+ *       409:
+ *         description: Booking not editable (not pending) or slot unavailable
+ */
+accountRouter.put(
+  "/bookings/:id",
+  requireClient,
+  validateRequest({
+    params: accountBookingIdParamsSchema,
+    body: accountBookingEditBodySchema,
+  }),
+  async (req, res, next) => {
+    try {
+      const clientId = req.identity?.sub;
+      if (!clientId) {
+        throw new UnauthorizedError();
+      }
+      const body = req.body as {
+        eventDate?: string;
+        durationHours?: number;
+        location?: { address: string; lat?: number; lng?: number };
+        context?: string | null;
+        capacity?: number;
+        ticketPriceCents?: number;
+      };
+      const result = await service.editBooking(
+        clientId,
+        req.params.id as string,
+        body,
       );
       res.status(HTTP_STATUS.OK).json(result);
     } catch (error) {

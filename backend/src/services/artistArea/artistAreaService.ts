@@ -8,12 +8,15 @@ import { getContractByBookingId } from "@src/db/query/contract/getContractByBook
 import { getContractById } from "@src/db/query/contract/getContractById.types";
 import { getEngagementContractByArtist } from "@src/db/query/contract/getEngagementContractByArtist.types";
 import { insertEngagementContract } from "@src/db/query/contract/insertEngagementContract.types";
-import { setContractEnvelope } from "@src/db/query/contract/setContractEnvelope.types";
 import { setEngagementSigningInfo } from "@src/db/query/contract/setEngagementSigningInfo.types";
 import { recordAudit } from "@src/helpers/audit";
 import { hashPassword, verifyPassword } from "@src/helpers/auth/password";
 import { config } from "@src/helpers/config";
-import { AUDIT_ACTION, AUDIT_ACTOR_KIND } from "@src/helpers/constants/domain";
+import {
+  AUDIT_ACTION,
+  AUDIT_ACTOR_KIND,
+  CONTRACT_STATUS,
+} from "@src/helpers/constants/domain";
 import { ERROR_MESSAGES } from "@src/helpers/error/constants";
 import {
   ForbiddenError,
@@ -137,6 +140,15 @@ export class ArtistAreaService {
     const rows = await getArtistSelfProfile.run({ artistId }, this.db);
     if (rows.length === 0) throw new NotFoundError("Artist not found");
     return rows[0];
+  }
+
+  // #4 — expose onboarding completion so the frontend (and the /me identity
+  // endpoint) can gate sensitive actions before the engagement contract is
+  // signed. Returns null when onboarding is not yet complete.
+  async getOnboardingCompletedAt(artistId: string): Promise<Date | null> {
+    const rows = await getArtistSelfProfile.run({ artistId }, this.db);
+    if (rows.length === 0) throw new NotFoundError("Artist not found");
+    return rows[0].onboarding_completed_at;
   }
 
   async updateProfile(artistId: string, body: UpdateArtistProfileBody) {
@@ -356,34 +368,18 @@ export class ArtistAreaService {
     artistId: string,
     contractId: string,
   ): Promise<SignBookingContractResult> {
+    // #11 — the previous implementation was a non-functional stub that emitted a
+    // dead `/artist/contracts/:id/stub-sign` signing URL. Booking-contract
+    // e-signing is not wired to a real provider yet (only engagement contracts
+    // go through Documenso), so we disable this path explicitly rather than hand
+    // the client a URL that goes nowhere. Ownership is still checked first so the
+    // error never leaks the existence of another artist's contract.
     const contractRows = await getContractById.run({ contractId }, this.db);
-    if (contractRows.length === 0) {
+    if (contractRows.length === 0 || contractRows[0].artist_id !== artistId) {
       throw new NotFoundError("Contract not found");
     }
-    const contract = contractRows[0];
-    if (contract.artist_id !== artistId) {
-      throw new NotFoundError("Contract not found");
-    }
-    if (contract.status === "signed") {
-      return { signingUrl: null, status: contract.status };
-    }
 
-    // Stub signature provider: generate a deterministic envelope id and a
-    // pseudo signing URL pointing back at our webhook for an end-to-end test.
-    const envelopeId = `env_${contract.id}_${Date.now()}`;
-    await setContractEnvelope.run(
-      {
-        contractId: contract.id,
-        provider: config.signature.provider,
-        envelopeId,
-      },
-      this.db,
-    );
-
-    return {
-      signingUrl: `${config.app.baseUrl}/artist/contracts/${contract.id}/stub-sign?envelope=${envelopeId}`,
-      envelopeId,
-    };
+    throw new ValidationError("Booking contract signing is not available yet");
   }
 
   async getOrCreateEngagementContract(
@@ -424,9 +420,49 @@ export class ArtistAreaService {
       id: contract.id,
       status: contract.status,
       pdfUrl: null,
-      signedPdfUrl: null,
+      // #10 / #26 — once signed, point at the authenticated, artist-scoped
+      // download route that streams the persisted signed PDF. Null otherwise so
+      // the frontend hides the link until there is a signed document to fetch.
+      signedPdfUrl:
+        contract.status === CONTRACT_STATUS.SIGNED &&
+        contract.signed_pdf_storage_key
+          ? `${config.app.baseUrl}/api/artist/contracts/engagement/signed`
+          : null,
       signedAt: contract.signed_at,
     };
+  }
+
+  /**
+   * #10 — stream the persisted signed engagement PDF for the logged-in artist.
+   * Ownership is enforced by querying the contract by artist_id; bytes are read
+   * from storage (never re-fetched from Documenso per request).
+   */
+  async downloadSignedEngagementContract(artistId: string): Promise<{
+    buffer: Buffer;
+    filename: string;
+  }> {
+    const rows = await getEngagementContractByArtist.run({ artistId }, this.db);
+    if (rows.length === 0) {
+      throw new NotFoundError("Engagement contract not found");
+    }
+    const contract = rows[0];
+    if (
+      contract.status !== CONTRACT_STATUS.SIGNED ||
+      !contract.signed_pdf_storage_key
+    ) {
+      throw new NotFoundError("Signed contract not available yet");
+    }
+
+    const buffer = await getStorageService().readBuffer(
+      contract.signed_pdf_storage_key,
+    );
+    if (!buffer) {
+      throw new NotFoundError("Signed contract file not found");
+    }
+
+    const profileRows = await getArtistSelfProfile.run({ artistId }, this.db);
+    const slug = profileRows[0]?.slug ?? artistId;
+    return { buffer, filename: `engagement-${slug}-signed.pdf` };
   }
 
   // S-51 / S-20 — produce (or re-fetch) a Documenso signing URL for the

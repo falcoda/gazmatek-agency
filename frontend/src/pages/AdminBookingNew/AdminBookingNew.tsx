@@ -9,9 +9,9 @@ import { useNavigate } from "react-router-dom";
 import PublicAvailabilityCalendar from "@/components/PublicAvailabilityCalendar/PublicAvailabilityCalendar";
 import SeoHead from "@/components/SeoHead/SeoHead";
 import {
-  BOOKING_STATUS_LABEL_FR,
   BOOKING_STATUSES,
   type BookingStatus,
+  bookingStatusLabel,
 } from "@/config/bookingStatusLabels";
 import { getPagePath } from "@/config/pages";
 import {
@@ -93,9 +93,9 @@ const AdminBookingNew = () => {
     () =>
       BOOKING_STATUSES.map((status) => ({
         id: status,
-        name: BOOKING_STATUS_LABEL_FR[status],
+        name: bookingStatusLabel(t, status),
       })),
-    [],
+    [t],
   );
 
   const selectedStatus =
@@ -186,8 +186,12 @@ const AdminBookingNew = () => {
                 label={t("booking.fields.clientEmail")}
                 value={form.clientEmail}
                 setValue={(v) => setForm({ ...form, clientEmail: v })}
-                required
               />
+              {form.clientEmail.trim() === "" ? (
+                <p className="fieldWarning" role="note">
+                  {t("admin.bookings.noEmailWarning")}
+                </p>
+              ) : null}
               <StyledInputText
                 label={t("booking.fields.clientPhone")}
                 value={form.clientPhone}

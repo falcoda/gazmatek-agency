@@ -1,7 +1,10 @@
 import pool from "@src/db/dbConnect";
 import { HTTP_STATUS } from "@src/helpers/error/constants";
 import { validateRequest } from "@src/helpers/validation";
-import { authRateLimiter } from "@src/middleware/security/rateLimit";
+import {
+  authAccountRateLimiter,
+  authRateLimiter,
+} from "@src/middleware/security/rateLimit";
 import {
   forgotPasswordBodySchema,
   loginBodySchema,
@@ -18,6 +21,7 @@ const service = new ArtistAuthService(pool);
 
 artistAuthRouter.post(
   "/login",
+  authAccountRateLimiter,
   validateRequest({ body: loginBodySchema }),
   async (req, res, next) => {
     try {
@@ -35,6 +39,7 @@ artistAuthRouter.post(
 
 artistAuthRouter.post(
   "/forgot-password",
+  authAccountRateLimiter,
   validateRequest({ body: forgotPasswordBodySchema }),
   async (req, res, next) => {
     try {

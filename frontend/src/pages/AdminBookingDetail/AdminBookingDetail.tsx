@@ -23,9 +23,9 @@ import RejectBookingModal from "@/components/RejectBookingModal/RejectBookingMod
 import SeoHead from "@/components/SeoHead/SeoHead";
 import StatusBadge from "@/components/StatusBadge/StatusBadge";
 import {
-  BOOKING_STATUS_SHORT_LABEL_FR,
   BOOKING_STATUS_TONE,
   type BookingStatus,
+  bookingStatusLabel,
   type BookingStatusTone,
 } from "@/config/bookingStatusLabels";
 import { getPagePath } from "@/config/pages";
@@ -105,8 +105,8 @@ const AdminBookingDetail = () => {
     [status],
   );
   const statusLabel = useMemo(
-    () => (status ? BOOKING_STATUS_SHORT_LABEL_FR[status] : ""),
-    [status],
+    () => (status ? bookingStatusLabel(t, status) : ""),
+    [status, t],
   );
   const remainingCents = useMemo(
     () =>

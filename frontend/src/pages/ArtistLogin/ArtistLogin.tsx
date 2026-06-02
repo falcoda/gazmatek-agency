@@ -4,7 +4,10 @@ import AuthLoginForm from "@/components/AuthLoginForm/AuthLoginForm";
 import { getPagePath } from "@/config/pages";
 import { useOptionalLanguage } from "@/hooks/useLanguage";
 import { useArtistAuthStore } from "@/stores/ArtistAuthStore";
-import { loginArtist } from "@/Utils/Services/Authenticated/artistAreaApi";
+import {
+  fetchArtistMe,
+  loginArtist,
+} from "@/Utils/Services/Authenticated/artistAreaApi";
 
 const ArtistLogin = () => {
   const navigate = useNavigate();
@@ -22,7 +25,14 @@ const ArtistLogin = () => {
       refreshToken: result.refreshToken,
       artist: result.artist,
     });
-    navigate(getPagePath("artistBookings", language));
+    // Route to onboarding when the engagement contract is still unsigned so the
+    // flow is discoverable right after the invitation. (#34)
+    const me = await fetchArtistMe();
+    const destination =
+      me && me.onboardingCompletedAt === null
+        ? "artistOnboardingContract"
+        : "artistBookings";
+    navigate(getPagePath(destination, language));
     return true;
   };
 

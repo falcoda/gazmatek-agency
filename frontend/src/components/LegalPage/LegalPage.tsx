@@ -19,9 +19,14 @@ interface LegalPageProps {
 const LegalPage = ({ namespace, path }: LegalPageProps) => {
   const { t } = useTranslation();
 
-  const sections = t(`legal.${namespace}.sections`, {
+  const rawSections = t(`legal.${namespace}.sections`, {
     returnObjects: true,
-  }) as LegalSection[];
+  });
+  // `returnObjects` falls back to the raw key string when the namespace is
+  // missing in the active locale, so guard before mapping to avoid a crash.
+  const sections: LegalSection[] = Array.isArray(rawSections)
+    ? (rawSections as LegalSection[])
+    : [];
 
   return (
     <div className="legalPage">

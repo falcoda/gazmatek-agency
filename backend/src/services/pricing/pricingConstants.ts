@@ -42,8 +42,11 @@ export const CAP_MULTIPLIER_LARGE = 60;
 export const VAT_RATE_BPS = 2100;
 export const BPS_DIVISOR = 10_000;
 
-// Maximum supported event duration in hours.
-export const MAX_DURATION_HOURS = 24;
+// Maximum supported event duration in hours for the public estimator. Mirrors
+// the public booking cap (MAX_DURATION_HOURS_PUBLIC in bookingConstants) — kept
+// re-exported here so the pricing schema imports a single named constant rather
+// than a bare literal (#45).
+export { MAX_DURATION_HOURS_PUBLIC as MAX_DURATION_HOURS } from "@src/services/bookings/bookingConstants";
 
 // Example inputs used to render the public pricing grid (illustrative only).
 export const PRICING_GRID_EXAMPLE_TICKET_PRICES: readonly number[] = [

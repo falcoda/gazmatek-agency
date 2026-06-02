@@ -70,12 +70,18 @@ export class UnavailabilityService {
       },
       this.db,
     );
-    const confirmedConflict = conflicts.find(
-      (c) => c.status === BOOKING_STATUS.CONFIRMED,
+    // #24 — block both confirmed and awaiting_deposit bookings: a deposit-pending
+    // slot is committed enough that an artist must not silently make it
+    // unavailable. Pending_validation requests are not yet committed, so they do
+    // not block adding an unavailability.
+    const committedConflict = conflicts.find(
+      (c) =>
+        c.status === BOOKING_STATUS.CONFIRMED ||
+        c.status === BOOKING_STATUS.AWAITING_DEPOSIT,
     );
-    if (confirmedConflict) {
+    if (committedConflict) {
       throw new ConflictError(
-        "Unavailability conflicts with a confirmed booking",
+        "Unavailability conflicts with a confirmed or deposit-pending booking",
       );
     }
 

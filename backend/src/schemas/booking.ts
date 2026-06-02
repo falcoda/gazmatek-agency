@@ -3,6 +3,7 @@ import {
   DEFAULT_LOCALE,
   SUPPORTED_LOCALES,
 } from "@src/helpers/constants/domain";
+import { MAX_DURATION_HOURS_PUBLIC } from "@src/services/bookings/bookingConstants";
 import { z } from "zod";
 
 const MAX_CONTEXT_LEN = 2000;
@@ -21,7 +22,11 @@ export const createBookingBodySchema = z
       )
       .optional(),
     eventDate: z.iso.datetime({ offset: true }),
-    durationHours: z.number().positive().min(0.5).max(24),
+    durationHours: z
+      .number()
+      .positive()
+      .min(0.5)
+      .max(MAX_DURATION_HOURS_PUBLIC),
     location: z.object({
       address: z.string().trim().min(2).max(500),
       lat: z.number().min(-90).max(90).optional(),

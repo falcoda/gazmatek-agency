@@ -8,6 +8,7 @@ import { getPagePath } from "@/config/pages";
 import type { AppLanguage } from "@/i18n/config";
 import { isSupportedLanguage } from "@/i18n/routing";
 import { useArtistAuthStore } from "@/stores/ArtistAuthStore";
+import { logoutArtist } from "@/Utils/Services/Authenticated/artistAreaApi";
 
 interface ArtistLogoutButtonProps {
   open?: boolean;
@@ -25,8 +26,12 @@ const ArtistLogoutButton = ({
     ? lang
     : undefined;
   const clear = useArtistAuthStore((s) => s.clear);
+  const refreshToken = useArtistAuthStore((s) => s.refreshToken);
 
-  const handleLogout = () => {
+  const handleLogout = async () => {
+    // Revoke the server-side refresh token before clearing the local session so
+    // a stolen token can't be replayed after sign-out. (#6)
+    await logoutArtist(refreshToken);
     clear();
     if (toggleNavbar) toggleNavbar();
     navigate(getPagePath("artistLogin", language));

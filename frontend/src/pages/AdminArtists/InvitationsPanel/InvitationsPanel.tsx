@@ -155,14 +155,20 @@ const InvitationsPanel = () => {
     return true;
   };
 
-  const handleCopyFromRow = async (invitation: AdminArtistInvitation) => {
+  // Generating a fresh link ROTATES the invitation token server-side, which
+  // invalidates every previously-shared link. Surfaced via the button label and
+  // a confirmation so the operator knows. (#49)
+  const handleGenerateNewLink = async (
+    invitation: AdminArtistInvitation,
+  ): Promise<boolean> => {
     const res = await resendAdminArtistInvitation(invitation.id, {
       skipEmail: true,
     });
-    if (!res) return;
+    if (!res) return false;
     setLastResult(res);
     await copyLink(res.invitationUrl);
     await reload();
+    return true;
   };
 
   const handleRevoke = async (
@@ -229,11 +235,21 @@ const InvitationsPanel = () => {
           return (
             <div className="invitationActions">
               {canResend && (
-                <Button
-                  style="square"
-                  icon={<FaLink />}
-                  title={t("admin.artists.invitations.copyLink")}
-                  onClick={() => handleCopyFromRow(record)}
+                <ConfirmModal
+                  modalTitle={t("admin.artists.invitations.generateLinkTitle")}
+                  modalContent={
+                    <p>{t("admin.artists.invitations.generateLinkConfirm")}</p>
+                  }
+                  confirmLabel={t("admin.artists.invitations.generateLinkCta")}
+                  onConfirm={() => handleGenerateNewLink(record)}
+                  trigger={({ onClick }) => (
+                    <Button
+                      style="square"
+                      icon={<FaLink />}
+                      title={t("admin.artists.invitations.generateLink")}
+                      onClick={onClick}
+                    />
+                  )}
                 />
               )}
               {canResend && (

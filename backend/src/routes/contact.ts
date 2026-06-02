@@ -1,5 +1,6 @@
 import ContactController from "@src/controllers/contact";
 import { validateRequest } from "@src/helpers/validation";
+import { contactRateLimiter } from "@src/middleware/security/rateLimit";
 import { sendContactMessageBodySchema } from "@src/schemas/contact";
 import { Router } from "express";
 
@@ -34,6 +35,7 @@ const contactController = new ContactController();
  */
 contactRouter.post(
   "/",
+  contactRateLimiter,
   validateRequest({ body: sendContactMessageBodySchema }),
   contactController.send,
 );

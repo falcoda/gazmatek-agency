@@ -18,14 +18,36 @@ const OG_LOCALES: Record<AppLanguage, string> = {
   en: "en_US",
 };
 
+/** Open Graph object types we emit. */
+export type OgType = "website" | "profile" | "music.musician" | "article";
+
 interface SeoHeadProps {
   title?: string;
   description?: string;
   path?: string;
   ogImage?: string;
+  /** Open Graph `og:type`. Defaults to "website". (#63) */
+  ogType?: OgType;
 }
 
-const SeoHead = ({ title, description, path, ogImage }: SeoHeadProps) => {
+/** Builds the URL for a clean (unlocalized) path in a given language. */
+const buildLocalizedUrl = (
+  cleanPath: string,
+  language: AppLanguage,
+): string => {
+  if (!I18N_ROUTING) return `${SITE_URL}${cleanPath}`;
+  const localized =
+    cleanPath === "/" ? `/${language}/` : `/${language}${cleanPath}`;
+  return `${SITE_URL}${localized}`;
+};
+
+const SeoHead = ({
+  title,
+  description,
+  path,
+  ogImage,
+  ogType = "website",
+}: SeoHeadProps) => {
   const { t, i18n } = useTranslation();
   const lang = isSupportedLanguage(i18n.resolvedLanguage)
     ? i18n.resolvedLanguage
@@ -34,13 +56,7 @@ const SeoHead = ({ title, description, path, ogImage }: SeoHeadProps) => {
   const resolvedTitle = title ?? t("seo.title");
   const resolvedDescription = description ?? t("seo.description");
   const cleanPath = path ? (path.startsWith("/") ? path : `/${path}`) : "/";
-  const localizedPath =
-    I18N_ROUTING && cleanPath === "/"
-      ? `/${lang}/`
-      : I18N_ROUTING
-        ? `/${lang}${cleanPath}`
-        : cleanPath;
-  const canonicalUrl = `${SITE_URL}${localizedPath}`;
+  const canonicalUrl = buildLocalizedUrl(cleanPath, lang);
   const ogImageUrl = ogImage ?? LOGO_URL;
 
   const organizationSchema = {
@@ -69,6 +85,25 @@ const SeoHead = ({ title, description, path, ogImage }: SeoHeadProps) => {
       <title>{resolvedTitle}</title>
       <meta name="description" content={resolvedDescription} />
       <link rel="canonical" href={canonicalUrl} />
+      {/* hreflang alternates so search engines surface the right locale. (#35) */}
+      {I18N_ROUTING
+        ? SUPPORTED_LANGUAGES.map((other) => (
+            <link
+              key={other}
+              rel="alternate"
+              hrefLang={other}
+              href={buildLocalizedUrl(cleanPath, other)}
+            />
+          ))
+        : null}
+      {I18N_ROUTING ? (
+        <link
+          rel="alternate"
+          hrefLang="x-default"
+          href={buildLocalizedUrl(cleanPath, DEFAULT_LANGUAGE)}
+        />
+      ) : null}
+      <meta property="og:type" content={ogType} />
       <meta property="og:site_name" content={SITE_NAME} />
       <meta property="og:title" content={resolvedTitle} />
       <meta property="og:description" content={resolvedDescription} />

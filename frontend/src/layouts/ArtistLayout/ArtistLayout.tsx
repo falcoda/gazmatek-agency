@@ -8,6 +8,7 @@ import { Navbar } from "@/covaltech-react-ui";
 import useArtistNavItems from "@/hooks/useArtistNavItems";
 
 import ArtistLogoutButton from "./ArtistLogoutButton/ArtistLogoutButton";
+import ArtistOnboardingBanner from "./ArtistOnboardingBanner/ArtistOnboardingBanner";
 
 const ArtistLayout = () => {
   const navItems = useArtistNavItems();
@@ -20,6 +21,7 @@ const ArtistLayout = () => {
       </Navbar>
       <main className="main">
         <div className="content">
+          <ArtistOnboardingBanner />
           <Outlet />
         </div>
       </main>

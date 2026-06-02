@@ -11,7 +11,24 @@ import {
   normalizeDateValue,
   parseDateInputValue,
   setTimeOnDate,
+  toDatetimeLocalValue,
 } from "@/Utils/Date/date";
+
+describe("toDatetimeLocalValue", () => {
+  it("serializes a Date to YYYY-MM-DDTHH:mm from local components", () => {
+    const date = new Date(2026, 0, 5, 9, 7); // 5 Jan 2026, 09:07 local
+    expect(toDatetimeLocalValue(date)).toBe("2026-01-05T09:07");
+  });
+
+  it("zero-pads month, day, hours and minutes", () => {
+    const date = new Date(2026, 2, 3, 4, 5);
+    expect(toDatetimeLocalValue(date)).toBe("2026-03-03T04:05");
+  });
+
+  it("returns an empty string for an invalid date", () => {
+    expect(toDatetimeLocalValue("not-a-date")).toBe("");
+  });
+});
 
 describe("normalizeDateValue", () => {
   it("parses a YYYY-MM-DD string anchored at midday local time", () => {

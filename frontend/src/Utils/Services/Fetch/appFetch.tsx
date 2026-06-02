@@ -1,5 +1,6 @@
 import toast from "react-hot-toast";
 
+import { HTTP_STATUS } from "@/config/httpStatus";
 import { useAuthStore } from "@/stores/AuthStore";
 import { refreshSession } from "@/Utils/Auth/authSession";
 import { createTokenRefresher } from "@/Utils/Auth/createTokenRefresher";
@@ -71,14 +72,14 @@ async function appFetch(route: string, options?: RequestInit) {
       credentials: "include",
     });
 
-    if (response.status === 429) {
+    if (response.status === HTTP_STATUS.TOO_MANY_REQUESTS) {
       toast.error("Trop de requêtes, veuillez réessayer plus tard");
       return null;
     }
 
     // On 401, attempt one refresh + retry before giving up (only if a session
     // exists).
-    if (response.status === 401) {
+    if (response.status === HTTP_STATUS.UNAUTHORIZED) {
       const { refreshToken: currentRefreshToken } = useAuthStore.getState();
       if (!currentRefreshToken) {
         return handleSessionExpired();
@@ -97,7 +98,7 @@ async function appFetch(route: string, options?: RequestInit) {
         credentials: "include",
       });
 
-      if (retryResponse.status === 401) {
+      if (retryResponse.status === HTTP_STATUS.UNAUTHORIZED) {
         return handleSessionExpired();
       }
 
@@ -128,7 +129,7 @@ async function appFetch(route: string, options?: RequestInit) {
       status: response.status,
     });
 
-    if (response.status === 403) {
+    if (response.status === HTTP_STATUS.FORBIDDEN) {
       toast.error(extractApiErrorMessage(responseData, "Accès refusé"));
       return { forbidden: true };
     }

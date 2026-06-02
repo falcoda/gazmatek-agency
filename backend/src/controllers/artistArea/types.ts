@@ -6,4 +6,7 @@ export interface ArtistMeResponse {
   id: string;
   email: string;
   stageName: string | null;
+  // #4 — null until the engagement contract is signed; the frontend uses it to
+  // gate sensitive actions, mirroring the server-side requireOnboardedArtist.
+  onboardingCompletedAt: string | null;
 }

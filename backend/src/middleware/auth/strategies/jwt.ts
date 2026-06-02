@@ -1,4 +1,5 @@
 import { getUserByEmail } from "@src/db/query/auth/getUserByEmail.types";
+import { JWT_ALGORITHMS } from "@src/helpers/auth/identity";
 import { config } from "@src/helpers/config";
 import { AUTH_HEADERS } from "@src/helpers/constants";
 import { ERROR_MESSAGES } from "@src/helpers/error/constants";
@@ -37,7 +38,9 @@ export const authenticateWithJwt = async (
     return null;
   }
 
-  const payload = jwt.verify(token, config.jwt.key);
+  const payload = jwt.verify(token, config.jwt.key, {
+    algorithms: JWT_ALGORITHMS,
+  });
 
   if (typeof payload === "string" || !("data" in payload)) {
     throw new UnauthorizedError(ERROR_MESSAGES.UNAUTHORIZED);

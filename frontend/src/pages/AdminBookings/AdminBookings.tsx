@@ -9,8 +9,8 @@ import EditBookingModal from "@/components/EditBookingModal/EditBookingModal";
 import RejectBookingModal from "@/components/RejectBookingModal/RejectBookingModal";
 import SeoHead from "@/components/SeoHead/SeoHead";
 import {
-  BOOKING_STATUS_LABEL_FR,
   BOOKING_STATUSES,
+  bookingStatusLabel,
 } from "@/config/bookingStatusLabels";
 import { buildAdminBookingDetailPath, getPagePath } from "@/config/pages";
 import {
@@ -46,6 +46,7 @@ const AdminBookings = () => {
   const navigate = useNavigate();
   const token = useAdminAuthStore((s) => s.token);
   const [bookings, setBookings] = useState<AdminBookingRow[]>([]);
+  const [total, setTotal] = useState(0);
   const [statusFilter, setStatusFilter] = useState<StatusOption | undefined>(
     undefined,
   );
@@ -55,7 +56,7 @@ const AdminBookings = () => {
       { id: "", name: t("common.all") },
       ...BOOKING_STATUSES.map((status) => ({
         id: status,
-        name: BOOKING_STATUS_LABEL_FR[status],
+        name: bookingStatusLabel(t, status),
       })),
     ],
     [t],
@@ -67,6 +68,7 @@ const AdminBookings = () => {
       status: statusFilter?.id || undefined,
     });
     setBookings(res?.data ?? []);
+    setTotal(res?.pagination.total ?? 0);
   };
 
   useEffect(() => {
@@ -115,7 +117,7 @@ const AdminBookings = () => {
         dataIndex: "event_date",
         order: 2,
       }),
-      bookingStatusColumn({
+      bookingStatusColumn(t, {
         title: t("admin.bookings.col.status"),
         dataIndex: "status",
         order: 3,
@@ -233,6 +235,17 @@ const AdminBookings = () => {
           width="240px"
         />
       </Card>
+
+      {total > bookings.length ? (
+        <Card className="panel">
+          <p className="listTruncationWarning" role="alert">
+            {t("admin.list.truncationWarning", {
+              shown: bookings.length,
+              total,
+            })}
+          </p>
+        </Card>
+      ) : null}
 
       <Card className="panel">
         <DynamicTable

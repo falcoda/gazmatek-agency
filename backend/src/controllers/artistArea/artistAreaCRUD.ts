@@ -25,7 +25,11 @@ export class ArtistAreaCRUD {
     private unavailabilityService: UnavailabilityService,
   ) {}
 
-  me = (req: Request, res: Response<ArtistMeResponse>, next: NextFunction) => {
+  me = async (
+    req: Request,
+    res: Response<ArtistMeResponse>,
+    next: NextFunction,
+  ) => {
     try {
       // requireArtist guarantees an artist identity is present; this is a
       // defensive guard only (kind is intentionally not re-checked here, see
@@ -33,10 +37,17 @@ export class ArtistAreaCRUD {
       if (!req.identity) {
         throw new UnauthorizedError();
       }
+      // #4 — surface onboarding completion so the frontend can gate sensitive
+      // actions before the engagement contract is signed.
+      const onboardingCompletedAt =
+        await this.artistAreaService.getOnboardingCompletedAt(req.identity.sub);
       res.status(HTTP_STATUS.OK).json({
         id: req.identity.sub,
         email: req.identity.data,
         stageName: req.identity.displayName ?? null,
+        onboardingCompletedAt: onboardingCompletedAt
+          ? onboardingCompletedAt.toISOString()
+          : null,
       });
     } catch (error) {
       next(error);
@@ -190,6 +201,27 @@ export class ArtistAreaCRUD {
         req.identity.data,
       );
       res.status(HTTP_STATUS.OK).json(result);
+    } catch (error) {
+      next(error);
+    }
+  };
+
+  // #10 — stream the persisted signed engagement PDF for the logged-in artist.
+  downloadSignedEngagementContract = async (
+    req: Request,
+    res: Response,
+    next: NextFunction,
+  ) => {
+    try {
+      const artistId = this.requireArtistId(req);
+      const { buffer, filename } =
+        await this.artistAreaService.downloadSignedEngagementContract(artistId);
+      res.setHeader("Content-Type", "application/pdf");
+      res.setHeader(
+        "Content-Disposition",
+        `attachment; filename="${filename}"`,
+      );
+      res.send(buffer);
     } catch (error) {
       next(error);
     }

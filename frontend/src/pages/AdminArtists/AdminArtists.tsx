@@ -60,6 +60,7 @@ const AdminArtists = () => {
   const navigate = useNavigate();
   const token = useAdminAuthStore((s) => s.token);
   const [artists, setArtists] = useState<AdminArtistRow[]>([]);
+  const [total, setTotal] = useState(0);
   const [form, setForm] = useState<ArtistForm>(blankForm);
   const [submitting, setSubmitting] = useState(false);
   const [search, setSearch] = useState("");
@@ -68,6 +69,7 @@ const AdminArtists = () => {
     if (!token) return;
     const res = await fetchAdminArtists(q?.trim() || undefined);
     setArtists(res?.data ?? []);
+    setTotal(res?.pagination.total ?? 0);
   };
 
   useEffect(() => {
@@ -103,12 +105,16 @@ const AdminArtists = () => {
     await reload();
   };
 
-  const remove = async (id: string) => {
-    if (!token) return;
-    const ok = window.confirm(t("admin.artists.deleteConfirm"));
-    if (!ok) return;
-    await deleteAdminArtist(id);
+  const remove = async (id: string): Promise<boolean> => {
+    if (!token) return false;
+    const result = await deleteAdminArtist(id);
+    if (!result.ok) {
+      toast.error(t("admin.artists.deleteFailed"));
+      return false;
+    }
+    toast.success(t("admin.artists.deleted"));
     await reload();
+    return true;
   };
 
   const resetContract = async (artist: AdminArtistRow): Promise<boolean> => {
@@ -237,11 +243,26 @@ const AdminArtists = () => {
                 />
               )}
             />
-            <Button
-              style="square"
-              icon={<FaTrash />}
-              title={t("common.delete")}
-              onClick={() => remove(record.id)}
+            <ConfirmModal
+              modalTitle={t("admin.artists.deleteTitle")}
+              modalContent={
+                <p>
+                  {t("admin.artists.deleteConfirmBody", {
+                    name: record.stage_name,
+                  })}
+                </p>
+              }
+              confirmLabel={t("common.delete")}
+              confirmStyle="danger"
+              onConfirm={() => remove(record.id)}
+              trigger={({ onClick }) => (
+                <Button
+                  style="square"
+                  icon={<FaTrash />}
+                  title={t("common.delete")}
+                  onClick={onClick}
+                />
+              )}
             />
           </div>
         ),
@@ -301,6 +322,14 @@ const AdminArtists = () => {
 
       <Card className="panel">
         <h2>{t("admin.artists.list")}</h2>
+        {total > artists.length ? (
+          <p className="listTruncationWarning" role="alert">
+            {t("admin.list.truncationWarning", {
+              shown: artists.length,
+              total,
+            })}
+          </p>
+        ) : null}
         <div style={{ maxWidth: 360, marginBottom: 12 }}>
           <StyledInputText
             label={t("admin.artists.searchLabel")}

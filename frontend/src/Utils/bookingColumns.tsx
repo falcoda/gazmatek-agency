@@ -1,8 +1,10 @@
+import type { TFunction } from "i18next";
+
 import StatusBadge from "@/components/StatusBadge/StatusBadge";
 import {
-  BOOKING_STATUS_SHORT_LABEL_FR,
   BOOKING_STATUS_TONE,
   type BookingStatus,
+  bookingStatusLabel,
 } from "@/config/bookingStatusLabels";
 import type { Column } from "@/covaltech-react-ui";
 import type { AppLanguage } from "@/i18n/config";
@@ -34,11 +36,10 @@ export function eventDateColumn(
 }
 
 /** Status badge column shared by every bookings table. */
-export function bookingStatusColumn({
-  title,
-  dataIndex,
-  order,
-}: BookingColumnOptions): Column {
+export function bookingStatusColumn(
+  t: TFunction,
+  { title, dataIndex, order }: BookingColumnOptions,
+): Column {
   return {
     title,
     dataIndex,
@@ -46,7 +47,7 @@ export function bookingStatusColumn({
       <StatusBadge
         tone={BOOKING_STATUS_TONE[value as BookingStatus] ?? "neutral"}
       >
-        {BOOKING_STATUS_SHORT_LABEL_FR[value as BookingStatus] ?? value}
+        {bookingStatusLabel(t, value)}
       </StatusBadge>
     ),
     mobile: { visible: true, order, titleVisible: true },

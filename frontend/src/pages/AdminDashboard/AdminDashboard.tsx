@@ -8,14 +8,17 @@ import { getPagePath } from "@/config/pages";
 import { Button, Card } from "@/covaltech-react-ui";
 import { useLanguage } from "@/hooks/useLanguage";
 import { useAdminAuthStore } from "@/stores/AdminAuthStore";
+import { logoutAdmin } from "@/Utils/Services/Authenticated/adminAreaApi";
 
 const AdminDashboard = () => {
   const { t } = useTranslation();
   const navigate = useNavigate();
   const language = useLanguage();
-  const { admin, clear } = useAdminAuthStore();
+  const { admin, refreshToken, clear } = useAdminAuthStore();
 
-  const logout = () => {
+  const logout = async () => {
+    // Revoke the refresh token server-side before clearing locally. (#47)
+    await logoutAdmin(refreshToken);
     clear();
     navigate(getPagePath("adminLogin", language));
   };

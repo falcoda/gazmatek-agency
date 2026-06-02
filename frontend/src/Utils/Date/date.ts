@@ -104,6 +104,24 @@ export function setTimeOnDate(
   return nextDate;
 }
 
+/**
+ * Serializes a `Date` to the `YYYY-MM-DDTHH:mm` format consumed by
+ * `<input type="datetime-local">`, built from LOCAL clock components.
+ *
+ * Using `toISOString().slice(0, 16)` would emit the UTC wall-clock instead,
+ * shifting the value by the timezone offset and silently rewriting the time the
+ * user picked when it is read back and re-serialized. Always go through this
+ * helper for datetime-local fields. (#19)
+ */
+export function toDatetimeLocalValue(value: Date | string): string {
+  const date = new Date(value);
+  if (Number.isNaN(date.getTime())) return "";
+  return (
+    `${date.getFullYear()}-${padDateUnit(date.getMonth() + 1)}-${padDateUnit(date.getDate())}` +
+    `T${padDateUnit(date.getHours())}:${padDateUnit(date.getMinutes())}`
+  );
+}
+
 /** Serializes a date to the `HH:mm` format used by `<input type="time">`. */
 export function formatTimeInputValue(value: Date | string) {
   const date = new Date(value);

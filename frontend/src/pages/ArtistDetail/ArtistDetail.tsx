@@ -1,13 +1,15 @@
 import "./ArtistDetail.scss";
 
-import { useEffect, useState } from "react";
+import { useEffect, useMemo, useState } from "react";
+import { Helmet } from "react-helmet-async";
 import { useTranslation } from "react-i18next";
 import { Link, useNavigate, useParams } from "react-router-dom";
 
 import BookingCta from "@/components/BookingCta/BookingCta";
 import Bounded from "@/components/Bounded/Bounded";
 import SeoHead from "@/components/SeoHead/SeoHead";
-import { getPagePath } from "@/config/pages";
+import { buildArtistDetailPath, getPagePath } from "@/config/pages";
+import { SITE_URL } from "@/config/site";
 import useScrollAnimation from "@/hooks/useScrollAnimation";
 import type { AppLanguage } from "@/i18n/config";
 import { isSupportedLanguage } from "@/i18n/routing";
@@ -66,6 +68,21 @@ const ArtistDetail = () => {
 
   useScrollAnimation();
 
+  // Per-artist MusicGroup JSON-LD. `sameAs` (social links) is omitted because
+  // the public artist DTO does not expose per-artist social links yet — add it
+  // here once the DTO carries them. (#37)
+  const artistJsonLd = useMemo(() => {
+    if (!artist) return null;
+    return {
+      "@context": "https://schema.org",
+      "@type": "MusicGroup",
+      name: artist.stageName,
+      url: `${SITE_URL}${buildArtistDetailPath(artist.slug, language)}`,
+      ...(artist.genre ? { genre: artist.genre } : {}),
+      ...(artist.coverImageUrl ? { image: artist.coverImageUrl } : {}),
+    };
+  }, [artist, language]);
+
   if (loading) {
     return (
       <div className="artistDetail isLoading" aria-busy="true">
@@ -107,7 +124,14 @@ const ArtistDetail = () => {
         })}
         path={`/artists/${artist.slug}`}
         ogImage={artist.coverImageUrl ?? undefined}
+        ogType="music.musician"
       />
+      {/* Per-artist structured data so search engines understand the entity. (#37) */}
+      <Helmet>
+        <script type="application/ld+json">
+          {JSON.stringify(artistJsonLd)}
+        </script>
+      </Helmet>
 
       <HeroDetail artist={artist} />
 

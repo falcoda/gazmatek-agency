@@ -5,12 +5,13 @@ import { useTranslation } from "react-i18next";
 import { useNavigate } from "react-router-dom";
 
 import CancelMyBookingModal from "@/components/CancelMyBookingModal/CancelMyBookingModal";
+import ClientEditBookingModal from "@/components/ClientEditBookingModal/ClientEditBookingModal";
 import SeoHead from "@/components/SeoHead/SeoHead";
 import StatusBadge from "@/components/StatusBadge/StatusBadge";
 import {
-  BOOKING_STATUS_SHORT_LABEL_FR,
   BOOKING_STATUS_TONE,
   type BookingStatus,
+  bookingStatusLabel,
 } from "@/config/bookingStatusLabels";
 import { getPagePath } from "@/config/pages";
 import {
@@ -23,6 +24,7 @@ import {
 } from "@/covaltech-react-ui";
 import { useLanguage } from "@/hooks/useLanguage";
 import { useClientAuthStore } from "@/stores/ClientAuthStore";
+import { MIN_BOOKING_LEAD_HOURS } from "@/Utils/booking";
 import { formatPriceCents } from "@/Utils/formatPrice";
 import { localeFromLang } from "@/Utils/locale";
 import {
@@ -34,7 +36,7 @@ import {
 // Mirrors backend `MIN_LEAD_TIME_HOURS` — cancellations within this window
 // are refused by the API. We hide the button instead of letting the user
 // click into a 409.
-const CANCEL_MIN_LEAD_HOURS = 48;
+const CANCEL_MIN_LEAD_HOURS = MIN_BOOKING_LEAD_HOURS;
 const CANCELLABLE_STATUSES: ReadonlySet<BookingStatus> = new Set([
   "pending_validation",
   "awaiting_deposit",
@@ -53,6 +55,10 @@ const AccountDashboard = () => {
   const language = useLanguage();
   const { client, token, refreshToken, clear } = useClientAuthStore();
   const [bookings, setBookings] = useState<AccountBookingDto[]>([]);
+  // Distinguishes "the fetch failed" (null) from "the client has no bookings"
+  // (empty list) so the UI can show an error rather than a misleading empty
+  // state. (#18)
+  const [loadFailed, setLoadFailed] = useState(false);
 
   const tabs: ButtonSwitcherValue[] = useMemo(
     () => [
@@ -67,7 +73,12 @@ const AccountDashboard = () => {
 
   const reload = useCallback(async () => {
     const res = await fetchAccountBookings();
-    setBookings(res?.bookings ?? []);
+    if (res === null) {
+      setLoadFailed(true);
+      return;
+    }
+    setLoadFailed(false);
+    setBookings(res.bookings);
   }, []);
 
   useEffect(() => {
@@ -111,7 +122,7 @@ const AccountDashboard = () => {
   }, [bookings, activeTab]);
 
   const labelForStatus = (status: string): string =>
-    BOOKING_STATUS_SHORT_LABEL_FR[status as BookingStatus] ?? status;
+    bookingStatusLabel(t, status);
 
   const columns: Column[] = useMemo(
     () => [
@@ -161,10 +172,24 @@ const AccountDashboard = () => {
           const cancellable =
             CANCELLABLE_STATUSES.has(status) &&
             new Date(record.eventDate).getTime() - Date.now() > leadMs;
+          // The backend only allows client edits while the booking is still
+          // pending validation. (#30)
+          const editable = status === "pending_validation";
           // Stop click propagation so the row's default click (if any) does
           // not fire alongside the modal trigger.
           return (
-            <div onClick={(e) => e.stopPropagation()}>
+            <div
+              style={{ display: "flex", gap: 8 }}
+              onClick={(e) => e.stopPropagation()}
+            >
+              {editable ? (
+                <ClientEditBookingModal
+                  booking={record}
+                  onSaved={() => {
+                    void reload();
+                  }}
+                />
+              ) : null}
               {cancellable ? (
                 <CancelMyBookingModal
                   bookingId={record.id}
@@ -212,13 +237,26 @@ const AccountDashboard = () => {
       </Card>
 
       <Card className="panel">
-        <DynamicTable
-          data={filtered}
-          columns={columns}
-          pagined
-          mobile
-          tableId={`account-bookings-${activeTab.id}`}
-        />
+        {loadFailed ? (
+          <div className="loadError" role="alert">
+            <p>{t("account.bookings.loadError")}</p>
+            <Button
+              label={t("common.retry")}
+              style="bordered"
+              onClick={() => {
+                void reload();
+              }}
+            />
+          </div>
+        ) : (
+          <DynamicTable
+            data={filtered}
+            columns={columns}
+            pagined
+            mobile
+            tableId={`account-bookings-${activeTab.id}`}
+          />
+        )}
       </Card>
     </div>
   );

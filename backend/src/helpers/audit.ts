@@ -6,6 +6,7 @@ import type {
   AuditTargetKind,
 } from "@src/helpers/constants/domain";
 import { logger } from "@src/helpers/logger";
+import type { Pool, PoolClient } from "pg";
 
 export interface AuditEventInput {
   actorKind: AuditActorKind;
@@ -16,9 +17,18 @@ export interface AuditEventInput {
   metadata?: Record<string, unknown>;
 }
 
-export async function recordAudit(event: AuditEventInput): Promise<void> {
-  try {
-    await insertAuditEvent.run(
+/**
+ * Record an audit event. Pass `connection` (a transaction client) when the audit
+ * write must be atomic with surrounding work — in that case a failure propagates
+ * so the transaction rolls back, instead of being swallowed. Without a
+ * connection the write is best-effort against the shared pool.
+ */
+export async function recordAudit(
+  event: AuditEventInput,
+  connection?: Pool | PoolClient,
+): Promise<void> {
+  const run = () =>
+    insertAuditEvent.run(
       {
         actorKind: event.actorKind,
         actorId: event.actorId ?? null,
@@ -27,8 +37,17 @@ export async function recordAudit(event: AuditEventInput): Promise<void> {
         targetId: event.targetId ?? null,
         metadata: event.metadata ? JSON.stringify(event.metadata) : null,
       },
-      pool,
+      connection ?? pool,
     );
+
+  if (connection) {
+    // Inside a transaction: let failures propagate so the caller can roll back.
+    await run();
+    return;
+  }
+
+  try {
+    await run();
   } catch (error) {
     logger.warn("Audit log insert failed", {
       action: event.action,

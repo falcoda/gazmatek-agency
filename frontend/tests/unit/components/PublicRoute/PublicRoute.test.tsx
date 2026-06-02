@@ -3,16 +3,17 @@ import { MemoryRouter, Route, Routes } from "react-router-dom";
 import { afterEach, describe, expect, it } from "vitest";
 
 import PublicRoute from "@/components/PublicRoute/PublicRoute";
-import { useAuthStore } from "@/stores/AuthStore";
+import { useClientAuthStore } from "@/stores/ClientAuthStore";
 
 function renderGuard(initialEntries: string[]) {
   return render(
     <MemoryRouter initialEntries={initialEntries}>
       <Routes>
         <Route element={<PublicRoute />}>
-          <Route path="/login" element={<div>login page</div>} />
+          <Route path="/account/login" element={<div>login page</div>} />
         </Route>
-        <Route path="/" element={<div>home page</div>} />
+        <Route path="/account" element={<div>dashboard page</div>} />
+        <Route path="/booking/new" element={<div>next page</div>} />
       </Routes>
     </MemoryRouter>,
   );
@@ -20,23 +21,31 @@ function renderGuard(initialEntries: string[]) {
 
 describe("PublicRoute", () => {
   afterEach(() => {
-    useAuthStore.getState().clearUser();
+    useClientAuthStore.getState().clear();
   });
 
-  it("renders the child route when the user is not authenticated", () => {
-    useAuthStore.setState({ isAuthenticated: false });
+  it("renders the child route when the client is not authenticated", () => {
+    useClientAuthStore.setState({ token: null });
 
-    const { getByText } = renderGuard(["/login"]);
+    const { getByText } = renderGuard(["/account/login"]);
 
     expect(getByText("login page")).toBeInTheDocument();
   });
 
-  it("redirects authenticated users away to the main page", () => {
-    useAuthStore.setState({ isAuthenticated: true });
+  it("redirects an authenticated client to the dashboard", () => {
+    useClientAuthStore.setState({ token: "client-token" });
 
-    const { getByText, queryByText } = renderGuard(["/login"]);
+    const { getByText, queryByText } = renderGuard(["/account/login"]);
 
-    expect(getByText("home page")).toBeInTheDocument();
+    expect(getByText("dashboard page")).toBeInTheDocument();
     expect(queryByText("login page")).not.toBeInTheDocument();
+  });
+
+  it("honours the `next` param when redirecting an authenticated client", () => {
+    useClientAuthStore.setState({ token: "client-token" });
+
+    const { getByText } = renderGuard(["/account/login?next=/booking/new"]);
+
+    expect(getByText("next page")).toBeInTheDocument();
   });
 });

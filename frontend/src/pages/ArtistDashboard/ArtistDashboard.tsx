@@ -17,6 +17,7 @@ import {
 import {
   type ArtistBookingDto,
   fetchArtistBookings,
+  logoutArtist,
 } from "@/Utils/Services/Authenticated/artistAreaApi";
 
 const UPCOMING_LIMIT = 5;
@@ -25,7 +26,7 @@ const ArtistDashboard = () => {
   const { t } = useTranslation();
   const navigate = useNavigate();
   const language = useLanguage();
-  const { token, artist, clear } = useArtistAuthStore();
+  const { token, refreshToken, artist, clear } = useArtistAuthStore();
   const [bookings, setBookings] = useState<ArtistBookingDto[]>([]);
 
   useEffect(() => {
@@ -35,7 +36,9 @@ const ArtistDashboard = () => {
     });
   }, [token]);
 
-  const logout = () => {
+  const logout = async () => {
+    // Revoke the refresh token server-side before clearing locally. (#6)
+    await logoutArtist(refreshToken);
     clear();
     navigate(getPagePath("artistLogin", language));
   };
@@ -57,7 +60,7 @@ const ArtistDashboard = () => {
         dataIndex: "clientName",
         mobile: { visible: true, order: 2, titleVisible: true },
       },
-      bookingStatusColumn({
+      bookingStatusColumn(t, {
         title: t("admin.bookings.col.status"),
         dataIndex: "status",
         order: 3,

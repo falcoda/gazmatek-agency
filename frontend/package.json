@@ -12,6 +12,7 @@
     "test:watch": "vitest",
     "test:coverage": "vitest run --coverage",
     "test:e2e": "npx cypress run",
+    "i18n:check": "node scripts/check-i18n.mjs",
     "lint": "eslint --fix src tests"
   },
   "dependencies": {

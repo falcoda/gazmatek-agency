@@ -1,4 +1,5 @@
 import { getUserByApiKey } from "@src/db/query/auth/getUserByApiKey.types";
+import { hashToken } from "@src/helpers/auth/tokens";
 import { config } from "@src/helpers/config";
 import { AUTH_HEADERS } from "@src/helpers/constants";
 import { ERROR_MESSAGES } from "@src/helpers/error/constants";
@@ -36,8 +37,11 @@ export const authenticateWithApiKey = async (
 
   let rows;
 
+  // Keys are stored hashed (#15): hash the presented key before lookup.
+  const apiKeyHash = hashToken(apiKey);
+
   try {
-    rows = await getUserByApiKey.run({ apiKey }, client);
+    rows = await getUserByApiKey.run({ apiKeyHash }, client);
   } catch {
     throw new UnauthorizedError(ERROR_MESSAGES.UNAUTHORIZED);
   }

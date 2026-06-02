@@ -36,6 +36,7 @@ export const API_ROUTES = {
   artistAuthLogout: "/api/artist/auth/logout",
   artistAuthForgotPassword: "/api/artist/auth/forgot-password",
   artistAuthResetPassword: "/api/artist/auth/reset-password",
+  artistMe: "/api/artist/me",
   artistProfile: "/api/artist/profile",
   artistProfilePassword: "/api/artist/profile/password",
   artistProfileCoverImage: "/api/artist/profile/cover-image",
@@ -50,6 +51,7 @@ export const API_ROUTES = {
   artistInvitationAccept: "/api/artist/invitations/:token/accept",
   artistOnboardingEngagement: "/api/artist/onboarding/engagement",
   artistOnboardingEngagementSign: "/api/artist/onboarding/engagement/sign",
+  artistEngagementContractSigned: "/api/artist/contracts/engagement/signed",
 
   // Admin — auth
   adminAuthLogin: "/api/admin/auth/login",

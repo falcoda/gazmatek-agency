@@ -26,6 +26,8 @@ export class ContentHandler {
       const data = await this.contentService.getPublicBlocks(lang);
 
       res.set("Cache-Control", PUBLIC_CACHE_CONTROL);
+      // #65 — the response body varies by language, so caches must key on it.
+      res.vary("Accept-Language");
       res.status(HTTP_STATUS.OK).json({ data });
     } catch (error) {
       next(error);

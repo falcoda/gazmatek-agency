@@ -1,4 +1,5 @@
 import { ARTIST_LEVELS, ARTIST_SET_TYPES } from "@src/helpers/constants/artist";
+import { MAX_DURATION_HOURS_ADMIN } from "@src/services/bookings/bookingConstants";
 import { z } from "zod";
 
 const slugRegex = /^[a-z0-9-]+$/;
@@ -62,7 +63,7 @@ export const adminBookingCreateBodySchema = z.object({
   clientEmail: z.string().trim().max(200).optional(),
   clientPhone: z.string().trim().max(50).optional(),
   eventDate: z.iso.datetime({ offset: true }),
-  eventDurationHours: z.number().positive().max(48),
+  eventDurationHours: z.number().positive().max(MAX_DURATION_HOURS_ADMIN),
   eventLocation: z.string().trim().min(1).max(500),
   context: z.string().trim().max(2000).optional(),
   capacity: z.number().int().nonnegative().max(1_000_000),
@@ -89,6 +90,9 @@ export const adminBookingCreateBodySchema = z.object({
       "completed",
     ])
     .optional(),
+  // #27 — admin's free-text note on the manual booking. Persisted to the audit
+  // trail (mirroring reject's metadata.reason) rather than dropped.
+  internalNote: z.string().trim().max(2000).optional(),
   skipEmails: z.boolean().default(false),
   overrideConflict: z.boolean().default(false),
   locale: z.enum(["fr", "nl", "en"]).default("fr"),
@@ -101,7 +105,11 @@ export const clientIdParamsSchema = z.object({
 export const adminBookingUpdateBodySchema = z
   .object({
     eventDate: z.iso.datetime({ offset: true }).optional(),
-    eventDurationHours: z.number().positive().max(48).optional(),
+    eventDurationHours: z
+      .number()
+      .positive()
+      .max(MAX_DURATION_HOURS_ADMIN)
+      .optional(),
     eventLocationAddress: z.string().trim().min(1).max(500).optional(),
     eventContext: z.string().trim().max(2000).nullish(),
     quotedTotalCents: z
@@ -116,10 +124,29 @@ export const adminBookingUpdateBodySchema = z
       .nonnegative()
       .max(10_000_000_00)
       .optional(),
+    // #9 — when the date/duration change, the admin must opt in to bypass the
+    // overlap/unavailability re-check (mirrors createForAdmin's overrideConflict).
+    overrideConflict: z.boolean().default(false),
   })
-  .refine((data) => Object.keys(data).length > 0, {
-    message: "At least one field must be provided",
-  });
+  .refine(
+    (data) =>
+      Object.keys(data).filter((key) => key !== "overrideConflict").length > 0,
+    { message: "At least one field must be provided" },
+  )
+  // #9 — cross-field guard: a deposit can never exceed the quoted total. Checked
+  // only when both are provided in the same request (a partial edit may touch
+  // just one, in which case the persisted counterpart still applies; the service
+  // re-validates the merged result).
+  .refine(
+    (data) =>
+      data.quotedTotalCents === undefined ||
+      data.depositAmountCents === undefined ||
+      data.depositAmountCents <= data.quotedTotalCents,
+    {
+      message: "Deposit amount cannot exceed the quoted total",
+      path: ["depositAmountCents"],
+    },
+  );
 
 export const contentBlockUpdateSchema = z.object({
   valueFr: z.string().max(10000).optional(),

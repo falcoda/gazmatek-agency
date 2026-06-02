@@ -20,6 +20,7 @@ import { ForbiddenError, UnauthorizedError } from "@src/helpers/error/errors";
 import {
   consumeRefreshToken,
   issueRefreshToken,
+  revokeAllForSubject,
   revokeRefreshToken,
 } from "@src/services/auth/identityRefreshService";
 import {
@@ -202,6 +203,9 @@ export class ArtistAuthService {
     if (rows.length === 0) {
       throw new UnauthorizedError(ERROR_MESSAGES.INVALID_RESET_TOKEN);
     }
+    // Invalidate every outstanding session so a reset defeats a stolen refresh
+    // token (mirrors the client reset path).
+    await revokeAllForSubject(this.db, IDENTITY_KIND.ARTIST, rows[0].artist_id);
   }
 }
 

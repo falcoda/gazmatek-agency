@@ -93,6 +93,25 @@
     margin: 0;
     color: $secondary-font;
   }
+
+  .listTruncationWarning {
+    margin: 0;
+    color: $main-orange;
+    font-weight: 500;
+  }
+
+  .loadError {
+    display: flex;
+    flex-direction: column;
+    gap: $padding-sm;
+    align-items: flex-start;
+
+    p {
+      margin: 0;
+      color: $lock-color;
+      font-weight: 500;
+    }
+  }
 }
 
 .panelStack {

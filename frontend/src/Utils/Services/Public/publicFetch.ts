@@ -1,5 +1,6 @@
 import toast from "react-hot-toast";
 
+import { HTTP_STATUS } from "@/config/httpStatus";
 import { loggerService, LogTag } from "@/Utils/LoggerService";
 import {
   extractApiErrorMessage,
@@ -32,7 +33,7 @@ export async function publicFetch<T>(
     if (response.ok) {
       const contentType = response.headers.get("content-type") ?? "";
       if (
-        response.status === 204 ||
+        response.status === HTTP_STATUS.NO_CONTENT ||
         !contentType.includes("application/json")
       ) {
         return null;
@@ -58,5 +59,39 @@ export async function publicFetch<T>(
       toast.error("Une erreur est survenue");
     }
     return null;
+  }
+}
+
+/**
+ * Like {@link publicFetch} but reports only whether the request succeeded.
+ * Useful for fire-and-forget endpoints (e.g. logout) that return `204 No
+ * Content`, where a `null` body cannot distinguish success from failure.
+ */
+export async function publicFetchOk(
+  route: string,
+  options: RequestInit = {},
+): Promise<boolean> {
+  const init = options;
+  try {
+    const response = await fetch(route, {
+      ...init,
+      headers: {
+        Accept: "application/json",
+        ...(init.body ? { "Content-Type": "application/json" } : {}),
+        ...(init.headers ?? {}),
+      },
+    });
+    if (!response.ok) {
+      const errorBody = await parseErrorBody(response);
+      loggerService.warn(LogTag.API, "Public API request failed", {
+        route,
+        status: response.status,
+        body: errorBody,
+      });
+    }
+    return response.ok;
+  } catch (error) {
+    loggerService.warn(LogTag.API, "Public fetch network error", error);
+    return false;
   }
 }

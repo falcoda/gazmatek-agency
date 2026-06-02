@@ -18,6 +18,7 @@ class ArtistAreaController {
   signBookingContract: ArtistAreaCRUD["signBookingContract"];
   getEngagementContract: ArtistAreaCRUD["getEngagementContract"];
   signEngagementContract: ArtistAreaCRUD["signEngagementContract"];
+  downloadSignedEngagementContract: ArtistAreaCRUD["downloadSignedEngagementContract"];
   listUnavailabilities: ArtistAreaCRUD["listUnavailabilities"];
   createUnavailability: ArtistAreaCRUD["createUnavailability"];
   deleteUnavailability: ArtistAreaCRUD["deleteUnavailability"];
@@ -39,6 +40,8 @@ class ArtistAreaController {
     this.signBookingContract = crud.signBookingContract;
     this.getEngagementContract = crud.getEngagementContract;
     this.signEngagementContract = crud.signEngagementContract;
+    this.downloadSignedEngagementContract =
+      crud.downloadSignedEngagementContract;
     this.listUnavailabilities = crud.listUnavailabilities;
     this.createUnavailability = crud.createUnavailability;
     this.deleteUnavailability = crud.deleteUnavailability;

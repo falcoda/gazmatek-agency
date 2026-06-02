@@ -1,4 +1,4 @@
-import { listBookingsOverlapping } from "@src/db/query/booking/listBookingsOverlapping.types";
+import { listPublicBusyBookings } from "@src/db/query/booking/listPublicBusyBookings.types";
 import { listUnavailabilitiesInRange } from "@src/db/query/unavailability/listUnavailabilitiesInRange.types";
 import { config } from "@src/helpers/config/config";
 import { ValidationError } from "@src/helpers/error/errors";
@@ -48,7 +48,10 @@ export class AvailabilityService {
     }
 
     const [bookingRows, unavailRows] = await Promise.all([
-      listBookingsOverlapping.run(
+      // #17 — the public calendar must not disclose pending requests, so it uses
+      // the narrower confirmed + awaiting_deposit query, not the broad internal
+      // conflict guard.
+      listPublicBusyBookings.run(
         {
           artistId: input.artistId,
           rangeStart: fromDate,
@@ -66,12 +69,18 @@ export class AvailabilityService {
       ),
     ]);
 
-    const busyIntervals: Array<[number, number]> = [];
+    // #44 — a day that overlaps ANY confirmed booking is busy, not partial: an
+    // evening gig spanning midnight must mark both affected days busy. We track
+    // booking-occupied days as a hard "busy" override regardless of how many
+    // hours the overlap covers, and keep the duration-based overlap only to
+    // distinguish "partial" (unavailability blocks) from "free".
+    const bookingIntervals: Array<[number, number]> = [];
     for (const b of bookingRows) {
       const start = b.event_date.getTime();
       const end = start + Number(b.event_duration_hours) * 60 * 60 * 1000;
-      busyIntervals.push([start, end]);
+      bookingIntervals.push([start, end]);
     }
+    const busyIntervals: Array<[number, number]> = [];
     for (const u of unavailRows) {
       busyIntervals.push([u.starts_at.getTime(), u.ends_at.getTime()]);
     }
@@ -103,19 +112,26 @@ export class AvailabilityService {
       const dayEndMs = dayEnd.getTime();
       const dayLengthMs = dayEndMs - dayStartMs;
 
-      let overlap = 0;
+      // Any confirmed/awaiting booking overlapping the day makes it busy (#44).
+      const hasBooking = bookingIntervals.some(
+        ([s, e]) => Math.min(e, dayEndMs) > Math.max(s, dayStartMs),
+      );
+
+      // Unavailability windows still use the duration heuristic: a full-day
+      // block is busy, a partial block is partial.
+      let unavailOverlap = 0;
       for (const [s, e] of busyIntervals) {
         const intersectStart = Math.max(s, dayStartMs);
         const intersectEnd = Math.min(e, dayEndMs);
         if (intersectEnd > intersectStart) {
-          overlap += intersectEnd - intersectStart;
+          unavailOverlap += intersectEnd - intersectStart;
         }
       }
 
       let status: AvailabilityDayStatus = "free";
-      if (overlap >= dayLengthMs) {
+      if (hasBooking || unavailOverlap >= dayLengthMs) {
         status = "busy";
-      } else if (overlap > 0) {
+      } else if (unavailOverlap > 0) {
         status = "partial";
       }
 

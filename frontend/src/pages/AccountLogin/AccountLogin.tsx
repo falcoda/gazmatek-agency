@@ -1,6 +1,6 @@
 import "@/pages/AccountSignup/AccountSignup.scss";
 
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import toast from "react-hot-toast";
 import { useTranslation } from "react-i18next";
 import { Link, useNavigate, useSearchParams } from "react-router-dom";
@@ -22,12 +22,23 @@ const AccountLogin = () => {
   const navigate = useNavigate();
   const language = useOptionalLanguage();
   const setSession = useClientAuthStore((s) => s.setSession);
+  const token = useClientAuthStore((s) => s.token);
   const [searchParams] = useSearchParams();
   const nextPath = searchParams.get("next");
   const nextSuffix = nextPath ? `?next=${encodeURIComponent(nextPath)}` : "";
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [submitting, setSubmitting] = useState(false);
+
+  // Already-authenticated clients shouldn't see the login form: bounce them to
+  // the `next` target or the dashboard. (#52)
+  useEffect(() => {
+    if (token) {
+      navigate(nextPath ?? getPagePath("accountDashboard", language), {
+        replace: true,
+      });
+    }
+  }, [token, nextPath, navigate, language]);
 
   const onSubmit = async (e: React.FormEvent) => {
     e.preventDefault();

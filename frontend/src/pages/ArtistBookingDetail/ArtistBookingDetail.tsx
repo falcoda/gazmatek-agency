@@ -20,9 +20,9 @@ import SeoHead from "@/components/SeoHead/SeoHead";
 import StatusBadge from "@/components/StatusBadge/StatusBadge";
 import { buildArtistBookingDetailUrl } from "@/config/apiRoutes";
 import {
-  BOOKING_STATUS_SHORT_LABEL_FR,
   BOOKING_STATUS_TONE,
   type BookingStatus,
+  bookingStatusLabel,
   type BookingStatusTone,
 } from "@/config/bookingStatusLabels";
 import { getPagePath } from "@/config/pages";
@@ -39,13 +39,15 @@ import { computeRemainingCents } from "@/Utils/booking";
 import { formatEventDateTime } from "@/Utils/Date/date";
 import { formatPriceCents } from "@/Utils/formatPrice";
 import { loggerService, LogTag } from "@/Utils/LoggerService";
-import { identityFetch } from "@/Utils/Services/Authenticated/identityFetch";
+import { artistFetch } from "@/Utils/Services/Authenticated/artistFetch";
 
 interface BookingDetailResponse {
   id: string;
   status: BookingStatus;
   eventDate: string;
-  eventDurationHours: number;
+  // The backend returns the NUMERIC duration as a string; keep it typed as such
+  // and let i18n interpolation render it verbatim. (#59)
+  eventDurationHours: string;
   eventLocation: string;
   eventContext: string | null;
   options: string[] | null;
@@ -68,10 +70,9 @@ const ArtistBookingDetail = () => {
   useEffect(() => {
     if (!id || !token) return;
     let cancelled = false;
-    void identityFetch<BookingDetailResponse>(
-      buildArtistBookingDetailUrl(id),
-      token,
-    )
+    // Use the artist-scoped wrapper so a 401 triggers a refresh-then-retry and a
+    // definitive expiry clears the session (route guards then redirect). (#51)
+    void artistFetch<BookingDetailResponse>(buildArtistBookingDetailUrl(id))
       .then((res) => {
         if (cancelled) return;
         if (!res) {
@@ -100,8 +101,8 @@ const ArtistBookingDetail = () => {
 
   const statusLabel = useMemo(() => {
     if (!data) return "";
-    return BOOKING_STATUS_SHORT_LABEL_FR[data.status] ?? data.status;
-  }, [data]);
+    return bookingStatusLabel(t, data.status);
+  }, [data, t]);
 
   const remainingCents = useMemo(
     () =>

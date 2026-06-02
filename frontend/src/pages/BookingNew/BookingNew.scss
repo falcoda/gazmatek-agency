@@ -130,6 +130,12 @@
       font-size: 0.85rem;
       color: $lock-color;
     }
+
+    // Highlight a field whose value the backend rejected (e.g. a 409 on the
+    // event date). (#31)
+    &.hasError input {
+      border-color: $lock-color;
+    }
   }
 
   .summary {

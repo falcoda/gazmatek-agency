@@ -6,6 +6,7 @@ import { useTranslation } from "react-i18next";
 
 import { Button, Card, Checkbox } from "@/covaltech-react-ui";
 import {
+  downloadArtistSignedEngagementContract,
   type EngagementContractDto,
   fetchArtistEngagementContract,
   signArtistEngagementContract,
@@ -143,16 +144,19 @@ const ContractSection = () => {
             </p>
           ) : null}
         </>
-      ) : contract?.signedPdfUrl ? (
-        <a
-          href={contract.signedPdfUrl}
-          target="_blank"
-          rel="noopener noreferrer"
-          className="accentLink"
-        >
-          {t("artistProfile.contract.downloadSigned")}
-        </a>
-      ) : null}
+      ) : (
+        // The signed PDF is streamed from an auth-protected endpoint. Only show
+        // the affordance once the contract is actually signed. (#26)
+        <Button
+          label={t("artistProfile.contract.downloadSigned")}
+          style="line"
+          onClick={async () => {
+            const ok = await downloadArtistSignedEngagementContract();
+            if (!ok)
+              toast.error(t("artistProfile.contract.errors.noSigningUrl"));
+          }}
+        />
+      )}
     </Card>
   );
 };

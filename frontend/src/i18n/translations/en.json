@@ -67,7 +67,13 @@
       "title": "Gazmatek, your booking agency",
       "subtitle": "DJs, live acts, performers. The tailor-made soundtrack for your events.",
       "cta": "Book an artist",
-      "ctaAria": "Start a booking request"
+      "ctaAria": "Start a booking request",
+      "stats": {
+        "aria": "Agency key figures",
+        "artists": "Artists on the roster",
+        "events": "Events produced",
+        "reply": "Reply window"
+      }
     },
     "featured": {
       "title": "Featured artists",
@@ -96,18 +102,6 @@
       "title": "Ready to host your event?",
       "subtitle": "Our team will reply within 24 business hours.",
       "button": "Start a request"
-    },
-    "hero": {
-      "title": "Gazmatek, your booking agency",
-      "subtitle": "DJs, live acts, performers. The tailor-made soundtrack for your events.",
-      "cta": "Book an artist",
-      "ctaAria": "Start a booking request",
-      "stats": {
-        "aria": "Agency key figures",
-        "artists": "Artists on the roster",
-        "events": "Events produced",
-        "reply": "Reply window"
-      }
     },
     "partners": {
       "title": "They trust us"
@@ -372,7 +366,9 @@
       "pricingRequired": "Capacity and ticket price are required to compute the quote.",
       "contextTooShort": "Details are too short.",
       "contextTooLong": "Details are too long.",
-      "artistRequired": "No artist selected."
+      "artistRequired": "No artist selected.",
+      "leadTime": "The date must be at least {{hours}} hours in the future.",
+      "artistUnavailable": "The artist is not available on this date. Please pick another slot."
     },
     "form": {
       "submit": "Send my request",
@@ -573,6 +569,14 @@
     "sent": {
       "title": "Request sent",
       "body": "A summary has been sent to"
+    },
+    "status": {
+      "pending_validation": "Pending validation",
+      "awaiting_deposit": "Awaiting deposit",
+      "confirmed": "Confirmed",
+      "completed": "Completed",
+      "cancelled": "Cancelled",
+      "rejected": "Rejected"
     }
   },
   "auth": {
@@ -580,14 +584,20 @@
     "signIn": "Sign in",
     "signOut": "Sign out",
     "invalidCredentials": "Invalid credentials",
-    "artist": { "title": "Artist sign in" },
-    "admin": { "title": "Admin sign in" }
+    "artist": {
+      "title": "Artist sign in"
+    },
+    "admin": {
+      "title": "Admin sign in"
+    },
+    "sessionExpired": "Your session has expired, please sign in again."
   },
   "artistArea": {
     "nav": {
       "calendar": "My calendar",
       "allBookings": "All my bookings",
-      "profile": "My profile"
+      "profile": "My profile",
+      "onboarding": "Complete onboarding"
     },
     "col": {
       "location": "Location",
@@ -638,7 +648,13 @@
       "notes": "Private notes",
       "list": "My unavailabilities",
       "empty": "No unavailability.",
-      "created": "Unavailability created"
+      "created": "Unavailability created",
+      "deleteTitle": "Delete unavailability",
+      "deleteConfirm": "Delete the unavailability from {{start}} to {{end}}?"
+    },
+    "onboarding": {
+      "bannerMessage": "Your engagement contract is not signed yet. Complete your onboarding to appear in the roster.",
+      "bannerCta": "Complete onboarding"
     }
   },
   "admin": {
@@ -665,7 +681,13 @@
       "form": {
         "slug": "Slug",
         "stageName": "Stage name",
-        "genre": "Style"
+        "genre": "Style",
+        "bioFr": "Bio FR",
+        "bioNl": "Bio NL",
+        "bioEn": "Bio EN",
+        "coverImageUrl": "Cover image URL",
+        "level": "Level (Gazmatek tier)",
+        "levelHint": "The fee is computed from the Gazmatek grid: multiplier (by level + capacity) × ticket price. A Live or Hybrid set adds a coefficient (+10%/+15%)."
       },
       "invitations": {
         "title": "Artist invitations",
@@ -715,8 +737,36 @@
           "expiresAt": "Expires on",
           "resendCount": "Resends",
           "actions": "Actions"
-        }
-      }
+        },
+        "generateLink": "Generate new link",
+        "generateLinkTitle": "Generate a new invitation link",
+        "generateLinkConfirm": "This generates a new link and invalidates every previously shared link. The new link will be copied to your clipboard.",
+        "generateLinkCta": "Generate and copy"
+      },
+      "edit": "Edit artist",
+      "saved": "Artist saved",
+      "searchLabel": "Search",
+      "searchPlaceholder": "Stage name or slug…",
+      "sections": {
+        "identity": "Identity",
+        "bios": "Biographies",
+        "pricing": "Internal pricing",
+        "flags": "Publishing"
+      },
+      "contract": {
+        "download": "Download contract",
+        "downloadFailed": "Could not download the contract.",
+        "reset": "Regenerate contract",
+        "resetCta": "Yes, regenerate",
+        "resetTitle": "Regenerate the engagement contract",
+        "resetConfirm": "Are you sure? {{name}}'s current engagement contract will be deleted and a new draft created on the next Sign click.",
+        "resetDone": "Contract regenerated — the artist will have to sign again.",
+        "resetFailed": "Failed to regenerate the contract."
+      },
+      "deleteTitle": "Delete artist",
+      "deleteConfirmBody": "Permanently delete {{name}}? This action cannot be undone.",
+      "deleted": "Artist deleted",
+      "deleteFailed": "Failed to delete the artist."
     },
     "bookings": {
       "title": "Booking requests",
@@ -780,7 +830,29 @@
         "title": "Edit booking",
         "saved": "Booking updated",
         "errorMissingDate": "Please provide the event date"
-      }
+      },
+      "manualCreate": "Create a manual booking",
+      "manualCreated": "Booking created",
+      "sections": {
+        "artist": "Artist",
+        "client": "Client details",
+        "event": "Event",
+        "adminControls": "Agency controls"
+      },
+      "fields": {
+        "capacity": "Capacity (seats)",
+        "ticketPrice": "Ticket price (€)",
+        "setType": "Set format",
+        "quotedTotalCents": "Quoted total (cents)",
+        "depositCents": "Deposit (cents)",
+        "quotedTotalEuros": "Quoted total",
+        "depositEuros": "Deposit",
+        "initialStatus": "Initial status",
+        "skipEmails": "Do not send emails",
+        "overrideConflict": "Force despite calendar conflict",
+        "internalNote": "Internal note"
+      },
+      "noEmailWarning": "Without an email, this booking creates a client who cannot claim their account."
     },
     "content": {
       "title": "Editorial content",
@@ -821,6 +893,9 @@
           "iban": "IBAN"
         }
       }
+    },
+    "list": {
+      "truncationWarning": "Showing {{shown}} of {{total}}. Refine your search to see the rest."
     }
   },
   "account": {
@@ -927,6 +1002,12 @@
         "reasonPlaceholder": "Briefly tell us why you are cancelling…",
         "confirm": "Confirm cancellation",
         "success": "Booking cancelled"
+      },
+      "loadError": "Could not load your bookings. Please try again.",
+      "edit": {
+        "title": "Edit booking",
+        "saved": "Booking updated",
+        "errorMissingDate": "Please provide the event date"
       }
     }
   },
@@ -962,6 +1043,99 @@
       "mustAccept": "You must accept the terms before signing.",
       "noSigningUrl": "Unable to get the Documenso signing link. Please try again.",
       "saveFailed": "Failed to save your information."
+    }
+  },
+  "artistProfile": {
+    "title": "My profile",
+    "saved": "Changes saved",
+    "coverHint": "No photo saved. Upload a file or paste a URL below.",
+    "uploadSuccess": "Cover photo updated",
+    "changePassword": "Change my password",
+    "passwordChanged": "Password updated",
+    "sections": {
+      "identity": "Identity (managed by the agency)",
+      "personal": "Personal info",
+      "password": "Password",
+      "contract": "Engagement contract",
+      "cover": "Cover photo",
+      "bios": "Biographies",
+      "technical": "Technical info",
+      "social": "Social links"
+    },
+    "contract": {
+      "statusPending": "Your engagement contract is not signed yet.",
+      "statusAwaitingSignature": "Your contract is awaiting signature in Documenso. Resume signing to finish.",
+      "statusSigned": "Contract signed on {{date}}.",
+      "providerNote": "Electronic signature is handled by Documenso. Tick the acceptance box then click Sign — a new tab opens with your contract.",
+      "waitingForWebhook": "Waiting for signature confirmation… This section updates automatically.",
+      "downloadDraft": "Download draft (PDF)",
+      "downloadSigned": "Download signed contract (PDF)",
+      "acceptTerms": "I have read and accept the terms of the engagement contract.",
+      "sign": "Sign via Documenso",
+      "resumeSigning": "Resume signing",
+      "signed": "Contract signed successfully",
+      "errors": {
+        "mustAccept": "You must accept the terms before signing.",
+        "noSigningUrl": "Could not get the Documenso signing link. Please try again."
+      }
+    },
+    "fields": {
+      "stageName": "Stage name",
+      "slug": "URL slug",
+      "fullName": "Full name",
+      "phone": "Phone",
+      "address": "Address",
+      "country": "Country",
+      "vatNumber": "VAT number",
+      "companyNumber": "Company number (CBE/KBO)",
+      "currentPassword": "Current password",
+      "newPassword": "New password (min. {{min}} characters)",
+      "confirmPassword": "Confirm the new password",
+      "coverImageUrl": "Image URL",
+      "coverUpload": "Upload a new photo (JPG/PNG/WebP, 5 MB max)",
+      "bioFr": "Bio FR",
+      "bioNl": "Bio NL",
+      "bioEn": "Bio EN",
+      "technicalFr": "Technical info FR",
+      "technicalNl": "Technical info NL",
+      "technicalEn": "Technical info EN",
+      "social": {
+        "instagram": "Instagram",
+        "soundcloud": "SoundCloud",
+        "spotify": "Spotify",
+        "youtube": "YouTube",
+        "tiktok": "TikTok",
+        "facebook": "Facebook",
+        "bandcamp": "Bandcamp",
+        "website": "Website"
+      }
+    },
+    "errors": {
+      "fileTooLarge": "Image too large (max 5 MB).",
+      "uploadFailed": "Upload failed. Please try again.",
+      "passwordTooShort": "The new password must be at least {{min}} characters long.",
+      "passwordMismatch": "The two passwords do not match.",
+      "passwordChangeFailed": "Failed to change the password. Check your current password."
+    }
+  },
+  "invitation": {
+    "title": "Artist invitation",
+    "errorsTitle": "Invitation unavailable",
+    "welcome": "Welcome to Gazmatek, {{name}}",
+    "intro": "You are invited to join our roster with the address {{email}}. Choose a password to complete your registration.",
+    "submit": "Continue",
+    "fields": {
+      "password": "Password (min. {{min}} characters)",
+      "confirmPassword": "Confirm password",
+      "cgu": "I accept the terms of use",
+      "privacy": "I accept the privacy policy"
+    },
+    "errors": {
+      "missingToken": "Missing invitation link.",
+      "invalid": "This invitation has expired or is no longer valid.",
+      "passwordTooShort": "The password must be at least {{min}} characters long.",
+      "passwordMismatch": "The passwords do not match.",
+      "acceptRequired": "Please accept the terms of use and the privacy policy."
     }
   }
 }

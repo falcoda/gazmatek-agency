@@ -24,13 +24,18 @@ import {
 } from "@/covaltech-react-ui";
 import { useLanguage } from "@/hooks/useLanguage";
 import { useClientAuthStore } from "@/stores/ClientAuthStore";
+import {
+  MIN_BOOKING_LEAD_HOURS,
+  minBookingDateTimeLocal,
+} from "@/Utils/booking";
 import { formatPriceCents } from "@/Utils/formatPrice";
+import { loggerService, LogTag } from "@/Utils/LoggerService";
 import {
   type ArtistDetailDto,
   fetchArtistBySlug,
   fetchArtists,
 } from "@/Utils/Services/Public/artistsApi";
-import { postCreateBooking } from "@/Utils/Services/Public/bookingApi";
+import { createBooking } from "@/Utils/Services/Public/bookingApi";
 import {
   ArtistSetType,
   postEstimate,
@@ -70,6 +75,64 @@ const MAX_CONTEXT_LEN = 2000;
 const ESTIMATE_DEBOUNCE_MS = 400;
 const DEFAULT_EVENT_TIME = "20:00";
 
+// Fields restored after an auth bounce / refresh. We deliberately persist the
+// typed event details (not the honeypot) keyed per artist. (#58)
+type PersistedFormState = Pick<
+  FormState,
+  | "eventDate"
+  | "durationHours"
+  | "street"
+  | "postalCode"
+  | "city"
+  | "country"
+  | "context"
+  | "capacity"
+  | "ticketPrice"
+  | "setType"
+>;
+
+const draftStorageKey = (artistSlug: string): string =>
+  `gazmatek.bookingDraft.${artistSlug}`;
+
+function readDraft(artistSlug: string): Partial<PersistedFormState> | null {
+  try {
+    const raw = sessionStorage.getItem(draftStorageKey(artistSlug));
+    if (!raw) return null;
+    return JSON.parse(raw) as Partial<PersistedFormState>;
+  } catch (error) {
+    loggerService.warn(LogTag.UI, "BookingNew: failed to read draft", error);
+    return null;
+  }
+}
+
+function writeDraft(artistSlug: string, form: FormState): void {
+  try {
+    const draft: PersistedFormState = {
+      eventDate: form.eventDate,
+      durationHours: form.durationHours,
+      street: form.street,
+      postalCode: form.postalCode,
+      city: form.city,
+      country: form.country,
+      context: form.context,
+      capacity: form.capacity,
+      ticketPrice: form.ticketPrice,
+      setType: form.setType,
+    };
+    sessionStorage.setItem(draftStorageKey(artistSlug), JSON.stringify(draft));
+  } catch (error) {
+    loggerService.warn(LogTag.UI, "BookingNew: failed to persist draft", error);
+  }
+}
+
+function clearDraft(artistSlug: string): void {
+  try {
+    sessionStorage.removeItem(draftStorageKey(artistSlug));
+  } catch {
+    // sessionStorage may be unavailable (private mode) — ignore.
+  }
+}
+
 const BookingNew = () => {
   const { t } = useTranslation();
   const language = useLanguage();
@@ -101,21 +164,43 @@ const BookingNew = () => {
       : prefillDate
     : undefined;
 
-  const [form, setForm] = useState<FormState>(() => ({
-    ...INITIAL_STATE,
-    durationHours: prefillDuration ?? INITIAL_STATE.durationHours,
-    eventDate: normalizedPrefillDate ?? INITIAL_STATE.eventDate,
-    street: prefillLocation ?? INITIAL_STATE.street,
-    capacity: prefillCapacity ?? INITIAL_STATE.capacity,
-    // querystring `ticketPrice` is in cents to keep the simulator in sync;
-    // the form displays euros.
-    ticketPrice: prefillTicketPrice
-      ? String(Math.round(Number(prefillTicketPrice)) / 100)
-      : INITIAL_STATE.ticketPrice,
-    setType: isValidSetType(prefillSetType)
-      ? prefillSetType
-      : INITIAL_STATE.setType,
-  }));
+  const [form, setForm] = useState<FormState>(() => {
+    const base: FormState = {
+      ...INITIAL_STATE,
+      durationHours: prefillDuration ?? INITIAL_STATE.durationHours,
+      eventDate: normalizedPrefillDate ?? INITIAL_STATE.eventDate,
+      street: prefillLocation ?? INITIAL_STATE.street,
+      capacity: prefillCapacity ?? INITIAL_STATE.capacity,
+      // querystring `ticketPrice` is in cents to keep the simulator in sync;
+      // the form displays euros.
+      ticketPrice: prefillTicketPrice
+        ? String(Math.round(Number(prefillTicketPrice)) / 100)
+        : INITIAL_STATE.ticketPrice,
+      setType: isValidSetType(prefillSetType)
+        ? prefillSetType
+        : INITIAL_STATE.setType,
+    };
+    // Restore a previously-typed draft (auth bounce / refresh). Explicit
+    // query-string prefills still win over the saved draft. (#58)
+    if (artistSlug) {
+      const draft = readDraft(artistSlug);
+      if (draft) {
+        return {
+          ...base,
+          ...draft,
+          ...(normalizedPrefillDate
+            ? { eventDate: normalizedPrefillDate }
+            : {}),
+          ...(prefillLocation ? { street: prefillLocation } : {}),
+        };
+      }
+    }
+    return base;
+  });
+
+  // Bumped to force the availability calendar to remount + reload (e.g. after a
+  // 409 conflict, when the artist just became unavailable). (#31)
+  const [calendarReloadKey, setCalendarReloadKey] = useState(0);
 
   const goToLogin = () => {
     const next = encodeURIComponent(location.pathname + location.search);
@@ -185,6 +270,17 @@ const BookingNew = () => {
       cancelled = true;
     };
   }, [artistSlug, legacyArtistId, language]);
+
+  // Persist the in-progress form to sessionStorage (keyed by artist) so an auth
+  // bounce or page refresh restores the typed fields. Skipped once submitted to
+  // avoid re-saving a cleared form. (#58)
+  useEffect(() => {
+    if (!artistSlug || submitted) return;
+    writeDraft(artistSlug, form);
+  }, [artistSlug, form, submitted]);
+
+  // Earliest selectable slot, respecting the booking lead time. (#31)
+  const minEventDateTime = useMemo(() => minBookingDateTimeLocal(), []);
 
   const desiredEventDateIso = useMemo(() => {
     if (!form.eventDate) return undefined;
@@ -293,6 +389,14 @@ const BookingNew = () => {
     const next: Partial<Record<keyof FormState, string>> = {};
     if (!state.eventDate) {
       next.eventDate = t("bookingNew.errors.dateRequired");
+    } else {
+      const parsed = new Date(state.eventDate);
+      const earliest = Date.now() + MIN_BOOKING_LEAD_HOURS * 60 * 60 * 1000;
+      if (!Number.isNaN(parsed.getTime()) && parsed.getTime() < earliest) {
+        next.eventDate = t("bookingNew.errors.leadTime", {
+          hours: MIN_BOOKING_LEAD_HOURS,
+        });
+      }
     }
     if (!durationNumber) {
       next.durationHours = t("bookingNew.errors.durationRequired");
@@ -323,6 +427,8 @@ const BookingNew = () => {
 
   const handleChange = (key: keyof FormState, value: string) => {
     setForm((prev) => ({ ...prev, [key]: value }));
+    // Clear the field-level error as soon as the user edits that field.
+    setErrors((prev) => (prev[key] ? { ...prev, [key]: undefined } : prev));
   };
 
   const handleCalendarDayClick = (isoDate: string) => {
@@ -332,6 +438,9 @@ const BookingNew = () => {
         : DEFAULT_EVENT_TIME;
       return { ...prev, eventDate: `${isoDate}T${currentTime}` };
     });
+    setErrors((prev) =>
+      prev.eventDate ? { ...prev, eventDate: undefined } : prev,
+    );
   };
 
   const handleSubmit = async (e: React.FormEvent) => {
@@ -341,8 +450,9 @@ const BookingNew = () => {
       return;
     }
     if (form.website) {
-      // honeypot — silently drop spam
-      setSubmitted(true);
+      // Honeypot tripped — silently drop the request WITHOUT showing the
+      // success screen, so a bot gets no positive signal. (#50)
+      loggerService.warn(LogTag.UI, "BookingNew: honeypot tripped, dropping");
       return;
     }
     const validation = validate(form);
@@ -356,7 +466,7 @@ const BookingNew = () => {
     }
 
     setSubmitting(true);
-    const res = await postCreateBooking({
+    const result = await createBooking({
       artistSlug,
       eventDate: desiredEventDateIso,
       durationHours: durationNumber,
@@ -370,13 +480,40 @@ const BookingNew = () => {
     });
     setSubmitting(false);
 
-    if (res) {
+    if (result.ok) {
       toast.success(t("bookingNew.form.success"));
+      clearDraft(artistSlug);
       setForm(INITIAL_STATE);
       setSubmitted(true);
       // The booking lands in `pending_validation`. An admin reaches out
       // off-platform to arrange the deposit/payment; there's no payment page
       // for the client to land on.
+      return;
+    }
+
+    // Map typed backend errors to localized, field-level messages. (#31)
+    const { error } = result;
+    if (error.kind === "leadTime") {
+      setErrors((prev) => ({
+        ...prev,
+        eventDate: t("bookingNew.errors.leadTime", {
+          hours: error.minLeadTimeHours ?? MIN_BOOKING_LEAD_HOURS,
+        }),
+      }));
+    } else if (error.kind === "artistUnavailable") {
+      setErrors((prev) => ({
+        ...prev,
+        eventDate: t("bookingNew.errors.artistUnavailable"),
+      }));
+      // The slot just turned unavailable — refresh the calendar so the user
+      // sees the updated availability. (#31)
+      setCalendarReloadKey((k) => k + 1);
+      toast.error(t("bookingNew.errors.artistUnavailable"));
+    } else if (error.kind === "artistNotFound") {
+      setArtistMissing(true);
+      toast.error(t("bookingNew.artist.notFound"));
+    } else {
+      toast.error(t("common.error"));
     }
   };
 
@@ -455,7 +592,9 @@ const BookingNew = () => {
             ) : (
               <form onSubmit={handleSubmit} noValidate>
                 <div className="row">
-                  <div className="field">
+                  <div
+                    className={`field${errors.eventDate ? " hasError" : ""}`}
+                  >
                     <StyledInputBase
                       label={t("bookingNew.fields.date")}
                       value={form.eventDate}
@@ -466,6 +605,7 @@ const BookingNew = () => {
                       <input
                         type="datetime-local"
                         value={form.eventDate}
+                        min={minEventDateTime}
                         onChange={(e) =>
                           handleChange("eventDate", e.target.value)
                         }
@@ -628,6 +768,7 @@ const BookingNew = () => {
                 </p>
                 <div className="miniCalendar">
                   <PublicAvailabilityCalendar
+                    key={`${artist.id}-${calendarReloadKey}`}
                     artistId={artist.id}
                     monthsAhead={2}
                     onDayClick={handleCalendarDayClick}

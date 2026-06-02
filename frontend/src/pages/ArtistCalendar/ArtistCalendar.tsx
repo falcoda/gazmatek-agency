@@ -6,16 +6,19 @@ import toast from "react-hot-toast";
 import { useTranslation } from "react-i18next";
 
 import AvailabilityCalendar from "@/components/AvailabilityCalendar/AvailabilityCalendar";
+import ConfirmModal from "@/components/ConfirmModal/ConfirmModal";
 import SeoHead from "@/components/SeoHead/SeoHead";
 import {
   Button,
   Card,
+  Modal,
   NoData,
   StyledDropdown,
   StyledInputBase,
   StyledInputText,
 } from "@/covaltech-react-ui";
 import { useArtistAuthStore } from "@/stores/ArtistAuthStore";
+import { toDatetimeLocalValue } from "@/Utils/Date/date";
 import {
   type ArtistUnavailabilityDto,
   createArtistUnavailability,
@@ -47,6 +50,11 @@ const ArtistCalendar = () => {
   const token = useArtistAuthStore((s) => s.token);
   const [unavail, setUnavail] = useState<ArtistUnavailabilityDto[]>([]);
   const [submitting, setSubmitting] = useState(false);
+  // Unavailability picked from the calendar that is pending delete-confirmation.
+  // Keyed by id so the controlled confirmation modal re-mounts (and re-opens)
+  // on each calendar event click. (#32)
+  const [pendingDelete, setPendingDelete] =
+    useState<ArtistUnavailabilityDto | null>(null);
   const [form, setForm] = useState({
     startsAt: "",
     endsAt: "",
@@ -125,10 +133,11 @@ const ArtistCalendar = () => {
     }
   };
 
-  const remove = async (id: string) => {
-    if (!token) return;
+  const remove = async (id: string): Promise<boolean> => {
+    if (!token) return false;
     await deleteArtistUnavailability(id);
     await reload();
+    return true;
   };
 
   return (
@@ -214,15 +223,51 @@ const ArtistCalendar = () => {
           events={calendarEvents}
           mode="artist"
           onSelectRange={(range) => {
+            // Build the datetime-local value from LOCAL clock components so the
+            // selected slot is not shifted by the UTC offset. (#19)
             setForm({
               ...form,
-              startsAt: range.start.toISOString().slice(0, 16),
-              endsAt: range.end.toISOString().slice(0, 16),
+              startsAt: toDatetimeLocalValue(range.start),
+              endsAt: toDatetimeLocalValue(range.end),
             });
           }}
-          onSelectEvent={(eventId) => remove(eventId)}
+          onSelectEvent={(eventId) => {
+            // Clicking an event opens a delete-confirmation rather than deleting
+            // immediately. (#32)
+            const target = unavail.find((u) => u.id === eventId);
+            if (target) setPendingDelete(target);
+          }}
         />
       </Card>
+
+      {pendingDelete ? (
+        <Modal
+          key={pendingDelete.id}
+          defaultOpen
+          modalTitle={t("artistArea.calendar.deleteTitle")}
+          modalCancel={false}
+          modalButton={() => <span style={{ display: "none" }} />}
+          modalContent={
+            <p>
+              {t("artistArea.calendar.deleteConfirm", {
+                start: new Date(pendingDelete.startsAt).toLocaleString(),
+                end: new Date(pendingDelete.endsAt).toLocaleString(),
+              })}
+            </p>
+          }
+          modalFooterButton={({ onClose }) => (
+            <Button
+              label={t("common.delete")}
+              style="danger"
+              onClick={async () => {
+                await remove(pendingDelete.id);
+                setPendingDelete(null);
+                onClose();
+              }}
+            />
+          )}
+        />
+      ) : null}
 
       <Card className="panel">
         <h2>{t("artistArea.calendar.list")}</h2>
@@ -241,10 +286,26 @@ const ArtistCalendar = () => {
                   ) : null}
                 </div>
                 <div className="actions">
-                  <Button
-                    label={t("common.delete")}
-                    style="danger"
-                    onClick={() => remove(u.id)}
+                  <ConfirmModal
+                    modalTitle={t("artistArea.calendar.deleteTitle")}
+                    modalContent={
+                      <p>
+                        {t("artistArea.calendar.deleteConfirm", {
+                          start: new Date(u.startsAt).toLocaleString(),
+                          end: new Date(u.endsAt).toLocaleString(),
+                        })}
+                      </p>
+                    }
+                    confirmLabel={t("common.delete")}
+                    confirmStyle="danger"
+                    onConfirm={() => remove(u.id)}
+                    trigger={({ onClick }) => (
+                      <Button
+                        label={t("common.delete")}
+                        style="danger"
+                        onClick={onClick}
+                      />
+                    )}
                   />
                 </div>
               </li>

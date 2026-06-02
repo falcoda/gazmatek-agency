@@ -5,9 +5,16 @@ interface CacheEntry {
   expiresAt: number;
 }
 
-// Short TTL: trades a tiny staleness window for removing one DB round-trip
-// from every authenticated request. A deleted or disabled user keeps access
-// for at most TTL_MS — an acceptable trade for the load removed at scale.
+// #54 — Scope note: this cache is used ONLY by the legacy template JWT strategy
+// (src/middleware/auth/strategies/jwt.ts, backed by the template `users` table).
+// The application's real identity auth (admin/artist/client, via
+// middleware/auth/requireKind.ts) does NOT use this cache and re-validates
+// is_active against the DB on every request. The template `users` table has no
+// is_active column, so there is nothing to re-validate on a cache hit; a deleted
+// user keeps access for at most TTL_MS on this legacy path only.
+//
+// Short TTL: trades a tiny staleness window for removing one DB round-trip from
+// every legacy-authenticated request.
 const TTL_MS = 30_000;
 
 // Cheap upper bound on memory: the cache is dropped wholesale when it grows

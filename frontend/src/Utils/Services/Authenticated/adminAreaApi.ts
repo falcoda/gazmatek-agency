@@ -14,8 +14,12 @@ import {
   buildAdminContentBlockUrl,
 } from "@/config/apiRoutes";
 import { useAdminAuthStore } from "@/stores/AdminAuthStore";
+import { loggerService, LogTag } from "@/Utils/LoggerService";
 import { adminFetch } from "@/Utils/Services/Authenticated/adminFetch";
-import { publicFetch } from "@/Utils/Services/Public/publicFetch";
+import {
+  publicFetch,
+  publicFetchOk,
+} from "@/Utils/Services/Public/publicFetch";
 
 export interface AdminLoginResponse {
   token: string;
@@ -82,11 +86,18 @@ export async function loginAdmin(
 
 export async function logoutAdmin(refreshToken: string | null): Promise<void> {
   if (!refreshToken) return;
-  await fetch(API_ROUTES.adminAuthLogout, {
+  // Route through the standard wrapper. Clear locally regardless; warn on
+  // failure for observability. (#47)
+  const ok = await publicFetchOk(API_ROUTES.adminAuthLogout, {
     method: "POST",
-    headers: { "Content-Type": "application/json" },
     body: JSON.stringify({ refreshToken }),
   });
+  if (!ok) {
+    loggerService.warn(
+      LogTag.AUTH,
+      "logoutAdmin: server-side token revocation failed",
+    );
+  }
 }
 
 export interface AdminArtistDetail {
@@ -105,11 +116,13 @@ export interface AdminArtistDetail {
 
 export async function fetchAdminArtists(
   q?: string,
-  pageSize?: number,
+  pageSize: number = ADMIN_LIST_MAX_PAGE_SIZE,
 ): Promise<{ data: AdminArtistRow[]; pagination: { total: number } } | null> {
   const params = new URLSearchParams();
   if (q) params.set("q", q);
-  if (pageSize !== undefined) params.set("page_size", String(pageSize));
+  // Always send page_size so the warning logic has a real `total` to compare
+  // against and the list isn't silently truncated to the default page. (#7)
+  params.set("page_size", String(pageSize));
   const qs = params.toString();
   return adminFetch(`${API_ROUTES.adminArtists}${qs ? `?${qs}` : ""}`);
 }
@@ -139,8 +152,21 @@ export async function putAdminArtist(
   });
 }
 
-export async function deleteAdminArtist(id: string): Promise<unknown> {
-  return adminFetch(buildAdminArtistDetailUrl(id), { method: "DELETE" });
+// DELETE returns 204 on success; `adminFetch` resolves to `null` for both
+// success and failure, so we track the failure explicitly via `onError`. (#61)
+export async function deleteAdminArtist(id: string): Promise<{ ok: boolean }> {
+  let failed = false;
+  await adminFetch(buildAdminArtistDetailUrl(id), {
+    method: "DELETE",
+    silent: true,
+    onError: () => {
+      failed = true;
+    },
+  });
+  if (failed) {
+    loggerService.warn(LogTag.API, "deleteAdminArtist failed", { id });
+  }
+  return { ok: !failed };
 }
 
 export async function resetAdminArtistEngagementContract(
@@ -265,12 +291,26 @@ export async function revokeAdminArtistInvitation(
   });
 }
 
+// Backend caps page_size at 100; mirror that so a single request fetches the
+// full first page and the UI can warn when the total exceeds it. (#7)
+export const ADMIN_LIST_MAX_PAGE_SIZE = 100;
+
 export async function fetchAdminBookings(
-  filters: { status?: string; artistId?: string } = {},
-): Promise<{ data: AdminBookingRow[]; pagination: { total: number } } | null> {
+  filters: {
+    status?: string;
+    artistId?: string;
+    page?: number;
+    pageSize?: number;
+  } = {},
+): Promise<{
+  data: AdminBookingRow[];
+  pagination: { total: number };
+} | null> {
   const params = new URLSearchParams();
   if (filters.status) params.set("status", filters.status);
   if (filters.artistId) params.set("artist_id", filters.artistId);
+  if (filters.page !== undefined) params.set("page", String(filters.page));
+  params.set("page_size", String(filters.pageSize ?? ADMIN_LIST_MAX_PAGE_SIZE));
   const qs = params.toString() ? `?${params.toString()}` : "";
   return adminFetch(`${API_ROUTES.adminBookings}${qs}`);
 }

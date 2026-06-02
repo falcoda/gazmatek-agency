@@ -1,6 +1,6 @@
 import "./AccountSignup.scss";
 
-import { useMemo, useState } from "react";
+import { useEffect, useMemo, useState } from "react";
 import toast from "react-hot-toast";
 import { useTranslation } from "react-i18next";
 import { Link, useNavigate, useSearchParams } from "react-router-dom";
@@ -43,9 +43,19 @@ const AccountSignup = () => {
   const navigate = useNavigate();
   const language = useOptionalLanguage();
   const setSession = useClientAuthStore((s) => s.setSession);
+  const token = useClientAuthStore((s) => s.token);
   const [searchParams] = useSearchParams();
   const nextPath = searchParams.get("next");
   const nextSuffix = nextPath ? `?next=${encodeURIComponent(nextPath)}` : "";
+
+  // Already-authenticated clients shouldn't see the signup flow. (#52)
+  useEffect(() => {
+    if (token) {
+      navigate(nextPath ?? getPagePath("accountDashboard", language), {
+        replace: true,
+      });
+    }
+  }, [token, nextPath, navigate, language]);
 
   const [step, setStep] = useState(0);
   const [account, setAccount] = useState<AccountStepData>(EMPTY_ACCOUNT);

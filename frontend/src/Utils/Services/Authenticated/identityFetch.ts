@@ -1,7 +1,11 @@
 import toast from "react-hot-toast";
 
+import { AUTH_ERROR_CODES } from "@/config/errorCodes";
+import { HTTP_STATUS } from "@/config/httpStatus";
+import i18n from "@/i18n/i18n";
 import { loggerService, LogTag } from "@/Utils/LoggerService";
 import {
+  type ApiErrorBody,
   extractApiErrorMessage,
   parseErrorBody,
 } from "@/Utils/Services/Fetch/responseParsing";
@@ -21,6 +25,25 @@ export interface AuthFetchOptions extends RequestInit {
    * to the appropriate login page.
    */
   onSessionExpired?: () => void;
+  /**
+   * Called for non-session request failures (e.g. 400/404/409) with the HTTP
+   * status and parsed error body, letting callers map typed backend error
+   * codes to field-level messages. Not invoked for 401/USER_DISABLED, which are
+   * handled as session events. Pass `silent: true` to suppress the default
+   * toast and handle errors entirely via this callback.
+   */
+  onError?: (status: number, body: ApiErrorBody | null) => void;
+}
+
+/**
+ * True when a `403` body carries the USER_DISABLED auth code, meaning the
+ * account was deactivated server-side and the local session is stale.
+ */
+function isUserDisabled(status: number, body: ApiErrorBody | null): boolean {
+  return (
+    status === HTTP_STATUS.FORBIDDEN &&
+    body?.message === AUTH_ERROR_CODES.USER_DISABLED
+  );
 }
 
 async function executeFetch<T>(
@@ -28,7 +51,10 @@ async function executeFetch<T>(
   token: string | null,
   init: RequestInit,
   silent: boolean | undefined,
-): Promise<{ ok: true; data: T | null } | { ok: false; status: number }> {
+): Promise<
+  | { ok: true; data: T | null }
+  | { ok: false; status: number; disabled: boolean; body: ApiErrorBody | null }
+> {
   const headers = new Headers(init.headers ?? {});
   if (!headers.has("Content-Type") && init.body) {
     headers.set("Content-Type", "application/json");
@@ -42,18 +68,29 @@ async function executeFetch<T>(
 
   if (response.ok) {
     const ct = response.headers.get("content-type") ?? "";
-    if (response.status === 204 || !ct.includes("application/json")) {
+    if (
+      response.status === HTTP_STATUS.NO_CONTENT ||
+      !ct.includes("application/json")
+    ) {
       return { ok: true, data: null };
     }
     return { ok: true, data: (await response.json()) as T };
   }
 
-  if (response.status === 401) {
-    return { ok: false, status: 401 };
+  if (response.status === HTTP_STATUS.UNAUTHORIZED) {
+    return {
+      ok: false,
+      status: HTTP_STATUS.UNAUTHORIZED,
+      disabled: false,
+      body: null,
+    };
   }
 
   const body = await parseErrorBody(response);
-  if (!silent) {
+  const disabled = isUserDisabled(response.status, body);
+  // A disabled account is a definitive session event, not a per-request error:
+  // skip the generic toast and let the caller clear the session instead. (#18)
+  if (!silent && !disabled) {
     toast.error(extractApiErrorMessage(body));
   }
   loggerService.error(LogTag.API, "Auth fetch failed", {
@@ -61,7 +98,7 @@ async function executeFetch<T>(
     status: response.status,
     body,
   });
-  return { ok: false, status: response.status };
+  return { ok: false, status: response.status, disabled, body };
 }
 
 export async function identityFetch<T>(
@@ -69,32 +106,46 @@ export async function identityFetch<T>(
   token: string | null,
   options: AuthFetchOptions = {},
 ): Promise<T | null> {
-  const { silent, onUnauthorized, onSessionExpired, ...init } = options;
+  const { silent, onUnauthorized, onSessionExpired, onError, ...init } =
+    options;
+  const expireSession = () => {
+    onSessionExpired?.();
+    if (!silent) toast.error(i18n.t("auth.sessionExpired"));
+  };
   try {
     const first = await executeFetch<T>(route, token, init, silent);
     if (first.ok) return first.data;
 
-    if (first.status === 401 && onUnauthorized) {
+    // A deactivated account is a definitive session event regardless of the
+    // status code: clear the session so route guards redirect to login. (#18)
+    if (first.disabled) {
+      expireSession();
+      return null;
+    }
+
+    if (first.status === HTTP_STATUS.UNAUTHORIZED && onUnauthorized) {
       const refreshed = await onUnauthorized();
       if (refreshed) {
         const second = await executeFetch<T>(route, refreshed, init, silent);
         if (second.ok) return second.data;
-        if (second.status === 401) {
-          onSessionExpired?.();
-          if (!silent) toast.error("Session expirée");
+        if (second.disabled || second.status === HTTP_STATUS.UNAUTHORIZED) {
+          expireSession();
+        } else {
+          onError?.(second.status, second.body);
         }
         return null;
       }
     }
 
-    if (first.status === 401) {
-      onSessionExpired?.();
-      if (!silent) toast.error("Session expirée");
+    if (first.status === HTTP_STATUS.UNAUTHORIZED) {
+      expireSession();
+    } else {
+      onError?.(first.status, first.body);
     }
     return null;
   } catch (error) {
     loggerService.error(LogTag.API, "Auth fetch network error", error);
-    if (!silent) toast.error("Une erreur est survenue");
+    if (!silent) toast.error(i18n.t("common.error"));
     return null;
   }
 }

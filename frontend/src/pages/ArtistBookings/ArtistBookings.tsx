@@ -52,7 +52,7 @@ const ArtistBookings = () => {
         dataIndex: "clientName",
         mobile: { visible: true, order: 2, titleVisible: true },
       },
-      bookingStatusColumn({
+      bookingStatusColumn(t, {
         title: t("admin.bookings.col.status"),
         dataIndex: "status",
         order: 3,

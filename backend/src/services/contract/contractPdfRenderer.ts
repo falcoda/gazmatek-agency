@@ -116,7 +116,11 @@ export const renderContractPdf = async (
   // breaks CommonJS consumers (e.g. the Jest test runner booting the app).
   const { default: puppeteer } = await import("puppeteer-core");
 
-  const browser = config.puppeteer.browserWsEndpoint
+  // #33 — track whether we launched our own browser or connected to a shared
+  // remote Chrome. We must only ever close a browser we launched; a connected
+  // shared browser is merely disconnected so other consumers stay alive.
+  const isConnected = Boolean(config.puppeteer.browserWsEndpoint);
+  const browser = isConnected
     ? await puppeteer.connect({
         browserWSEndpoint: config.puppeteer.browserWsEndpoint,
       })
@@ -126,8 +130,8 @@ export const renderContractPdf = async (
         args: ["--no-sandbox", "--disable-setuid-sandbox"],
       });
 
+  const page = await browser.newPage();
   try {
-    const page = await browser.newPage();
     await page.setContent(buildDocumentHtml(input), {
       waitUntil: "load",
     });
@@ -140,6 +144,12 @@ export const renderContractPdf = async (
       }),
     );
   } finally {
-    await browser.close();
+    // Always release the page (it leaks on a shared browser otherwise).
+    await page.close().catch(() => undefined);
+    if (isConnected) {
+      browser.disconnect();
+    } else {
+      await browser.close();
+    }
   }
 };

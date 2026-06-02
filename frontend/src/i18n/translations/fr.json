@@ -65,9 +65,15 @@
   "home": {
     "hero": {
       "title": "Gazmatek, votre agence de booking",
-      "subtitle": "DJ, lives, performeurs. La bande-son sur mesure de vos événements.",
+      "subtitle": "DJs, lives, performers. La bande-son sur mesure de vos événements.",
       "cta": "Réserver un artiste",
-      "ctaAria": "Lancer une demande de réservation"
+      "ctaAria": "Démarrer une demande de booking",
+      "stats": {
+        "aria": "Indicateurs clés de l'agence",
+        "artists": "Artistes au roster",
+        "events": "Événements produits",
+        "reply": "Délai de réponse"
+      }
     },
     "featured": {
       "title": "Artistes en vedette",
@@ -96,18 +102,6 @@
       "title": "Prêt à organiser votre événement ?",
       "subtitle": "Notre équipe vous répond sous 24h ouvrées.",
       "button": "Lancer une demande"
-    },
-    "hero": {
-      "title": "Gazmatek, votre agence de booking",
-      "subtitle": "DJs, lives, performers. La bande-son sur mesure de vos événements.",
-      "cta": "Réserver un artiste",
-      "ctaAria": "Démarrer une demande de booking",
-      "stats": {
-        "aria": "Indicateurs clés de l'agence",
-        "artists": "Artistes au roster",
-        "events": "Événements produits",
-        "reply": "Délai de réponse"
-      }
     },
     "partners": {
       "title": "Ils nous font confiance"
@@ -372,7 +366,9 @@
       "contextTooShort": "Précisions trop courtes.",
       "contextTooLong": "Précisions trop longues.",
       "artistRequired": "Aucun artiste sélectionné.",
-      "pricingRequired": "Capacité et prix du ticket sont requis pour calculer le devis."
+      "pricingRequired": "Capacité et prix du ticket sont requis pour calculer le devis.",
+      "leadTime": "La date doit être au moins {{hours}} h dans le futur.",
+      "artistUnavailable": "L'artiste n'est pas disponible à cette date. Choisissez un autre créneau."
     },
     "form": {
       "submit": "Envoyer ma demande",
@@ -573,6 +569,14 @@
     "sent": {
       "title": "Demande envoyée",
       "body": "Un récapitulatif vous a été envoyé à"
+    },
+    "status": {
+      "pending_validation": "En attente de validation",
+      "awaiting_deposit": "En attente d'acompte",
+      "confirmed": "Confirmé",
+      "completed": "Terminé",
+      "cancelled": "Annulé",
+      "rejected": "Refusé"
     }
   },
   "auth": {
@@ -580,14 +584,20 @@
     "signIn": "Se connecter",
     "signOut": "Se déconnecter",
     "invalidCredentials": "Identifiants invalides",
-    "artist": { "title": "Connexion artiste" },
-    "admin": { "title": "Connexion admin" }
+    "artist": {
+      "title": "Connexion artiste"
+    },
+    "admin": {
+      "title": "Connexion admin"
+    },
+    "sessionExpired": "Session expirée, veuillez vous reconnecter."
   },
   "artistArea": {
     "nav": {
       "calendar": "Mon agenda",
       "allBookings": "Tous mes bookings",
-      "profile": "Mon profil"
+      "profile": "Mon profil",
+      "onboarding": "Finaliser mon inscription"
     },
     "col": {
       "location": "Lieu",
@@ -638,7 +648,13 @@
       "notes": "Notes privées",
       "list": "Mes indisponibilités",
       "empty": "Aucune indisponibilité.",
-      "created": "Indisponibilité ajoutée"
+      "created": "Indisponibilité ajoutée",
+      "deleteTitle": "Supprimer l'indisponibilité",
+      "deleteConfirm": "Supprimer l'indisponibilité du {{start}} au {{end}} ?"
+    },
+    "onboarding": {
+      "bannerMessage": "Votre contrat d'engagement n'est pas encore signé. Finalisez votre inscription pour apparaître dans le roster.",
+      "bannerCta": "Finaliser mon inscription"
     }
   },
   "admin": {
@@ -741,8 +757,16 @@
           "expiresAt": "Expire le",
           "resendCount": "Renvois",
           "actions": "Actions"
-        }
-      }
+        },
+        "generateLink": "Générer un nouveau lien",
+        "generateLinkTitle": "Générer un nouveau lien d'invitation",
+        "generateLinkConfirm": "Cela génère un nouveau lien et invalide tous les liens précédemment partagés. Le nouveau lien sera copié dans le presse-papiers.",
+        "generateLinkCta": "Générer et copier"
+      },
+      "deleteTitle": "Supprimer l'artiste",
+      "deleteConfirmBody": "Supprimer définitivement {{name}} ? Cette action est irréversible.",
+      "deleted": "Artiste supprimé",
+      "deleteFailed": "Échec de la suppression de l'artiste."
     },
     "bookings": {
       "title": "Demandes de booking",
@@ -827,7 +851,8 @@
         "title": "Modifier le booking",
         "saved": "Booking mis à jour",
         "errorMissingDate": "Veuillez renseigner la date de l'événement"
-      }
+      },
+      "noEmailWarning": "Sans email, ce booking crée un client qui ne pourra pas activer son espace personnel."
     },
     "content": {
       "title": "Contenus éditoriaux",
@@ -868,6 +893,9 @@
           "iban": "IBAN"
         }
       }
+    },
+    "list": {
+      "truncationWarning": "Affichage de {{shown}} sur {{total}}. Affinez votre recherche pour voir les autres."
     }
   },
   "account": {
@@ -974,6 +1002,12 @@
         "reasonPlaceholder": "Expliquez brièvement pourquoi vous annulez…",
         "confirm": "Confirmer l'annulation",
         "success": "Booking annulé"
+      },
+      "loadError": "Impossible de charger vos bookings. Veuillez réessayer.",
+      "edit": {
+        "title": "Modifier le booking",
+        "saved": "Booking mis à jour",
+        "errorMissingDate": "Veuillez renseigner la date de l'événement"
       }
     }
   },

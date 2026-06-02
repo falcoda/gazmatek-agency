@@ -1,3 +1,5 @@
+import type { TFunction } from "i18next";
+
 export type BookingStatus =
   | "pending_validation"
   | "awaiting_deposit"
@@ -13,23 +15,16 @@ export const BOOKING_STATUSES: readonly BookingStatus[] = [
   "completed",
 ] as const;
 
-/** French labels shown in the admin back-office (S-42). */
-export const BOOKING_STATUS_LABEL_FR: Record<BookingStatus, string> = {
-  pending_validation: "En attente de validation",
-  awaiting_deposit: "En attente d'acompte",
-  confirmed: "Confirmé",
-  cancelled: "Annulé",
-  completed: "Terminé",
-};
-
-/** Short single-word labels used inside table badges. */
-export const BOOKING_STATUS_SHORT_LABEL_FR: Record<BookingStatus, string> = {
-  pending_validation: "Validation",
-  awaiting_deposit: "Acompte",
-  confirmed: "Confirmé",
-  cancelled: "Annulé",
-  completed: "Terminé",
-};
+/**
+ * Localized label for a booking status. Resolves `booking.status.<status>` from
+ * the active locale (fr/nl/en) and falls back to the raw status code for any
+ * value not covered by the enum.
+ */
+export function bookingStatusLabel(t: TFunction, status: string): string {
+  const key = `booking.status.${status}`;
+  const label = t(key);
+  return label === key ? status : label;
+}
 
 export type BookingStatusTone =
   | "warning"

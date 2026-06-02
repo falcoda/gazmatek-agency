@@ -1,8 +1,17 @@
 /* @name listArtistBookings */
+-- RGPD masking (#48): the client's display name is only revealed once the
+-- booking is confirmed or completed — same rule getBookingDetail applies. Before
+-- that, the artist sees the slot but not who the client is.
 SELECT
   b.id, b.artist_id,
-  ca.display_name AS client_name,
-  ca.email AS client_email,
+  CASE
+    WHEN b.status IN ('confirmed', 'completed') THEN ca.display_name
+    ELSE NULL
+  END AS client_name,
+  CASE
+    WHEN b.status IN ('confirmed', 'completed') THEN ca.email
+    ELSE NULL
+  END AS client_email,
   b.event_date, b.event_duration_hours,
   b.event_location_address, b.quoted_total_cents, b.deposit_amount_cents,
   b.status, b.paid_at, b.created_at

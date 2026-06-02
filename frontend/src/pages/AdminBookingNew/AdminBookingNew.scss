@@ -40,6 +40,12 @@
     font-size: 0.85rem;
   }
 
+  .fieldWarning {
+    margin: 0;
+    color: $main-orange;
+    font-size: 0.85rem;
+  }
+
   .miniCalendar {
     .publicAvailabilityCalendar {
       padding: $padding-sm;

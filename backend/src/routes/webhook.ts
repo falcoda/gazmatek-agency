@@ -69,11 +69,19 @@ webhookRouter.post(
   async (req: Request, res: Response, next: NextFunction) => {
     try {
       // HMAC verification uses the raw body captured by express.json's verify
-      // callback — it must run before any parsing of req.body.
-      if (
-        config.documenso.webhookSecret &&
-        !verifyDocumensoSignature(req, config.documenso.webhookSecret)
-      ) {
+      // callback — it must run before any parsing of req.body. Fail closed: a
+      // missing secret means the endpoint cannot authenticate its caller, so we
+      // reject every request instead of silently trusting unsigned payloads.
+      if (!config.documenso.webhookSecret) {
+        logger.error(
+          "Documenso webhook secret is not configured — rejecting webhook",
+        );
+        res
+          .status(HTTP_STATUS.UNAUTHORIZED)
+          .json({ message: ERROR_MESSAGES.INVALID_DOCUMENSO_SIGNATURE });
+        return;
+      }
+      if (!verifyDocumensoSignature(req, config.documenso.webhookSecret)) {
         res
           .status(HTTP_STATUS.UNAUTHORIZED)
           .json({ message: ERROR_MESSAGES.INVALID_DOCUMENSO_SIGNATURE });
@@ -93,13 +101,28 @@ webhookRouter.post(
 
       const payload = parsed.data;
 
-      if (payload.event && !COMPLETION_EVENTS.has(payload.event)) {
+      // Only an explicit completion event advances contract state. A missing or
+      // non-completion event is acknowledged and ignored so Documenso stops
+      // retrying — but it must never fall through to handleSignedDocument.
+      if (!payload.event || !COMPLETION_EVENTS.has(payload.event)) {
         res.status(HTTP_STATUS.OK).json({ ok: true, ignored: true });
         return;
       }
 
       const result = await handleSignedDocument(payload);
-      res.status(HTTP_STATUS.OK).json({ ok: true, ignored: !result.processed });
+      if (!result.processed) {
+        // #39 — completion event for an unknown envelope. Returning 202 (instead
+        // of 200) tells Documenso the event was accepted but not yet fully
+        // processed, so it retries — covering the race where the envelope id has
+        // not been persisted to our side yet. We avoid 5xx so monitoring does
+        // not page on an expected, self-healing retry.
+        logger.warn("Documenso webhook: completion for unknown envelope", {
+          event: payload.event,
+        });
+        res.status(HTTP_STATUS.ACCEPTED).json({ ok: false, retry: true });
+        return;
+      }
+      res.status(HTTP_STATUS.OK).json({ ok: true, ignored: false });
     } catch (error) {
       next(error);
     }

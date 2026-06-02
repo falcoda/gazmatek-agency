@@ -19,12 +19,22 @@ export interface AuthFetchConfig {
 }
 
 /**
+ * Options a caller may pass to an authenticated fetch wrapper. The refresh and
+ * session-expiry callbacks are owned by the wrapper, but `onError` stays open so
+ * callers can map typed backend error codes to UI messages.
+ */
+export type AuthFetchCallerOptions = Omit<
+  AuthFetchOptions,
+  "onUnauthorized" | "onSessionExpired"
+>;
+
+/**
  * Call signature shared by every authenticated fetch wrapper. Callers keep the
  * generic so `authFetch<MyResponse>(route)` stays fully typed.
  */
 export type AuthFetch = <T>(
   route: string,
-  options?: Omit<AuthFetchOptions, "onUnauthorized" | "onSessionExpired">,
+  options?: AuthFetchCallerOptions,
 ) => Promise<T | null>;
 
 /**
@@ -58,7 +68,7 @@ export function createAuthFetch(config: AuthFetchConfig): AuthFetch {
 
   return function authFetch<T>(
     route: string,
-    options: Omit<AuthFetchOptions, "onUnauthorized" | "onSessionExpired"> = {},
+    options: AuthFetchCallerOptions = {},
   ): Promise<T | null> {
     return identityFetch<T>(route, config.getToken(), {
       ...options,

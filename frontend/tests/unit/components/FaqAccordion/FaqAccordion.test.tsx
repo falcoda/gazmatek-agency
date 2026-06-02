@@ -23,8 +23,8 @@ describe("FaqAccordion", () => {
     const { container } = renderWithProviders(<FaqAccordion items={items} />);
 
     const faqItems = container.querySelectorAll(".faqItem");
-    expect(faqItems[0]).toHaveClass("faqItem--open");
-    expect(faqItems[1]).not.toHaveClass("faqItem--open");
+    expect(faqItems[0]).toHaveClass("isOpen");
+    expect(faqItems[1]).not.toHaveClass("isOpen");
   });
 
   it("starts fully collapsed when defaultOpenIndex is null", () => {
@@ -32,7 +32,7 @@ describe("FaqAccordion", () => {
       <FaqAccordion items={items} defaultOpenIndex={null} />,
     );
 
-    expect(container.querySelector(".faqItem--open")).toBeNull();
+    expect(container.querySelector(".isOpen")).toBeNull();
   });
 
   it("expands a collapsed item when its question is clicked", async () => {
@@ -42,8 +42,8 @@ describe("FaqAccordion", () => {
     await user.click(screen.getByRole("button", { name: "How do I use it?" }));
 
     const faqItems = container.querySelectorAll(".faqItem");
-    expect(faqItems[1]).toHaveClass("faqItem--open");
-    expect(faqItems[0]).not.toHaveClass("faqItem--open");
+    expect(faqItems[1]).toHaveClass("isOpen");
+    expect(faqItems[0]).not.toHaveClass("isOpen");
   });
 
   it("collapses the open item when its question is clicked again", async () => {
@@ -52,7 +52,28 @@ describe("FaqAccordion", () => {
 
     await user.click(screen.getByRole("button", { name: "What is this?" }));
 
-    expect(container.querySelector(".faqItem--open")).toBeNull();
+    expect(container.querySelector(".isOpen")).toBeNull();
+  });
+
+  it("links each button to its panel and hides collapsed panels from a11y", () => {
+    const { container } = renderWithProviders(<FaqAccordion items={items} />);
+
+    const firstButton = screen.getByRole("button", { name: "What is this?" });
+    const panelId = firstButton.getAttribute("aria-controls");
+    expect(panelId).toBeTruthy();
+
+    const panel = container.querySelector(`#${panelId}`);
+    expect(panel).toHaveAttribute("role", "region");
+    // The open panel is exposed; collapsed ones are inert / aria-hidden.
+    expect(panel).toHaveAttribute("aria-hidden", "false");
+
+    const collapsedButton = screen.getByRole("button", {
+      name: "How do I use it?",
+    });
+    const collapsedPanel = container.querySelector(
+      `#${collapsedButton.getAttribute("aria-controls")}`,
+    );
+    expect(collapsedPanel).toHaveAttribute("aria-hidden", "true");
   });
 
   it("reflects the open state through aria-expanded", async () => {

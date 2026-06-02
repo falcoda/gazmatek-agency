@@ -1,0 +1,12 @@
+User-agent: *
+Allow: /
+
+# Keep the authenticated back offices out of the index.
+Disallow: /account
+Disallow: /artist/bookings
+Disallow: /artist/calendar
+Disallow: /artist/profile
+Disallow: /artist/onboarding
+Disallow: /admin
+
+Sitemap: https://booking.Gazmatek.com/sitemap.xml

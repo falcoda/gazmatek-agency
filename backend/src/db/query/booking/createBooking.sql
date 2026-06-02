@@ -11,7 +11,8 @@ INSERT INTO bookings (
   capacity, ticket_price_cents, set_type,
   options,
   quoted_total_cents, deposit_amount_cents,
-  status
+  status,
+  admin_approved_at, paid_at
 )
 VALUES (
   :artistId!, :clientAccountId!,
@@ -21,7 +22,8 @@ VALUES (
   :capacity!, :ticketPriceCents!, :setType!::artist_set_type,
   :options!,
   :quotedTotalCents!, :depositAmountCents!,
-  COALESCE(:status, 'pending_validation')::booking_status
+  COALESCE(:status, 'pending_validation')::booking_status,
+  :adminApprovedAt, :paidAt
 )
 RETURNING id, status, created_at
 ;

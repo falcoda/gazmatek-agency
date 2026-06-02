@@ -21,6 +21,14 @@
     "pricing": {
       "title": "Prijssimulator — Gazmatek",
       "description": "Schat de kostprijs van uw boeking in enkele klikken."
+    },
+    "terms": {
+      "title": "Gebruiksvoorwaarden — Gazmatek",
+      "description": "De voorwaarden voor het gebruik van de website en de bookingdiensten van Gazmatek."
+    },
+    "privacy": {
+      "title": "Privacybeleid — Gazmatek",
+      "description": "Hoe Gazmatek uw persoonsgegevens verzamelt, gebruikt en beschermt."
     }
   },
   "language": {
@@ -34,7 +42,8 @@
     "bookNow": "Boeken",
     "account": "Mijn account",
     "login": "Inloggen",
-    "adminLogin": "Admin"
+    "adminLogin": "Admin",
+    "myArea": "Mijn ruimte"
   },
   "common": {
     "loading": "Laden…",
@@ -58,7 +67,13 @@
       "title": "Gazmatek, uw bookingbureau",
       "subtitle": "DJ's, live-acts en performers. De soundtrack op maat van uw evenement.",
       "cta": "Een artiest boeken",
-      "ctaAria": "Een boekingsaanvraag starten"
+      "ctaAria": "Een boekingsaanvraag starten",
+      "stats": {
+        "aria": "Belangrijkste cijfers van het agentschap",
+        "artists": "Artiesten op de roster",
+        "events": "Geproduceerde evenementen",
+        "reply": "Reactietijd"
+      }
     },
     "featured": {
       "title": "Uitgelichte artiesten",
@@ -173,6 +188,9 @@
         "q": "En als we moeten annuleren?",
         "a": "Voorwaarden staan in het boekingscontract: volledige terugbetaling tot 30 dagen voor, daarna degressief. We blijven flexibel bij overmacht."
       }
+    },
+    "partners": {
+      "title": "Zij vertrouwen ons"
     }
   },
   "artists": {
@@ -191,7 +209,13 @@
     "card": {
       "from": "Vanaf",
       "perHour": "/ uur",
-      "view": "Bekijk profiel"
+      "view": "Bekijk profiel",
+      "tierLabel": "Prijsklasse",
+      "setType": {
+        "dj": "DJ",
+        "live": "Live",
+        "hybrid": "Hybride"
+      }
     }
   },
   "artistDetail": {
@@ -270,7 +294,11 @@
       "message": "Uw bericht",
       "submit": "Bericht verzenden",
       "success": "Bericht verzonden. Bedankt!",
-      "error": "Uw bericht kon op dit moment niet worden verzonden."
+      "error": "Uw bericht kon op dit moment niet worden verzonden.",
+      "namePlaceholder": "bv. Marie Dupont",
+      "emailPlaceholder": "u@voorbeeld.com",
+      "subjectPlaceholder": "bv. Offerteaanvraag voor een huwelijk",
+      "messagePlaceholder": "Beschrijf uw evenement: datum, locatie, gewenste sfeer…"
     },
     "errors": {
       "nameRequired": "Naam is verplicht.",
@@ -338,7 +366,9 @@
       "contextTooShort": "Details zijn te kort.",
       "contextTooLong": "Details zijn te lang.",
       "artistRequired": "Geen artiest geselecteerd.",
-      "pricingRequired": "Capaciteit en ticketprijs zijn vereist om de offerte te berekenen."
+      "pricingRequired": "Capaciteit en ticketprijs zijn vereist om de offerte te berekenen.",
+      "leadTime": "De datum moet minstens {{hours}} uur in de toekomst liggen.",
+      "artistUnavailable": "De artiest is niet beschikbaar op deze datum. Kies een ander tijdslot."
     },
     "form": {
       "submit": "Aanvraag verzenden",
@@ -366,8 +396,7 @@
     "tagline": "Artiestenboeking — België",
     "legal": {
       "terms": "Gebruiksvoorwaarden",
-      "privacy": "Privacybeleid",
-      "notices": "Wettelijke vermeldingen"
+      "privacy": "Privacybeleid"
     }
   },
   "cookieConsent": {
@@ -430,6 +459,14 @@
     "sent": {
       "title": "Aanvraag verzonden",
       "body": "Een samenvatting is verzonden naar"
+    },
+    "status": {
+      "pending_validation": "Wacht op validatie",
+      "awaiting_deposit": "Wacht op voorschot",
+      "confirmed": "Bevestigd",
+      "completed": "Afgerond",
+      "cancelled": "Geannuleerd",
+      "rejected": "Geweigerd"
     }
   },
   "auth": {
@@ -437,14 +474,20 @@
     "signIn": "Aanmelden",
     "signOut": "Afmelden",
     "invalidCredentials": "Ongeldige inloggegevens",
-    "artist": { "title": "Artiest aanmelden" },
-    "admin": { "title": "Admin aanmelden" }
+    "artist": {
+      "title": "Artiest aanmelden"
+    },
+    "admin": {
+      "title": "Admin aanmelden"
+    },
+    "sessionExpired": "Uw sessie is verlopen, log opnieuw in."
   },
   "artistArea": {
     "nav": {
       "calendar": "Mijn agenda",
       "allBookings": "Al mijn boekingen",
-      "profile": "Mijn profiel"
+      "profile": "Mijn profiel",
+      "onboarding": "Onboarding voltooien"
     },
     "dashboard": {
       "title": "Mijn ruimte",
@@ -491,7 +534,17 @@
       "notes": "Privé notities",
       "list": "Mijn onbeschikbaarheden",
       "empty": "Geen onbeschikbaarheid.",
-      "created": "Onbeschikbaarheid aangemaakt"
+      "created": "Onbeschikbaarheid aangemaakt",
+      "deleteTitle": "Onbeschikbaarheid verwijderen",
+      "deleteConfirm": "De onbeschikbaarheid van {{start}} tot {{end}} verwijderen?"
+    },
+    "col": {
+      "location": "Locatie",
+      "client": "Klant"
+    },
+    "onboarding": {
+      "bannerMessage": "Uw engagementcontract is nog niet ondertekend. Voltooi uw onboarding om in de roster te verschijnen.",
+      "bannerCta": "Onboarding voltooien"
     }
   },
   "admin": {
@@ -563,8 +616,47 @@
           "expiresAt": "Verloopt op",
           "resendCount": "Heropgestuurd",
           "actions": "Acties"
-        }
-      }
+        },
+        "generateLink": "Nieuwe link genereren",
+        "generateLinkTitle": "Een nieuwe uitnodigingslink genereren",
+        "generateLinkConfirm": "Dit genereert een nieuwe link en maakt alle eerder gedeelde links ongeldig. De nieuwe link wordt naar uw klembord gekopieerd.",
+        "generateLinkCta": "Genereren en kopiëren"
+      },
+      "edit": "Artiest bewerken",
+      "saved": "Artiest opgeslagen",
+      "searchLabel": "Zoeken",
+      "searchPlaceholder": "Artiestennaam of slug…",
+      "form": {
+        "slug": "Slug",
+        "stageName": "Artiestennaam",
+        "genre": "Stijl",
+        "bioFr": "Bio FR",
+        "bioNl": "Bio NL",
+        "bioEn": "Bio EN",
+        "coverImageUrl": "URL omslagafbeelding",
+        "level": "Niveau (Gazmatek-tier)",
+        "levelHint": "Het cachet wordt berekend via het Gazmatek-raster: vermenigvuldiger (volgens niveau + capaciteit) × ticketprijs. Een Live of Hybrid voegt een coëfficiënt toe (+10%/+15%)."
+      },
+      "sections": {
+        "identity": "Identiteit",
+        "bios": "Biografieën",
+        "pricing": "Interne tarifering",
+        "flags": "Publicatie"
+      },
+      "contract": {
+        "download": "Contract downloaden",
+        "downloadFailed": "Kan het contract niet downloaden.",
+        "reset": "Contract opnieuw genereren",
+        "resetCta": "Ja, opnieuw genereren",
+        "resetTitle": "Het engagementcontract opnieuw genereren",
+        "resetConfirm": "Weet u het zeker? Het huidige engagementcontract van {{name}} wordt verwijderd en bij de volgende klik op Ondertekenen wordt een nieuw concept aangemaakt.",
+        "resetDone": "Contract opnieuw gegenereerd — de artiest moet opnieuw ondertekenen.",
+        "resetFailed": "Opnieuw genereren van het contract is mislukt."
+      },
+      "deleteTitle": "Artiest verwijderen",
+      "deleteConfirmBody": "{{name}} definitief verwijderen? Deze actie kan niet ongedaan worden gemaakt.",
+      "deleted": "Artiest verwijderd",
+      "deleteFailed": "Verwijderen van de artiest mislukt."
     },
     "bookings": {
       "title": "Boekingsaanvragen",
@@ -621,7 +713,36 @@
         "title": "Boeking bewerken",
         "saved": "Boeking bijgewerkt",
         "errorMissingDate": "Vul de datum van het evenement in"
-      }
+      },
+      "manualCreate": "Een handmatige boeking aanmaken",
+      "manualCreated": "Boeking aangemaakt",
+      "col": {
+        "artist": "Artiest",
+        "client": "Klant",
+        "date": "Datum evenement",
+        "status": "Status",
+        "total": "Totaal"
+      },
+      "sections": {
+        "artist": "Artiest",
+        "client": "Klantgegevens",
+        "event": "Evenement",
+        "adminControls": "Agentschapsbeheer"
+      },
+      "fields": {
+        "capacity": "Capaciteit (plaatsen)",
+        "ticketPrice": "Ticketprijs (€)",
+        "setType": "Setformaat",
+        "quotedTotalCents": "Totaal offerte (centen)",
+        "depositCents": "Voorschot (centen)",
+        "quotedTotalEuros": "Totaal offerte",
+        "depositEuros": "Voorschot",
+        "initialStatus": "Beginstatus",
+        "skipEmails": "Geen e-mails versturen",
+        "overrideConflict": "Forceren ondanks agendaconflict",
+        "internalNote": "Interne notitie"
+      },
+      "noEmailWarning": "Zonder e-mail maakt deze boeking een klant aan die zijn account niet kan activeren."
     },
     "content": {
       "title": "Editorial inhoud",
@@ -658,9 +779,13 @@
           "companyNumber": "Ondernemingsnummer (KBO/BCE)",
           "vatNumber": "BTW-nummer",
           "email": "Contactmail",
-          "iban": "IBAN"
+          "iban": "IBAN",
+          "city": "Stad (plaats van ondertekening)"
         }
       }
+    },
+    "list": {
+      "truncationWarning": "{{shown}} van {{total}} weergegeven. Verfijn uw zoekopdracht om de rest te zien."
     }
   },
   "account": {
@@ -767,6 +892,12 @@
         "reasonPlaceholder": "Vertel ons kort waarom je annuleert…",
         "confirm": "Annulering bevestigen",
         "success": "Boeking geannuleerd"
+      },
+      "loadError": "Kan uw boekingen niet laden. Probeer opnieuw.",
+      "edit": {
+        "title": "Boeking bewerken",
+        "saved": "Boeking bijgewerkt",
+        "errorMissingDate": "Geef de datum van het evenement op"
       }
     }
   },
@@ -802,6 +933,209 @@
       "mustAccept": "Je moet de voorwaarden aanvaarden voor je kan ondertekenen.",
       "noSigningUrl": "De Documenso-handtekeninglink kan niet worden opgehaald. Probeer opnieuw.",
       "saveFailed": "Opslaan van je gegevens is mislukt."
+    }
+  },
+  "artistProfile": {
+    "title": "Mijn profiel",
+    "saved": "Wijzigingen opgeslagen",
+    "coverHint": "Geen foto opgeslagen. Upload een bestand of plak hieronder een URL.",
+    "uploadSuccess": "Omslagfoto bijgewerkt",
+    "changePassword": "Mijn wachtwoord wijzigen",
+    "passwordChanged": "Wachtwoord bijgewerkt",
+    "sections": {
+      "identity": "Identiteit (beheerd door het agentschap)",
+      "personal": "Persoonlijke info",
+      "password": "Wachtwoord",
+      "contract": "Engagementcontract",
+      "cover": "Omslagfoto",
+      "bios": "Biografieën",
+      "technical": "Technische info",
+      "social": "Sociale links"
+    },
+    "contract": {
+      "statusPending": "Uw engagementcontract is nog niet ondertekend.",
+      "statusAwaitingSignature": "Uw contract wacht op ondertekening in Documenso. Hervat het ondertekenen om af te ronden.",
+      "statusSigned": "Contract ondertekend op {{date}}.",
+      "providerNote": "De elektronische handtekening verloopt via Documenso. Vink de aanvaarding aan en klik op Ondertekenen — een nieuw tabblad opent met uw contract.",
+      "waitingForWebhook": "Wachten op bevestiging van de handtekening… Dit gedeelte wordt automatisch bijgewerkt.",
+      "downloadDraft": "Concept downloaden (PDF)",
+      "downloadSigned": "Ondertekend contract downloaden (PDF)",
+      "acceptTerms": "Ik heb de voorwaarden van het engagementcontract gelezen en aanvaard ze.",
+      "sign": "Ondertekenen via Documenso",
+      "resumeSigning": "Ondertekenen hervatten",
+      "signed": "Contract succesvol ondertekend",
+      "errors": {
+        "mustAccept": "U moet de voorwaarden aanvaarden voordat u ondertekent.",
+        "noSigningUrl": "Kan de Documenso-ondertekenlink niet ophalen. Probeer opnieuw."
+      }
+    },
+    "fields": {
+      "stageName": "Artiestennaam",
+      "slug": "URL-slug",
+      "fullName": "Volledige naam",
+      "phone": "Telefoon",
+      "address": "Adres",
+      "country": "Land",
+      "vatNumber": "Btw-nummer",
+      "companyNumber": "Ondernemingsnummer (KBO/BCE)",
+      "currentPassword": "Huidig wachtwoord",
+      "newPassword": "Nieuw wachtwoord (min. {{min}} tekens)",
+      "confirmPassword": "Bevestig het nieuwe wachtwoord",
+      "coverImageUrl": "Afbeeldings-URL",
+      "coverUpload": "Een nieuwe foto uploaden (JPG/PNG/WebP, max. 5 MB)",
+      "bioFr": "Bio FR",
+      "bioNl": "Bio NL",
+      "bioEn": "Bio EN",
+      "technicalFr": "Technische info FR",
+      "technicalNl": "Technische info NL",
+      "technicalEn": "Technische info EN",
+      "social": {
+        "instagram": "Instagram",
+        "soundcloud": "SoundCloud",
+        "spotify": "Spotify",
+        "youtube": "YouTube",
+        "tiktok": "TikTok",
+        "facebook": "Facebook",
+        "bandcamp": "Bandcamp",
+        "website": "Website"
+      }
+    },
+    "errors": {
+      "fileTooLarge": "Afbeelding te groot (max. 5 MB).",
+      "uploadFailed": "Uploaden mislukt. Probeer opnieuw.",
+      "passwordTooShort": "Het nieuwe wachtwoord moet minstens {{min}} tekens bevatten.",
+      "passwordMismatch": "De twee wachtwoorden komen niet overeen.",
+      "passwordChangeFailed": "Wachtwoord wijzigen mislukt. Controleer uw huidige wachtwoord."
+    }
+  },
+  "invitation": {
+    "title": "Artiestenuitnodiging",
+    "errorsTitle": "Uitnodiging niet beschikbaar",
+    "welcome": "Welkom bij Gazmatek, {{name}}",
+    "intro": "U bent uitgenodigd om met het adres {{email}} bij onze roster te komen. Kies een wachtwoord om uw registratie af te ronden.",
+    "submit": "Doorgaan",
+    "fields": {
+      "password": "Wachtwoord (min. {{min}} tekens)",
+      "confirmPassword": "Wachtwoord bevestigen",
+      "cgu": "Ik aanvaard de gebruiksvoorwaarden",
+      "privacy": "Ik aanvaard het privacybeleid"
+    },
+    "errors": {
+      "missingToken": "Uitnodigingslink ontbreekt.",
+      "invalid": "Deze uitnodiging is verlopen of niet langer geldig.",
+      "passwordTooShort": "Het wachtwoord moet minstens {{min}} tekens bevatten.",
+      "passwordMismatch": "De wachtwoorden komen niet overeen.",
+      "acceptRequired": "Aanvaard de gebruiksvoorwaarden en het privacybeleid."
+    }
+  },
+  "legal": {
+    "lastUpdated": "Laatst bijgewerkt: 29 mei 2026",
+    "terms": {
+      "title": "Gebruiksvoorwaarden",
+      "intro": "Deze gebruiksvoorwaarden regelen uw toegang tot en gebruik van de website van Gazmatek en de online bookingdiensten. Door op de website te surfen of een reserveringsaanvraag te versturen, aanvaardt u eraan gebonden te zijn.",
+      "sections": [
+        {
+          "title": "1. Doel",
+          "paragraphs": [
+            "Gazmatek is een artiestenbookingagentschap dat dj's, liveacts en performers vertegenwoordigt en hen in contact brengt met organisatoren van evenementen in België en de buurlanden.",
+            "Via de website kunt u onze roster ontdekken, een budget inschatten met de prijssimulator en een reserveringsaanvraag versturen. Het versturen van een aanvraag is geen bevestigde reservering: elke aanvraag wordt door ons team bestudeerd en bevestigd voordat een contract in werking treedt."
+          ]
+        },
+        {
+          "title": "2. Reserveringen en offertes",
+          "paragraphs": [
+            "De door de simulator getoonde prijzen zijn indicatief en niet contractueel. Het uiteindelijke cachet hangt af van de artiest, de datum, de capaciteit van de locatie, de ticketprijs en het gevraagde formaat; het wordt schriftelijk bevestigd nadat ons team uw aanvraag heeft bestudeerd.",
+            "Een reservering is pas definitief na ontvangst van een schriftelijke bevestiging, betaling van het overeengekomen voorschot en, in voorkomend geval, ondertekening van het engagementcontract."
+          ]
+        },
+        {
+          "title": "3. Accounts",
+          "paragraphs": [
+            "Sommige functies vereisen een account. U bent verantwoordelijk voor de vertrouwelijkheid van uw inloggegevens en voor alle activiteit vanaf uw account.",
+            "U verbindt zich ertoe juiste informatie te verstrekken en deze actueel te houden, met name de contact- en facturatiegegevens die voor uw reserveringen worden gebruikt."
+          ]
+        },
+        {
+          "title": "4. Aanvaardbaar gebruik",
+          "paragraphs": [
+            "U verbindt zich ertoe de website niet voor andere doeleinden te gebruiken, de werking ervan niet te verstoren, er geen toegang toe te verkrijgen via ongeoorloofde middelen en hem niet voor onwettige doeleinden te gebruiken.",
+            "U mag de inhoud van de website, met inbegrip van artiestenfiches, foto's en biografieën, niet reproduceren of exploiteren zonder onze voorafgaande schriftelijke toestemming."
+          ]
+        },
+        {
+          "title": "5. Intellectuele eigendom",
+          "paragraphs": [
+            "Alle op de website gepubliceerde inhoud — merken, logo's, teksten, foto's en beeldmateriaal — is beschermd en blijft eigendom van Gazmatek, zijn partners of zijn artiesten. Buiten het louter raadplegen van de website wordt geen enkele licentie of gebruiksrecht verleend."
+          ]
+        },
+        {
+          "title": "6. Aansprakelijkheid",
+          "paragraphs": [
+            "Wij stellen alles in het werk om de juistheid van de informatie en de beschikbaarheid van de dienst te waarborgen, zonder de afwezigheid van fouten of onderbrekingen te kunnen garanderen.",
+            "Gazmatek kan niet aansprakelijk worden gesteld voor indirecte schade die voortvloeit uit het gebruik van de website, behalve in geval van zware of opzettelijke fout."
+          ]
+        },
+        {
+          "title": "7. Contact",
+          "paragraphs": [
+            "Voor elke vraag over deze voorwaarden kunt u ons schrijven op contact@gazmatek.com."
+          ]
+        }
+      ]
+    },
+    "privacy": {
+      "title": "Privacybeleid",
+      "intro": "Dit beleid legt uit hoe Gazmatek uw persoonsgegevens verzamelt, gebruikt en beschermt wanneer u onze website en bookingdiensten gebruikt, in overeenstemming met de Algemene Verordening Gegevensbescherming (AVG).",
+      "sections": [
+        {
+          "title": "1. Verwerkingsverantwoordelijke",
+          "paragraphs": [
+            "Gazmatek treedt op als verwerkingsverantwoordelijke voor de via deze website verzamelde persoonsgegevens. Voor elke vraag over uw gegevens kunt u ons contacteren op contact@gazmatek.com."
+          ]
+        },
+        {
+          "title": "2. Verzamelde gegevens",
+          "paragraphs": [
+            "Account- en contactgegevens: naam, e-mailadres, telefoonnummer en, in voorkomend geval, bedrijfs- en facturatiegegevens.",
+            "Reserveringsgegevens: datum van het evenement, locatie, capaciteit, formaat en de details die u bij uw aanvraag meedeelt.",
+            "Technische gegevens: informatie verzameld via cookies en soortgelijke technologieën om de website te beveiligen en het gebruik ervan te meten."
+          ]
+        },
+        {
+          "title": "3. Gebruik van uw gegevens",
+          "paragraphs": [
+            "Om uw reserveringsaanvragen te verwerken en te bevestigen en de bijbehorende contracten en betalingen te beheren.",
+            "Om met u te communiceren over uw account, uw boekingen en onze diensten.",
+            "Om de website te exploiteren, te beveiligen en te verbeteren en, wanneer u daarmee heeft ingestemd, het bereik ervan te meten."
+          ]
+        },
+        {
+          "title": "4. Rechtsgrond",
+          "paragraphs": [
+            "Wij verwerken uw gegevens om het contract of de precontractuele stappen die u vraagt uit te voeren, om onze wettelijke verplichtingen na te komen, op grond van ons gerechtvaardigd belang om het agentschap te laten functioneren, en op basis van uw toestemming wanneer die vereist is (bijvoorbeeld voor niet-essentiële cookies)."
+          ]
+        },
+        {
+          "title": "5. Delen en bewaren",
+          "paragraphs": [
+            "Uw gegevens kunnen worden gedeeld met de artiesten die bij uw reservering betrokken zijn en met de dienstverleners die ons helpen werken (hosting, betaling, elektronische handtekening, e-mail). Wij verkopen uw gegevens nooit.",
+            "Wij bewaren uw gegevens enkel zolang als nodig is voor de hierboven beschreven doeleinden en om onze wettelijke en boekhoudkundige verplichtingen na te komen."
+          ]
+        },
+        {
+          "title": "6. Uw rechten",
+          "paragraphs": [
+            "Krachtens de AVG beschikt u over een recht op inzage, rectificatie en wissing van uw gegevens, een recht op beperking en bezwaar tegen de verwerking, en een recht op overdraagbaarheid. U kunt uw toestemming ook op elk moment intrekken.",
+            "Om deze rechten uit te oefenen, contacteert u ons op contact@gazmatek.com. U heeft ook het recht een klacht in te dienen bij de Belgische Gegevensbeschermingsautoriteit."
+          ]
+        },
+        {
+          "title": "7. Cookies",
+          "paragraphs": [
+            "Wij gebruiken cookies die strikt noodzakelijk zijn voor de werking van de website en, mits uw toestemming, cookies voor het meten van het bereik en voor marketing. U kunt uw keuzes op elk moment raadplegen en wijzigen via de cookievoorkeuren op de website."
+          ]
+        }
+      ]
     }
   }
 }

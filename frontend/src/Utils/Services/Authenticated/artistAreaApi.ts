@@ -2,8 +2,12 @@ import {
   API_ROUTES,
   buildArtistUnavailabilityDetailUrl,
 } from "@/config/apiRoutes";
+import { loggerService, LogTag } from "@/Utils/LoggerService";
 import { artistFetch } from "@/Utils/Services/Authenticated/artistFetch";
-import { publicFetch } from "@/Utils/Services/Public/publicFetch";
+import {
+  publicFetch,
+  publicFetchOk,
+} from "@/Utils/Services/Public/publicFetch";
 
 export interface ArtistLoginResponse {
   token: string;
@@ -17,7 +21,8 @@ export interface ArtistBookingDto {
   id: string;
   clientName: string;
   eventDate: string;
-  eventDurationHours: number;
+  // Backend serializes the NUMERIC duration as a string. (#59)
+  eventDurationHours: string;
   eventLocation: string;
   quotedTotalCents: number;
   depositAmountCents: number;
@@ -48,11 +53,18 @@ export async function loginArtist(
 
 export async function logoutArtist(refreshToken: string | null): Promise<void> {
   if (!refreshToken) return;
-  await fetch(API_ROUTES.artistAuthLogout, {
+  // Route through the standard wrapper. Clear locally regardless; warn on
+  // failure for observability. (#6/#47)
+  const ok = await publicFetchOk(API_ROUTES.artistAuthLogout, {
     method: "POST",
-    headers: { "Content-Type": "application/json" },
     body: JSON.stringify({ refreshToken }),
   });
+  if (!ok) {
+    loggerService.warn(
+      LogTag.AUTH,
+      "logoutArtist: server-side token revocation failed",
+    );
+  }
 }
 
 export async function forgotArtistPassword(
@@ -73,6 +85,19 @@ export async function resetArtistPassword(
     method: "POST",
     body: JSON.stringify({ token, newPassword }),
   });
+}
+
+export interface ArtistMeDto {
+  id: string;
+  email: string;
+  stageName: string | null;
+  // ISO timestamp once the artist finished onboarding (engagement contract
+  // signed); null while onboarding is still pending. (#4/#34)
+  onboardingCompletedAt: string | null;
+}
+
+export async function fetchArtistMe(): Promise<ArtistMeDto | null> {
+  return artistFetch(API_ROUTES.artistMe, { silent: true });
 }
 
 export async function fetchArtistBookings(
@@ -183,6 +208,31 @@ export async function signArtistEngagementContract(): Promise<EngagementSignResp
     method: "POST",
     body: JSON.stringify({}),
   });
+}
+
+// Streams the signed engagement-contract PDF (auth-protected) and triggers a
+// browser download. Returns false when the artist has no signed contract yet or
+// the request fails. (#26)
+export async function downloadArtistSignedEngagementContract(
+  filename = "engagement-contract-signed.pdf",
+): Promise<boolean> {
+  const { useArtistAuthStore } = await import("@/stores/ArtistAuthStore");
+  const token = useArtistAuthStore.getState().token;
+  if (!token) return false;
+  const response = await fetch(API_ROUTES.artistEngagementContractSigned, {
+    headers: { Authorization: `Bearer ${token}` },
+  });
+  if (!response.ok) return false;
+  const blob = await response.blob();
+  const url = URL.createObjectURL(blob);
+  const a = document.createElement("a");
+  a.href = url;
+  a.download = filename;
+  document.body.appendChild(a);
+  a.click();
+  a.remove();
+  URL.revokeObjectURL(url);
+  return true;
 }
 
 export async function uploadArtistCoverImage(

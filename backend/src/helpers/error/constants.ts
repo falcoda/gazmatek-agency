@@ -1,6 +1,7 @@
 export const HTTP_STATUS = {
   OK: 200,
   CREATED: 201,
+  ACCEPTED: 202,
   NO_CONTENT: 204,
   BAD_REQUEST: 400,
   UNAUTHORIZED: 401,
@@ -21,6 +22,19 @@ export const AUTH_ERROR_CODES = {
 
 export type AuthErrorCode =
   (typeof AUTH_ERROR_CODES)[keyof typeof AUTH_ERROR_CODES];
+
+// Typed, machine-readable booking error codes. The frontend localizes these;
+// the human-readable message stays as the AppError message for logs/fallback.
+export const BOOKING_ERROR_CODES = {
+  LEAD_TIME_TOO_SHORT: "BOOKING_LEAD_TIME_TOO_SHORT",
+  ARTIST_UNAVAILABLE: "BOOKING_ARTIST_UNAVAILABLE",
+  UNKNOWN_OPTION: "BOOKING_UNKNOWN_OPTION",
+  DEPOSIT_EXCEEDS_TOTAL: "BOOKING_DEPOSIT_EXCEEDS_TOTAL",
+  ARTIST_NOT_ONBOARDED: "ARTIST_NOT_ONBOARDED",
+} as const;
+
+export type BookingErrorCode =
+  (typeof BOOKING_ERROR_CODES)[keyof typeof BOOKING_ERROR_CODES];
 
 export const ERROR_MESSAGES = {
   VALIDATION_ERROR: "Validation error",

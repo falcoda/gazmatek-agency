@@ -8,6 +8,7 @@ import { getPagePath } from "@/config/pages";
 import type { AppLanguage } from "@/i18n/config";
 import { isSupportedLanguage } from "@/i18n/routing";
 import { useAdminAuthStore } from "@/stores/AdminAuthStore";
+import { logoutAdmin } from "@/Utils/Services/Authenticated/adminAreaApi";
 
 interface AdminLogoutButtonProps {
   open?: boolean;
@@ -25,8 +26,11 @@ const AdminLogoutButton = ({
     ? lang
     : undefined;
   const clear = useAdminAuthStore((s) => s.clear);
+  const refreshToken = useAdminAuthStore((s) => s.refreshToken);
 
-  const handleLogout = () => {
+  const handleLogout = async () => {
+    // Revoke the refresh token server-side before clearing locally. (#47)
+    await logoutAdmin(refreshToken);
     clear();
     if (toggleNavbar) toggleNavbar();
     navigate(getPagePath("adminLogin", language));

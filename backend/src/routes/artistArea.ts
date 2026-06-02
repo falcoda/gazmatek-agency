@@ -1,7 +1,10 @@
 import ArtistAreaController from "@src/controllers/artistArea";
 import pool from "@src/db/dbConnect";
 import { validateRequest } from "@src/helpers/validation";
-import { requireArtist } from "@src/middleware/auth/requireKind";
+import {
+  requireArtist,
+  requireOnboardedArtist,
+} from "@src/middleware/auth/requireKind";
 import {
   artistAreaBookingIdParamsSchema,
   artistAreaContractIdParamsSchema,
@@ -215,6 +218,21 @@ artistAreaRouter.post(
 
 /**
  * @swagger
+ * /api/artist/contracts/engagement/signed:
+ *   get:
+ *     summary: Download the signed engagement contract PDF (authenticated artist)
+ *     tags: [ArtistArea]
+ *     responses:
+ *       200: { description: Signed PDF stream }
+ *       404: { description: Signed contract not available }
+ */
+artistAreaRouter.get(
+  "/contracts/engagement/signed",
+  controller.downloadSignedEngagementContract,
+);
+
+/**
+ * @swagger
  * /api/artist/unavailabilities:
  *   get:
  *     summary: List the authenticated artist unavailabilities
@@ -239,8 +257,11 @@ artistAreaRouter.get(
   validateRequest({ query: listArtistUnavailabilitiesQuerySchema }),
   controller.listUnavailabilities,
 );
+// #4 — writing availability is a sensitive mutation: gate it behind a completed
+// engagement contract. Reading stays open.
 artistAreaRouter.post(
   "/unavailabilities",
+  requireOnboardedArtist,
   validateRequest({ body: createUnavailabilityBodySchema }),
   controller.createUnavailability,
 );
@@ -261,6 +282,7 @@ artistAreaRouter.post(
  */
 artistAreaRouter.delete(
   "/unavailabilities/:id",
+  requireOnboardedArtist,
   validateRequest({ params: unavailabilityIdParamsSchema }),
   controller.deleteUnavailability,
 );
