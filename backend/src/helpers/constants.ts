@@ -55,3 +55,26 @@ export const FRONTEND_INDEX_FILE = "index.html";
 // fonts, images). Requests to these paths are noise in the HTTP access log, so
 // the request logger skips them.
 export const FRONTEND_ASSETS_PREFIX = "/assets/";
+
+// RFC 2606 / RFC 6761 reserved namespaces. These domains and TLDs exist only
+// for documentation and testing: their mail servers reject every message, so
+// real delivery always bounces and repeated bounces get the sending domain or
+// IP blacklisted. The mailer guard (services/mailer/reservedDomains.ts) skips
+// any recipient under one of these, which lets seed/demo data keep using
+// `example.com` addresses without ever triggering a real send.
+export const RESERVED_EMAIL_DOMAINS = [
+  "example.com",
+  "example.net",
+  "example.org",
+  "example.edu",
+] as const;
+
+// Reserved top-level domains (stored without the leading dot). A recipient is
+// reserved when its domain equals one of these (e.g. `localhost`) or ends with
+// `.<tld>` (e.g. `foo.test`, `bar.invalid`).
+export const RESERVED_EMAIL_TLDS = [
+  "example",
+  "test",
+  "invalid",
+  "localhost",
+] as const;

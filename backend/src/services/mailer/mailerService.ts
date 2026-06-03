@@ -1,6 +1,7 @@
 import { config } from "@src/helpers/config";
 import { NODE_ENV } from "@src/helpers/constants";
 import { logger } from "@src/helpers/logger";
+import { GuardedMailerService } from "@src/services/mailer/drivers/guarded";
 import { LoggerMailerService } from "@src/services/mailer/drivers/logger";
 import { SmtpMailerService } from "@src/services/mailer/drivers/smtp";
 import { MailerService } from "@src/services/mailer/types";
@@ -30,7 +31,9 @@ export const getMailerService = (): MailerService => {
   }
 
   if (config.mailer.driver === MAIL_DRIVER.SMTP) {
-    mailerService = new SmtpMailerService();
+    // Guard real delivery: reserved-domain recipients (example.com, *.test, …)
+    // always bounce and would get the sender blacklisted, so they are skipped.
+    mailerService = new GuardedMailerService(new SmtpMailerService());
     return mailerService;
   }
 
