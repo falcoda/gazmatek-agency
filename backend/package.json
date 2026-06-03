@@ -28,6 +28,7 @@
   "devDependencies": {
     "@eslint/js": "^10.0.1",
     "@pgtyped/cli": "^2.4.3",
+    "@types/cookie-parser": "^1.4.10",
     "@types/cors": "^2.8.19",
     "@types/express": "^5.0.6",
     "@types/jest": "^30.0.0",
@@ -62,6 +63,7 @@
     "@pgtyped/query": "^2.4.2",
     "argon2": "^0.44.0",
     "axios": "^1.14.0",
+    "cookie-parser": "^1.4.7",
     "cors": "^2.8.6",
     "dayjs": "^1.11.20",
     "dotenv": "^17.4.0",

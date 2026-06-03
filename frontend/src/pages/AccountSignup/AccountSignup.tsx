@@ -42,20 +42,20 @@ const AccountSignup = () => {
   const { t } = useTranslation();
   const navigate = useNavigate();
   const language = useOptionalLanguage();
-  const setSession = useClientAuthStore((s) => s.setSession);
-  const token = useClientAuthStore((s) => s.token);
+  const setClient = useClientAuthStore((s) => s.setClient);
+  const client = useClientAuthStore((s) => s.client);
   const [searchParams] = useSearchParams();
   const nextPath = searchParams.get("next");
   const nextSuffix = nextPath ? `?next=${encodeURIComponent(nextPath)}` : "";
 
   // Already-authenticated clients shouldn't see the signup flow. (#52)
   useEffect(() => {
-    if (token) {
+    if (client) {
       navigate(nextPath ?? getPagePath("accountDashboard", language), {
         replace: true,
       });
     }
-  }, [token, nextPath, navigate, language]);
+  }, [client, nextPath, navigate, language]);
 
   const [step, setStep] = useState(0);
   const [account, setAccount] = useState<AccountStepData>(EMPTY_ACCOUNT);
@@ -109,11 +109,7 @@ const AccountSignup = () => {
       toast.error(t("account.signup.failed"));
       return;
     }
-    setSession({
-      token: result.token,
-      refreshToken: result.refreshToken,
-      client: result.client,
-    });
+    setClient(result.client);
     toast.success(t("account.signup.success"));
     navigate(nextPath ?? getPagePath("accountDashboard", language));
   };

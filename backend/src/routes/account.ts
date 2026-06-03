@@ -1,5 +1,11 @@
 import pool from "@src/db/dbConnect";
-import { HTTP_STATUS } from "@src/helpers/error/constants";
+import {
+  clearAuthCookies,
+  CLIENT_REFRESH_COOKIE_PATH,
+  setAuthCookies,
+} from "@src/helpers/authCookies";
+import { AUTH_COOKIES } from "@src/helpers/constants";
+import { AUTH_ERROR_CODES, HTTP_STATUS } from "@src/helpers/error/constants";
 import { UnauthorizedError } from "@src/helpers/error/errors";
 import { validateRequest } from "@src/helpers/validation";
 import { requireClient } from "@src/middleware/auth/requireKind";
@@ -13,7 +19,6 @@ import {
   accountBookingIdParamsSchema,
   forgotPasswordBodySchema,
   loginBodySchema,
-  refreshBodySchema,
   registerBodySchema,
   resetPasswordBodySchema,
 } from "@src/schemas/clientAuth";
@@ -55,7 +60,11 @@ accountRouter.post(
         addressCountry?: string;
       };
       const result = await service.register(body);
-      res.status(HTTP_STATUS.CREATED).json(result);
+      setAuthCookies(res, AUTH_COOKIES.CLIENT, CLIENT_REFRESH_COOKIE_PATH, {
+        accessToken: result.token,
+        refreshToken: result.refreshToken,
+      });
+      res.status(HTTP_STATUS.CREATED).json({ client: result.client });
     } catch (error) {
       next(error);
     }
@@ -82,7 +91,11 @@ accountRouter.post(
         password: string;
       };
       const result = await service.login(email, password);
-      res.status(HTTP_STATUS.OK).json(result);
+      setAuthCookies(res, AUTH_COOKIES.CLIENT, CLIENT_REFRESH_COOKIE_PATH, {
+        accessToken: result.token,
+        refreshToken: result.refreshToken,
+      });
+      res.status(HTTP_STATUS.OK).json({ client: result.client });
     } catch (error) {
       next(error);
     }
@@ -97,20 +110,24 @@ accountRouter.post(
  *     tags:
  *       - Account
  */
-accountRouter.post(
-  "/refresh",
-  authRateLimiter,
-  validateRequest({ body: refreshBodySchema }),
-  async (req, res, next) => {
-    try {
-      const { refreshToken } = req.body as { refreshToken: string };
-      const result = await service.refresh(refreshToken);
-      res.status(HTTP_STATUS.OK).json(result);
-    } catch (error) {
-      next(error);
+// Reads the refresh token from the httpOnly client_refresh_token cookie, rotates
+// it, and re-sets both cookies.
+accountRouter.post("/refresh", authRateLimiter, async (req, res, next) => {
+  try {
+    const refreshToken = req.cookies?.[AUTH_COOKIES.CLIENT.REFRESH];
+    if (!refreshToken) {
+      throw new UnauthorizedError(AUTH_ERROR_CODES.INVALID_TOKEN);
     }
-  },
-);
+    const result = await service.refresh(refreshToken);
+    setAuthCookies(res, AUTH_COOKIES.CLIENT, CLIENT_REFRESH_COOKIE_PATH, {
+      accessToken: result.token,
+      refreshToken: result.refreshToken,
+    });
+    res.status(HTTP_STATUS.OK).json({ client: result.client });
+  } catch (error) {
+    next(error);
+  }
+});
 
 /**
  * @swagger
@@ -120,12 +137,14 @@ accountRouter.post(
  *     tags:
  *       - Account
  */
+// Revokes the refresh token (from its cookie) and clears both auth cookies.
 accountRouter.post("/logout", async (req, res, next) => {
   try {
-    const body = req.body as { refreshToken?: string } | undefined;
-    if (body?.refreshToken) {
-      await service.logout(body.refreshToken);
+    const refreshToken = req.cookies?.[AUTH_COOKIES.CLIENT.REFRESH];
+    if (refreshToken) {
+      await service.logout(refreshToken);
     }
+    clearAuthCookies(res, AUTH_COOKIES.CLIENT, CLIENT_REFRESH_COOKIE_PATH);
     res.status(HTTP_STATUS.NO_CONTENT).end();
   } catch (error) {
     next(error);
@@ -195,7 +214,7 @@ accountRouter.post(
 accountRouter.get("/me", requireClient, async (req, res) => {
   res.status(HTTP_STATUS.OK).json({
     id: req.identity?.sub,
-    email: req.identity?.data,
+    email: req.identity?.data || null,
     displayName: req.identity?.displayName ?? null,
   });
 });

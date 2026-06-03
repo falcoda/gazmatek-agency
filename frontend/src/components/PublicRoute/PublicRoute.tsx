@@ -12,10 +12,10 @@ import { useClientAuthStore } from "@/stores/ClientAuthStore";
  */
 const PublicRoute = () => {
   const language = useOptionalLanguage();
-  const token = useClientAuthStore((state) => state.token);
+  const client = useClientAuthStore((state) => state.client);
   const [searchParams] = useSearchParams();
 
-  if (token) {
+  if (client) {
     const next = searchParams.get("next");
     return (
       <Navigate

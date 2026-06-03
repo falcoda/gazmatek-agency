@@ -12,10 +12,6 @@ import {
 } from "@/Utils/Services/Public/publicFetch";
 
 export interface ClientAuthResponse {
-  token: string;
-  refreshToken: string;
-  expiresInSeconds: number;
-  refreshExpiresInSeconds: number;
   client: ClientIdentity;
 }
 
@@ -54,9 +50,11 @@ export interface RegisterAccountPayload {
 export async function registerAccount(
   payload: RegisterAccountPayload,
 ): Promise<ClientAuthResponse | null> {
+  // credentials:"include" so the browser stores the Set-Cookie session pair.
   return publicFetch<ClientAuthResponse>(API_ROUTES.accountRegister, {
     method: "POST",
     body: JSON.stringify(payload),
+    credentials: "include",
     silent: true,
   });
 }
@@ -65,22 +63,21 @@ export async function loginAccount(
   email: string,
   password: string,
 ): Promise<ClientAuthResponse | null> {
+  // credentials:"include" so the browser stores the Set-Cookie session pair.
   return publicFetch<ClientAuthResponse>(API_ROUTES.accountLogin, {
     method: "POST",
     body: JSON.stringify({ email, password }),
+    credentials: "include",
     silent: true,
   });
 }
 
-export async function logoutAccount(
-  refreshToken: string | null,
-): Promise<void> {
-  if (!refreshToken) return;
-  // Route through the standard wrapper. If the revoke fails we still clear
-  // locally; surface a warning for observability. (#47)
+export async function logoutAccount(): Promise<void> {
+  // The refresh cookie is read server-side; send credentials so it is attached.
+  // If the revoke fails we still clear locally; warn for observability. (#47)
   const ok = await publicFetchOk(API_ROUTES.accountLogout, {
     method: "POST",
-    body: JSON.stringify({ refreshToken }),
+    credentials: "include",
   });
   if (!ok) {
     loggerService.warn(

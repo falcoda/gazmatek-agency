@@ -24,7 +24,7 @@ const DesktopPublicNavbar = ({ langSwitcher }: DesktopPublicNavbarProps) => {
   const location = useLocation();
   const { t } = useTranslation();
   const navItems = useNavItems();
-  const clientToken = useClientAuthStore((s) => s.token);
+  const client = useClientAuthStore((s) => s.client);
   const language = useOptionalLanguage();
   const currentPath = stripLanguagePrefix(location.pathname);
 
@@ -146,16 +146,14 @@ const DesktopPublicNavbar = ({ langSwitcher }: DesktopPublicNavbarProps) => {
           >
             <button
               className={`navLink ${
-                isActive(
-                  clientToken ? PAGES.accountDashboard : PAGES.accountLogin,
-                )
+                isActive(client ? PAGES.accountDashboard : PAGES.accountLogin)
                   ? "active"
                   : ""
               }`}
               onClick={() =>
                 navigate(
                   getPagePath(
-                    clientToken ? "accountDashboard" : "accountLogin",
+                    client ? "accountDashboard" : "accountLogin",
                     language,
                   ),
                 )
@@ -166,7 +164,7 @@ const DesktopPublicNavbar = ({ langSwitcher }: DesktopPublicNavbarProps) => {
                 {`${navItems.length + 1}`.padStart(2, "0")}
               </span>
               <span className="navLinkText">
-                {clientToken ? t("nav.myArea") : t("nav.login")}
+                {client ? t("nav.myArea") : t("nav.login")}
               </span>
               <span className="navLinkAccent" />
             </button>

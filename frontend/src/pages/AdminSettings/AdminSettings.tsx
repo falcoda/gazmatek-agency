@@ -55,7 +55,7 @@ const normalize = (info: AdminAgencyInfo | null): AdminAgencyInfo => ({
 
 const AdminSettings = () => {
   const { t } = useTranslation();
-  const token = useAdminAuthStore((s) => s.token);
+  const admin = useAdminAuthStore((s) => s.admin);
 
   // Signature state
   const [currentDataUrl, setCurrentDataUrl] = useState<string | null>(null);
@@ -71,7 +71,7 @@ const AdminSettings = () => {
   const [isSavingInfo, setIsSavingInfo] = useState(false);
 
   useEffect(() => {
-    if (!token) return;
+    if (!admin) return;
 
     setIsLoadingSignature(true);
     fetchAdminAgencySignature()
@@ -86,7 +86,7 @@ const AdminSettings = () => {
         setInfo(normalize(res));
       })
       .finally(() => setIsLoadingInfo(false));
-  }, [token]);
+  }, [admin]);
 
   const handleSaveSignature = async (onClose: () => void) => {
     if (!draft) return;

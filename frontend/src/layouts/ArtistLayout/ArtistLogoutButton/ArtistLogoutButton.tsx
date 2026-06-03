@@ -26,12 +26,11 @@ const ArtistLogoutButton = ({
     ? lang
     : undefined;
   const clear = useArtistAuthStore((s) => s.clear);
-  const refreshToken = useArtistAuthStore((s) => s.refreshToken);
 
   const handleLogout = async () => {
-    // Revoke the server-side refresh token before clearing the local session so
+    // Revoke the server-side refresh cookie before clearing the local session so
     // a stolen token can't be replayed after sign-out. (#6)
-    await logoutArtist(refreshToken);
+    await logoutArtist();
     clear();
     if (toggleNavbar) toggleNavbar();
     navigate(getPagePath("artistLogin", language));

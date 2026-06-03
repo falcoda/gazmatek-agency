@@ -58,7 +58,7 @@ const AdminArtists = () => {
   const { t } = useTranslation();
   const language = useLanguage();
   const navigate = useNavigate();
-  const token = useAdminAuthStore((s) => s.token);
+  const admin = useAdminAuthStore((s) => s.admin);
   const [artists, setArtists] = useState<AdminArtistRow[]>([]);
   const [total, setTotal] = useState(0);
   const [form, setForm] = useState<ArtistForm>(blankForm);
@@ -66,7 +66,7 @@ const AdminArtists = () => {
   const [search, setSearch] = useState("");
 
   const reload = async (q?: string) => {
-    if (!token) return;
+    if (!admin) return;
     const res = await fetchAdminArtists(q?.trim() || undefined);
     setArtists(res?.data ?? []);
     setTotal(res?.pagination.total ?? 0);
@@ -74,21 +74,21 @@ const AdminArtists = () => {
 
   useEffect(() => {
     void reload();
-  }, [token]);
+  }, [admin]);
 
   // Debounced search — re-query the backend 300ms after the last keystroke
   // so we don't fire a request on every character.
   useEffect(() => {
-    if (!token) return;
+    if (!admin) return;
     const handle = setTimeout(() => {
       void reload(search);
     }, 300);
     return () => clearTimeout(handle);
-  }, [search, token]);
+  }, [search, admin]);
 
   const submit = async (e: React.FormEvent) => {
     e.preventDefault();
-    if (!token || !form.slug || !form.stageName) return;
+    if (!admin || !form.slug || !form.stageName) return;
     setSubmitting(true);
     const created = await postAdminArtist({ ...form });
     setSubmitting(false);
@@ -100,13 +100,13 @@ const AdminArtists = () => {
   };
 
   const togglePublished = async (a: AdminArtistRow) => {
-    if (!token) return;
+    if (!admin) return;
     await putAdminArtist(a.id, { isPublished: !a.is_published });
     await reload();
   };
 
   const remove = async (id: string): Promise<boolean> => {
-    if (!token) return false;
+    if (!admin) return false;
     const result = await deleteAdminArtist(id);
     if (!result.ok) {
       toast.error(t("admin.artists.deleteFailed"));
@@ -118,7 +118,7 @@ const AdminArtists = () => {
   };
 
   const resetContract = async (artist: AdminArtistRow): Promise<boolean> => {
-    if (!token) return false;
+    if (!admin) return false;
     const res = await resetAdminArtistEngagementContract(artist.id);
     if (!res?.ok) {
       toast.error(t("admin.artists.contract.resetFailed"));
@@ -130,7 +130,7 @@ const AdminArtists = () => {
   };
 
   const downloadContract = async (artist: AdminArtistRow) => {
-    if (!token) return;
+    if (!admin) return;
     const ok = await downloadAdminArtistEngagementContract(
       artist.id,
       `engagement-${artist.slug}.pdf`,

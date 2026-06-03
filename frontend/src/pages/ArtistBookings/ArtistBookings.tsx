@@ -25,15 +25,15 @@ const ArtistBookings = () => {
   const language = useLanguage();
   const [searchParams, setSearchParams] = useSearchParams();
   const tab = searchParams.get("tab") === "past" ? "past" : "upcoming";
-  const token = useArtistAuthStore((s) => s.token);
+  const artist = useArtistAuthStore((s) => s.artist);
   const [bookings, setBookings] = useState<ArtistBookingDto[]>([]);
 
   useEffect(() => {
-    if (!token) return;
+    if (!artist) return;
     void fetchArtistBookings(tab).then((res) => {
       setBookings(res?.data ?? []);
     });
-  }, [token, tab]);
+  }, [artist, tab]);
 
   const columns: Column[] = useMemo(
     () => [

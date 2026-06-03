@@ -44,7 +44,7 @@ const AdminBookings = () => {
   const { t } = useTranslation();
   const language = useLanguage();
   const navigate = useNavigate();
-  const token = useAdminAuthStore((s) => s.token);
+  const admin = useAdminAuthStore((s) => s.admin);
   const [bookings, setBookings] = useState<AdminBookingRow[]>([]);
   const [total, setTotal] = useState(0);
   const [statusFilter, setStatusFilter] = useState<StatusOption | undefined>(
@@ -63,7 +63,7 @@ const AdminBookings = () => {
   );
 
   const reload = async () => {
-    if (!token) return;
+    if (!admin) return;
     const res = await fetchAdminBookings({
       status: statusFilter?.id || undefined,
     });
@@ -73,17 +73,17 @@ const AdminBookings = () => {
 
   useEffect(() => {
     void reload();
-  }, [token, statusFilter]);
+  }, [admin, statusFilter]);
 
   const approve = async (id: string) => {
-    if (!token) return;
+    if (!admin) return;
     const res = await approveAdminBooking(id);
     if (res) toast.success(t("admin.bookings.approved"));
     await reload();
   };
 
   const markDepositPaid = async (id: string) => {
-    if (!token) return;
+    if (!admin) return;
     if (!window.confirm(t("admin.bookings.markDepositPaidConfirm"))) return;
     const res = await markAdminBookingDepositPaid(id);
     if (res) toast.success(t("admin.bookings.markDepositPaidSuccess"));
@@ -91,7 +91,7 @@ const AdminBookings = () => {
   };
 
   const markCompleted = async (id: string) => {
-    if (!token) return;
+    if (!admin) return;
     if (!window.confirm(t("admin.bookings.markCompletedConfirm"))) return;
     const res = await markAdminBookingCompleted(id);
     if (res) toast.success(t("admin.bookings.markCompletedSuccess"));

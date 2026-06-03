@@ -151,7 +151,7 @@ const BookingNew = () => {
   const isValidSetType = (value: string | null): value is ArtistSetType =>
     value === "dj" || value === "hybrid" || value === "live";
 
-  const clientToken = useClientAuthStore((s) => s.token);
+  const client = useClientAuthStore((s) => s.client);
 
   // The price simulator prefills `date` as `YYYY-MM-DD` (its input is
   // `type="date"`). Our event field is `type="datetime-local"`, which silently
@@ -568,7 +568,7 @@ const BookingNew = () => {
                 <h2>{t("bookingNew.form.successTitle")}</h2>
                 <p className="disclaimer">{t("bookingNew.form.successBody")}</p>
               </div>
-            ) : !clientToken ? (
+            ) : !client ? (
               <div className="authRequired">
                 <h2>{t("bookingNew.authRequired.title")}</h2>
                 <p className="disclaimer">

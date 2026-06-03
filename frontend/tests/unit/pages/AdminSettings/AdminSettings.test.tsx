@@ -28,17 +28,20 @@ vi.mock("@/Utils/Services/Authenticated/adminAreaApi", () => ({
   putAdminAgencyInfo: vi.fn(async (info) => info),
 }));
 
-vi.mock("@/stores/AdminAuthStore", () => ({
-  useAdminAuthStore: Object.assign(
-    (selector?: (state: { token: string }) => unknown) => {
-      const state = { token: "test-token" };
-      return selector ? selector(state) : state;
-    },
-    {
-      getState: () => ({ token: "test-token" }),
-    },
-  ),
-}));
+vi.mock("@/stores/AdminAuthStore", () => {
+  const admin = { id: "a1", email: "admin@example.com", fullName: "Admin" };
+  return {
+    useAdminAuthStore: Object.assign(
+      (selector?: (state: { admin: typeof admin }) => unknown) => {
+        const state = { admin };
+        return selector ? selector(state) : state;
+      },
+      {
+        getState: () => ({ admin }),
+      },
+    ),
+  };
+});
 
 describe("AdminSettings", () => {
   beforeEach(() => {

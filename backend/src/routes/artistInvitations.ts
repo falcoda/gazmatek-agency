@@ -1,4 +1,9 @@
 import pool from "@src/db/dbConnect";
+import {
+  ARTIST_REFRESH_COOKIE_PATH,
+  setAuthCookies,
+} from "@src/helpers/authCookies";
+import { AUTH_COOKIES } from "@src/helpers/constants";
 import { HTTP_STATUS } from "@src/helpers/error/constants";
 import { NotFoundError } from "@src/helpers/error/errors";
 import { validateRequest } from "@src/helpers/validation";
@@ -46,7 +51,13 @@ artistInvitationsRouter.post(
         privacyAccepted: boolean;
       };
       const result = await service.accept(req.params.token as string, body);
-      res.status(HTTP_STATUS.OK).json(result);
+      // Accepting an invitation logs the artist in — establish the same
+      // httpOnly cookie session as a normal artist login.
+      setAuthCookies(res, AUTH_COOKIES.ARTIST, ARTIST_REFRESH_COOKIE_PATH, {
+        accessToken: result.token,
+        refreshToken: result.refreshToken,
+      });
+      res.status(HTTP_STATUS.OK).json({ artist: result.artist });
     } catch (error) {
       next(error);
     }

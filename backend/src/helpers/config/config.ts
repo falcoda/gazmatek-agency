@@ -109,6 +109,19 @@ const envSchema = z
     CORS_ORIGIN: z.string().default("http://localhost"),
     TRUST_PROXY: booleanFromEnv(true),
 
+    // Auth cookie attributes. COOKIE_SECURE defaults to true in production and
+    // false otherwise. Use COOKIE_SAMESITE=none (with COOKIE_SECURE=true) only
+    // for a cross-origin frontend — then add CSRF protection on top.
+    COOKIE_SECURE: z.preprocess(
+      (value) =>
+        value === undefined || value === ""
+          ? undefined
+          : toBoolean(value, false),
+      z.boolean().optional(),
+    ),
+    COOKIE_SAMESITE: z.enum(["lax", "strict", "none"]).default("lax"),
+    COOKIE_DOMAIN: optionalString,
+
     DATABASE_HOST: z.string().min(1, "DATABASE_HOST is required"),
     DATABASE: z.string().min(1, "DATABASE is required"),
     DATABASE_USERNAME: z.string().min(1, "DATABASE_USERNAME is required"),
@@ -215,6 +228,14 @@ const envSchema = z
         path: ["TELEGRAM_BOT_TOKEN"],
         message:
           "TELEGRAM_BOT_TOKEN and TELEGRAM_CHAT_ID are required for telegram notifications",
+      });
+    }
+
+    if (env.COOKIE_SAMESITE === "none" && env.COOKIE_SECURE === false) {
+      ctx.addIssue({
+        code: z.ZodIssueCode.custom,
+        path: ["COOKIE_SECURE"],
+        message: "COOKIE_SECURE must be true when COOKIE_SAMESITE is none",
       });
     }
 
@@ -365,6 +386,12 @@ export const config = {
         ? parsedEnv.AUTH_STRATEGIES
         : ([AUTH_STRATEGY.JWT] as AuthStrategy[]),
     apiKeyHeader: parsedEnv.API_KEY_HEADER,
+    cookie: {
+      secure:
+        parsedEnv.COOKIE_SECURE ?? parsedEnv.NODE_ENV === NODE_ENV.PRODUCTION,
+      sameSite: parsedEnv.COOKIE_SAMESITE,
+      domain: parsedEnv.COOKIE_DOMAIN,
+    },
   },
   security: {
     // Optional 32-byte AES-256-GCM key for application-level field encryption.

@@ -20,11 +20,7 @@ const ArtistLogin = () => {
   ): Promise<boolean> => {
     const result = await loginArtist(email, password);
     if (!result) return false;
-    setSession({
-      token: result.token,
-      refreshToken: result.refreshToken,
-      artist: result.artist,
-    });
+    setSession({ artist: result.artist });
     // Route to onboarding when the engagement contract is still unsigned so the
     // flow is discoverable right after the invitation. (#34)
     const me = await fetchArtistMe();

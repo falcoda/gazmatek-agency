@@ -4,17 +4,13 @@ import {
   identityFetch,
 } from "@/Utils/Services/Authenticated/identityFetch";
 
-interface RefreshTokens {
-  token: string;
-  refreshToken: string;
-}
-
 export interface AuthFetchConfig {
-  /** Endpoint hit to exchange the refresh token for a new access token. */
+  /**
+   * Endpoint hit to rotate the session using the httpOnly refresh cookie. The
+   * server re-sets the access/refresh cookies; nothing is read in JS.
+   */
   refreshEndpoint: string;
-  getToken: () => string | null;
-  getRefreshToken: () => string | null;
-  setToken: (tokens: RefreshTokens) => void;
+  /** Clears the cached identity so route guards redirect to login. */
   clear: () => void;
 }
 
@@ -45,20 +41,15 @@ export type AuthFetch = <T>(
  */
 export function createAuthFetch(config: AuthFetchConfig): AuthFetch {
   const tryRefresh = createTokenRefresher(async () => {
-    const refreshToken = config.getRefreshToken();
-    if (!refreshToken) return false;
     try {
       const response = await fetch(config.refreshEndpoint, {
         method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ refreshToken }),
+        credentials: "include",
       });
       if (!response.ok) {
         config.clear();
         return false;
       }
-      const data = (await response.json()) as RefreshTokens;
-      config.setToken({ token: data.token, refreshToken: data.refreshToken });
       return true;
     } catch {
       config.clear();
@@ -70,10 +61,9 @@ export function createAuthFetch(config: AuthFetchConfig): AuthFetch {
     route: string,
     options: AuthFetchCallerOptions = {},
   ): Promise<T | null> {
-    return identityFetch<T>(route, config.getToken(), {
+    return identityFetch<T>(route, {
       ...options,
-      onUnauthorized: async () =>
-        (await tryRefresh()) ? config.getToken() : null,
+      onUnauthorized: () => tryRefresh(),
       onSessionExpired: () => config.clear(),
     });
   };

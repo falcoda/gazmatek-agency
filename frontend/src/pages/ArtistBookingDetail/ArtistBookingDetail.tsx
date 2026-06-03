@@ -62,13 +62,13 @@ const ArtistBookingDetail = () => {
   const navigate = useNavigate();
   const { id } = useParams<{ id: string }>();
   const language = useLanguage();
-  const token = useArtistAuthStore((s) => s.token);
+  const artist = useArtistAuthStore((s) => s.artist);
 
   const [data, setData] = useState<BookingDetailResponse | null>(null);
   const [notFound, setNotFound] = useState(false);
 
   useEffect(() => {
-    if (!id || !token) return;
+    if (!id || !artist) return;
     let cancelled = false;
     // Use the artist-scoped wrapper so a 401 triggers a refresh-then-retry and a
     // definitive expiry clears the session (route guards then redirect). (#51)
@@ -92,7 +92,7 @@ const ArtistBookingDetail = () => {
     return () => {
       cancelled = true;
     };
-  }, [id, token]);
+  }, [id, artist]);
 
   const tone: BookingStatusTone = useMemo(
     () => (data ? BOOKING_STATUS_TONE[data.status] : "neutral"),

@@ -10,10 +10,6 @@ import {
 } from "@/Utils/Services/Public/publicFetch";
 
 export interface ArtistLoginResponse {
-  token: string;
-  refreshToken: string;
-  expiresInSeconds: number;
-  refreshExpiresInSeconds: number;
   artist: { id: string; email: string; slug: string; stageName: string };
 }
 
@@ -44,20 +40,21 @@ export async function loginArtist(
   email: string,
   password: string,
 ): Promise<ArtistLoginResponse | null> {
+  // credentials:"include" so the browser stores the Set-Cookie session pair.
   return publicFetch<ArtistLoginResponse>(API_ROUTES.artistAuthLogin, {
     method: "POST",
     body: JSON.stringify({ email, password }),
+    credentials: "include",
     silent: true,
   });
 }
 
-export async function logoutArtist(refreshToken: string | null): Promise<void> {
-  if (!refreshToken) return;
-  // Route through the standard wrapper. Clear locally regardless; warn on
-  // failure for observability. (#6/#47)
+export async function logoutArtist(): Promise<void> {
+  // The refresh cookie is read server-side; send credentials so it is attached.
+  // Clear locally regardless; warn on failure for observability. (#6/#47)
   const ok = await publicFetchOk(API_ROUTES.artistAuthLogout, {
     method: "POST",
-    body: JSON.stringify({ refreshToken }),
+    credentials: "include",
   });
   if (!ok) {
     loggerService.warn(
@@ -158,15 +155,10 @@ export async function changeArtistPassword(
   currentPassword: string,
   newPassword: string,
 ): Promise<boolean> {
-  const { useArtistAuthStore } = await import("@/stores/ArtistAuthStore");
-  const token = useArtistAuthStore.getState().token;
-  if (!token) return false;
   const response = await fetch(API_ROUTES.artistProfilePassword, {
     method: "POST",
-    headers: {
-      Authorization: `Bearer ${token}`,
-      "Content-Type": "application/json",
-    },
+    headers: { "Content-Type": "application/json" },
+    credentials: "include",
     body: JSON.stringify({ currentPassword, newPassword }),
   });
   return response.ok;
@@ -216,11 +208,8 @@ export async function signArtistEngagementContract(): Promise<EngagementSignResp
 export async function downloadArtistSignedEngagementContract(
   filename = "engagement-contract-signed.pdf",
 ): Promise<boolean> {
-  const { useArtistAuthStore } = await import("@/stores/ArtistAuthStore");
-  const token = useArtistAuthStore.getState().token;
-  if (!token) return false;
   const response = await fetch(API_ROUTES.artistEngagementContractSigned, {
-    headers: { Authorization: `Bearer ${token}` },
+    credentials: "include",
   });
   if (!response.ok) return false;
   const blob = await response.blob();
@@ -238,14 +227,11 @@ export async function downloadArtistSignedEngagementContract(
 export async function uploadArtistCoverImage(
   file: File,
 ): Promise<{ url: string; profile: ArtistProfileDto } | null> {
-  const { useArtistAuthStore } = await import("@/stores/ArtistAuthStore");
-  const token = useArtistAuthStore.getState().token;
-  if (!token) return null;
   const fd = new FormData();
   fd.append("file", file);
   const response = await fetch(API_ROUTES.artistProfileCoverImage, {
     method: "POST",
-    headers: { Authorization: `Bearer ${token}` },
+    credentials: "include",
     body: fd,
   });
   if (!response.ok) return null;

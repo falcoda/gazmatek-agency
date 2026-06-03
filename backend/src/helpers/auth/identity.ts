@@ -1,4 +1,5 @@
 import { config } from "@src/helpers/config";
+import { IDENTITY_TOKEN_EXPIRES } from "@src/helpers/constants";
 import jwt, { Algorithm, SignOptions } from "jsonwebtoken";
 
 export enum UserKind {
@@ -18,7 +19,7 @@ export interface SignedIdentityToken {
   expiresInSeconds: number;
 }
 
-const DEFAULT_EXPIRY_HOURS = 12;
+const DEFAULT_EXPIRY_HOURS = IDENTITY_TOKEN_EXPIRES.ACCESS_MINUTES / 60;
 const SECONDS_PER_HOUR = 3600;
 
 // Pin the signing algorithm so verification cannot be tricked into accepting a

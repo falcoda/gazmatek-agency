@@ -10,6 +10,7 @@ import { requestContextMiddleware } from "@src/middleware/observability/requestC
 import { requestLoggerMiddleware } from "@src/middleware/observability/requestLogger";
 import { metricsRateLimiter } from "@src/middleware/security/rateLimit";
 import routes from "@src/routes";
+import cookieParser from "cookie-parser";
 import cors from "cors";
 import express, { Express, NextFunction, Request, Response } from "express";
 import helmet from "helmet";
@@ -40,6 +41,7 @@ export const createApp = (): Express => {
   );
 
   app.use(cors({ origin: config.server.corsOrigin, credentials: true }));
+  app.use(cookieParser());
   app.use(express.urlencoded({ extended: true }));
   app.use(
     express.json({

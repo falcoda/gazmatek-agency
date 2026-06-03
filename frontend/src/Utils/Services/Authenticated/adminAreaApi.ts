@@ -13,7 +13,6 @@ import {
   buildAdminClientInviteUrl,
   buildAdminContentBlockUrl,
 } from "@/config/apiRoutes";
-import { useAdminAuthStore } from "@/stores/AdminAuthStore";
 import { loggerService, LogTag } from "@/Utils/LoggerService";
 import { adminFetch } from "@/Utils/Services/Authenticated/adminFetch";
 import {
@@ -22,10 +21,6 @@ import {
 } from "@/Utils/Services/Public/publicFetch";
 
 export interface AdminLoginResponse {
-  token: string;
-  refreshToken: string;
-  expiresInSeconds: number;
-  refreshExpiresInSeconds: number;
   admin: { id: string; email: string; fullName: string };
 }
 
@@ -77,20 +72,21 @@ export async function loginAdmin(
   email: string,
   password: string,
 ): Promise<AdminLoginResponse | null> {
+  // credentials:"include" so the browser stores the Set-Cookie session pair.
   return publicFetch<AdminLoginResponse>(API_ROUTES.adminAuthLogin, {
     method: "POST",
     body: JSON.stringify({ email, password }),
+    credentials: "include",
     silent: true,
   });
 }
 
-export async function logoutAdmin(refreshToken: string | null): Promise<void> {
-  if (!refreshToken) return;
-  // Route through the standard wrapper. Clear locally regardless; warn on
-  // failure for observability. (#47)
+export async function logoutAdmin(): Promise<void> {
+  // The refresh cookie is read server-side; send credentials so it is attached.
+  // Clear locally regardless; warn on failure for observability. (#47)
   const ok = await publicFetchOk(API_ROUTES.adminAuthLogout, {
     method: "POST",
-    body: JSON.stringify({ refreshToken }),
+    credentials: "include",
   });
   if (!ok) {
     loggerService.warn(
@@ -180,18 +176,15 @@ export async function resetAdminArtistEngagementContract(
 
 // Streams the engagement-contract PDF (signed if available, freshly-rendered
 // draft otherwise) and triggers a browser download. The endpoint is admin
-// auth-protected, so we fetch with the JWT and pipe the blob through an
-// object URL rather than `window.open`-ing it directly.
+// auth-protected, so we fetch with the httpOnly session cookie and pipe the
+// blob through an object URL rather than `window.open`-ing it directly.
 export async function downloadAdminArtistEngagementContract(
   id: string,
   filename = "engagement-contract.pdf",
 ): Promise<boolean> {
-  const { useAdminAuthStore } = await import("@/stores/AdminAuthStore");
-  const token = useAdminAuthStore.getState().token;
-  if (!token) return false;
   const response = await fetch(
     buildAdminArtistEngagementContractDownloadUrl(id),
-    { headers: { Authorization: `Bearer ${token}` } },
+    { credentials: "include" },
   );
   if (!response.ok) return false;
   const blob = await response.blob();
@@ -475,16 +468,15 @@ export async function fetchAdminAgencySignature(): Promise<AdminAgencySignature 
 
 // PUT /agency/signature expects multipart/form-data so we hit fetch directly
 // (adminFetch sets `Content-Type: application/json` which breaks multipart).
+// Auth rides in the httpOnly cookie via credentials:"include".
 export async function uploadAdminAgencySignature(
   pngBlob: Blob,
 ): Promise<AdminAgencySignature | null> {
-  const token = useAdminAuthStore.getState().token;
-  if (!token) return null;
   const fd = new FormData();
   fd.append("signature", pngBlob, "agency-signature.png");
   const response = await fetch(API_ROUTES.adminAgencySignature, {
     method: "PUT",
-    headers: { Authorization: `Bearer ${token}` },
+    credentials: "include",
     body: fd,
   });
   if (!response.ok) return null;

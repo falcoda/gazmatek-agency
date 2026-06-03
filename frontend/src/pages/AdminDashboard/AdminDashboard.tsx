@@ -14,11 +14,11 @@ const AdminDashboard = () => {
   const { t } = useTranslation();
   const navigate = useNavigate();
   const language = useLanguage();
-  const { admin, refreshToken, clear } = useAdminAuthStore();
+  const { admin, clear } = useAdminAuthStore();
 
   const logout = async () => {
-    // Revoke the refresh token server-side before clearing locally. (#47)
-    await logoutAdmin(refreshToken);
+    // Revoke the refresh cookie server-side before clearing locally. (#47)
+    await logoutAdmin();
     clear();
     navigate(getPagePath("adminLogin", language));
   };

@@ -9,7 +9,7 @@ import { loginAdmin } from "@/Utils/Services/Authenticated/adminAreaApi";
 const AdminLogin = () => {
   const navigate = useNavigate();
   const language = useOptionalLanguage();
-  const setSession = useAdminAuthStore((s) => s.setSession);
+  const setAdmin = useAdminAuthStore((s) => s.setAdmin);
 
   const handleLogin = async (
     email: string,
@@ -17,11 +17,7 @@ const AdminLogin = () => {
   ): Promise<boolean> => {
     const result = await loginAdmin(email, password);
     if (!result) return false;
-    setSession({
-      token: result.token,
-      refreshToken: result.refreshToken,
-      admin: result.admin,
-    });
+    setAdmin(result.admin);
     navigate(getPagePath("adminArtists", language));
     return true;
   };

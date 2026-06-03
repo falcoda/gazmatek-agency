@@ -1,5 +1,12 @@
 import pool from "@src/db/dbConnect";
-import { HTTP_STATUS } from "@src/helpers/error/constants";
+import {
+  ARTIST_REFRESH_COOKIE_PATH,
+  clearAuthCookies,
+  setAuthCookies,
+} from "@src/helpers/authCookies";
+import { AUTH_COOKIES } from "@src/helpers/constants";
+import { AUTH_ERROR_CODES, HTTP_STATUS } from "@src/helpers/error/constants";
+import { UnauthorizedError } from "@src/helpers/error/errors";
 import { validateRequest } from "@src/helpers/validation";
 import {
   authAccountRateLimiter,
@@ -10,7 +17,6 @@ import {
   loginBodySchema,
   resetPasswordBodySchema,
 } from "@src/schemas/artistAuth";
-import { refreshBodySchema } from "@src/schemas/clientAuth";
 import ArtistAuthService from "@src/services/auth/artistAuthService";
 import { Router } from "express";
 
@@ -29,8 +35,15 @@ artistAuthRouter.post(
         email: string;
         password: string;
       };
-      const result = await service.login(email, password);
-      res.status(HTTP_STATUS.OK).json(result);
+      const { token, refreshToken, artist } = await service.login(
+        email,
+        password,
+      );
+      setAuthCookies(res, AUTH_COOKIES.ARTIST, ARTIST_REFRESH_COOKIE_PATH, {
+        accessToken: token,
+        refreshToken,
+      });
+      res.status(HTTP_STATUS.OK).json({ artist });
     } catch (error) {
       next(error);
     }
@@ -66,26 +79,37 @@ artistAuthRouter.post(
   },
 );
 
-artistAuthRouter.post(
-  "/refresh",
-  validateRequest({ body: refreshBodySchema }),
-  async (req, res, next) => {
-    try {
-      const { refreshToken } = req.body as { refreshToken: string };
-      const result = await service.refresh(refreshToken);
-      res.status(HTTP_STATUS.OK).json(result);
-    } catch (error) {
-      next(error);
+// Reads the refresh token from the httpOnly artist_refresh_token cookie, rotates
+// it, and re-sets both cookies.
+artistAuthRouter.post("/refresh", async (req, res, next) => {
+  try {
+    const refreshToken = req.cookies?.[AUTH_COOKIES.ARTIST.REFRESH];
+    if (!refreshToken) {
+      throw new UnauthorizedError(AUTH_ERROR_CODES.INVALID_TOKEN);
     }
-  },
-);
+    const {
+      token,
+      refreshToken: rotated,
+      artist,
+    } = await service.refresh(refreshToken);
+    setAuthCookies(res, AUTH_COOKIES.ARTIST, ARTIST_REFRESH_COOKIE_PATH, {
+      accessToken: token,
+      refreshToken: rotated,
+    });
+    res.status(HTTP_STATUS.OK).json({ artist });
+  } catch (error) {
+    next(error);
+  }
+});
 
+// Revokes the refresh token (from its cookie) and clears both auth cookies.
 artistAuthRouter.post("/logout", async (req, res, next) => {
   try {
-    const body = req.body as { refreshToken?: string } | undefined;
-    if (body?.refreshToken) {
-      await service.logout(body.refreshToken);
+    const refreshToken = req.cookies?.[AUTH_COOKIES.ARTIST.REFRESH];
+    if (refreshToken) {
+      await service.logout(refreshToken);
     }
+    clearAuthCookies(res, AUTH_COOKIES.ARTIST, ARTIST_REFRESH_COOKIE_PATH);
     res.status(HTTP_STATUS.NO_CONTENT).end();
   } catch (error) {
     next(error);

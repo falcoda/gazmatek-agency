@@ -26,19 +26,19 @@ const ArtistDashboard = () => {
   const { t } = useTranslation();
   const navigate = useNavigate();
   const language = useLanguage();
-  const { token, refreshToken, artist, clear } = useArtistAuthStore();
+  const { artist, clear } = useArtistAuthStore();
   const [bookings, setBookings] = useState<ArtistBookingDto[]>([]);
 
   useEffect(() => {
-    if (!token) return;
+    if (!artist) return;
     void fetchArtistBookings("upcoming").then((res) => {
       if (res) setBookings(res.data);
     });
-  }, [token]);
+  }, [artist]);
 
   const logout = async () => {
-    // Revoke the refresh token server-side before clearing locally. (#6)
-    await logoutArtist(refreshToken);
+    // Revoke the refresh cookie server-side before clearing locally. (#6)
+    await logoutArtist();
     clear();
     navigate(getPagePath("artistLogin", language));
   };

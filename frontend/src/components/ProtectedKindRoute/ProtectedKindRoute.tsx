@@ -25,14 +25,16 @@ const ProtectedKindRoute = ({ kind, children }: ProtectedKindRouteProps) => {
     ? lang
     : undefined;
 
-  const artistToken = useArtistAuthStore((s) => s.token);
-  const adminToken = useAdminAuthStore((s) => s.token);
-  const clientToken = useClientAuthStore((s) => s.token);
+  // Auth lives in httpOnly cookies; the store holds only the (optimistically
+  // hydrated) identity object, which is enough to gate the route.
+  const artist = useArtistAuthStore((s) => s.artist);
+  const admin = useAdminAuthStore((s) => s.admin);
+  const client = useClientAuthStore((s) => s.client);
 
   let isAuthed = false;
-  if (kind === "artist") isAuthed = !!artistToken;
-  else if (kind === "admin") isAuthed = !!adminToken;
-  else isAuthed = !!clientToken;
+  if (kind === "artist") isAuthed = !!artist;
+  else if (kind === "admin") isAuthed = !!admin;
+  else isAuthed = !!client;
 
   if (!isAuthed) {
     return (

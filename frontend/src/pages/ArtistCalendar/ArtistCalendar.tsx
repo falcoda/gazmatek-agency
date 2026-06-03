@@ -47,7 +47,7 @@ const CALENDAR_COLORS = {
 
 const ArtistCalendar = () => {
   const { t } = useTranslation();
-  const token = useArtistAuthStore((s) => s.token);
+  const artist = useArtistAuthStore((s) => s.artist);
   const [unavail, setUnavail] = useState<ArtistUnavailabilityDto[]>([]);
   const [submitting, setSubmitting] = useState(false);
   // Unavailability picked from the calendar that is pending delete-confirmation.
@@ -99,7 +99,7 @@ const ArtistCalendar = () => {
   );
 
   const reload = async () => {
-    if (!token) return;
+    if (!artist) return;
     const from = new Date().toISOString();
     const to = new Date(
       Date.now() + RANGE_DAYS * 24 * 60 * 60 * 1000,
@@ -110,11 +110,11 @@ const ArtistCalendar = () => {
 
   useEffect(() => {
     void reload();
-  }, [token]);
+  }, [artist]);
 
   const submit = async (e: React.FormEvent) => {
     e.preventDefault();
-    if (!token || !form.startsAt || !form.endsAt) return;
+    if (!artist || !form.startsAt || !form.endsAt) return;
     setSubmitting(true);
     const payload = {
       startsAt: new Date(form.startsAt).toISOString(),
@@ -134,7 +134,7 @@ const ArtistCalendar = () => {
   };
 
   const remove = async (id: string): Promise<boolean> => {
-    if (!token) return false;
+    if (!artist) return false;
     await deleteArtistUnavailability(id);
     await reload();
     return true;

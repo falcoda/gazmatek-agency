@@ -53,7 +53,7 @@ const AccountDashboard = () => {
   const { t } = useTranslation();
   const navigate = useNavigate();
   const language = useLanguage();
-  const { client, token, refreshToken, clear } = useClientAuthStore();
+  const { client, clear } = useClientAuthStore();
   const [bookings, setBookings] = useState<AccountBookingDto[]>([]);
   // Distinguishes "the fetch failed" (null) from "the client has no bookings"
   // (empty list) so the UI can show an error rather than a misleading empty
@@ -82,15 +82,15 @@ const AccountDashboard = () => {
   }, []);
 
   useEffect(() => {
-    if (!token) {
+    if (!client) {
       navigate(getPagePath("accountLogin", language), { replace: true });
       return;
     }
     void reload();
-  }, [token, navigate, language, reload]);
+  }, [client, navigate, language, reload]);
 
   const logout = async () => {
-    await logoutAccount(refreshToken);
+    await logoutAccount();
     clear();
     navigate(getPagePath("accountLogin", language));
   };

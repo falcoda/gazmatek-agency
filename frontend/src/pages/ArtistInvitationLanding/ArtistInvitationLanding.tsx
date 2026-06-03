@@ -88,11 +88,7 @@ const ArtistInvitationLanding = () => {
     });
     setSubmitting(false);
     if (!result) return;
-    setSession({
-      token: result.token,
-      refreshToken: result.refreshToken,
-      artist: result.artist,
-    });
+    setSession({ artist: result.artist });
     navigate(getPagePath("artistOnboardingContract", language), {
       replace: true,
     });

@@ -23,17 +23,24 @@ import { getEngagementContractByArtist } from "@src/db/query/contract/getEngagem
 import { touchContractReminder } from "@src/db/query/contract/touchContractReminder.types";
 import { upsertContract } from "@src/db/query/contract/upsertContract.types";
 import { recordAudit } from "@src/helpers/audit";
+import {
+  ADMIN_REFRESH_COOKIE_PATH,
+  clearAuthCookies,
+  setAuthCookies,
+} from "@src/helpers/authCookies";
 import { config } from "@src/helpers/config";
+import { AUTH_COOKIES } from "@src/helpers/constants";
 import {
   AUDIT_ACTION,
   AUDIT_ACTOR_KIND,
   AUDIT_TARGET_KIND,
 } from "@src/helpers/constants/domain";
-import { HTTP_STATUS } from "@src/helpers/error/constants";
+import { AUTH_ERROR_CODES, HTTP_STATUS } from "@src/helpers/error/constants";
 import {
   ConflictError,
   ForbiddenError,
   NotFoundError,
+  UnauthorizedError,
   ValidationError,
 } from "@src/helpers/error/errors";
 import { validateRequest } from "@src/helpers/validation";
@@ -62,7 +69,6 @@ import {
   listArtistInvitationsQuerySchema,
   resendArtistInvitationBodySchema,
 } from "@src/schemas/artistInvitation";
-import { refreshBodySchema } from "@src/schemas/clientAuth";
 import {
   type AgencyInfo,
   getAgencyInfo,
@@ -124,35 +130,49 @@ adminRouter.post(
         email: string;
         password: string;
       };
-      const result = await adminAuth.login(email, password);
-      res.status(HTTP_STATUS.OK).json(result);
+      const { token, refreshToken, admin } = await adminAuth.login(
+        email,
+        password,
+      );
+      setAuthCookies(res, AUTH_COOKIES.ADMIN, ADMIN_REFRESH_COOKIE_PATH, {
+        accessToken: token,
+        refreshToken,
+      });
+      res.status(HTTP_STATUS.OK).json({ admin });
     } catch (error) {
       next(error);
     }
   },
 );
 
-adminRouter.post(
-  "/auth/refresh",
-  authRateLimiter,
-  validateRequest({ body: refreshBodySchema }),
-  async (req, res, next) => {
-    try {
-      const { refreshToken } = req.body as { refreshToken: string };
-      const result = await adminAuth.refresh(refreshToken);
-      res.status(HTTP_STATUS.OK).json(result);
-    } catch (error) {
-      next(error);
+adminRouter.post("/auth/refresh", authRateLimiter, async (req, res, next) => {
+  try {
+    const refreshToken = req.cookies?.[AUTH_COOKIES.ADMIN.REFRESH];
+    if (!refreshToken) {
+      throw new UnauthorizedError(AUTH_ERROR_CODES.INVALID_TOKEN);
     }
-  },
-);
+    const {
+      token,
+      refreshToken: rotated,
+      admin,
+    } = await adminAuth.refresh(refreshToken);
+    setAuthCookies(res, AUTH_COOKIES.ADMIN, ADMIN_REFRESH_COOKIE_PATH, {
+      accessToken: token,
+      refreshToken: rotated,
+    });
+    res.status(HTTP_STATUS.OK).json({ admin });
+  } catch (error) {
+    next(error);
+  }
+});
 
 adminRouter.post("/auth/logout", async (req, res, next) => {
   try {
-    const body = req.body as { refreshToken?: string } | undefined;
-    if (body?.refreshToken) {
-      await adminAuth.logout(body.refreshToken);
+    const refreshToken = req.cookies?.[AUTH_COOKIES.ADMIN.REFRESH];
+    if (refreshToken) {
+      await adminAuth.logout(refreshToken);
     }
+    clearAuthCookies(res, AUTH_COOKIES.ADMIN, ADMIN_REFRESH_COOKIE_PATH);
     res.status(HTTP_STATUS.NO_CONTENT).end();
   } catch (error) {
     next(error);
@@ -161,6 +181,15 @@ adminRouter.post("/auth/logout", async (req, res, next) => {
 
 // All routes below require admin JWT.
 adminRouter.use(requireAdmin);
+
+// Current admin resolved from the access-token cookie (for SPA hydrate()).
+adminRouter.get("/auth/me", (req, res) => {
+  res.status(HTTP_STATUS.OK).json({
+    id: req.identity?.sub,
+    email: req.identity?.data,
+    fullName: req.identity?.displayName,
+  });
+});
 
 // --- Agency settings (signature pre-rendered on engagement contracts) ---
 const AGENCY_SIGNATURE_MAX_BYTES = 2 * 1024 * 1024;

@@ -50,7 +50,7 @@ const AdminBookingNew = () => {
   const { t } = useTranslation();
   const navigate = useNavigate();
   const language = useLanguage();
-  const token = useAdminAuthStore((s) => s.token);
+  const admin = useAdminAuthStore((s) => s.admin);
 
   const [artists, setArtists] = useState<AdminArtistRow[]>([]);
   const [submitting, setSubmitting] = useState(false);
@@ -74,13 +74,13 @@ const AdminBookingNew = () => {
   });
 
   useEffect(() => {
-    if (!token) return;
+    if (!admin) return;
     // Load all artists for the dropdown — backend caps page_size at 100,
     // which is plenty for an agency roster.
     void fetchAdminArtists(undefined, 100).then((res) => {
       setArtists(res?.data ?? []);
     });
-  }, [token]);
+  }, [admin]);
 
   const artistOptions: ArtistOption[] = useMemo(
     () => artists.map((a) => ({ id: a.id, name: a.stage_name })),

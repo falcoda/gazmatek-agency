@@ -8,7 +8,7 @@ import {
   UserKind,
   verifyIdentityToken,
 } from "@src/helpers/auth/identity";
-import { AUTH_HEADERS } from "@src/helpers/constants";
+import { AUTH_COOKIES, AUTH_HEADERS } from "@src/helpers/constants";
 import {
   AUTH_ERROR_CODES,
   BOOKING_ERROR_CODES,
@@ -23,22 +23,31 @@ declare module "express-serve-static-core" {
   }
 }
 
-function extractBearer(req: Request): string | null {
+const accessCookieNameFor = (kind: UserKind): string => {
+  switch (kind) {
+    case UserKind.ADMIN:
+      return AUTH_COOKIES.ADMIN.ACCESS;
+    case UserKind.ARTIST:
+      return AUTH_COOKIES.ARTIST.ACCESS;
+    case UserKind.CLIENT:
+      return AUTH_COOKIES.CLIENT.ACCESS;
+  }
+};
+
+// Reads the access token from the actor's httpOnly cookie (browser flow) or from
+// an `Authorization: Bearer` header (non-browser clients / tests).
+function extractAccessToken(req: Request, kind: UserKind): string | null {
   const authHeader = req.headers.authorization;
   if (authHeader?.startsWith(AUTH_HEADERS.BEARER_PREFIX)) {
     return authHeader.slice(AUTH_HEADERS.BEARER_PREFIX.length);
   }
-  const cookie = req.headers.cookie;
-  if (cookie && cookie.includes(AUTH_HEADERS.TOKEN_COOKIE_KEY)) {
-    return cookie.split(AUTH_HEADERS.TOKEN_COOKIE_KEY)[1].split(";")[0];
-  }
-  return null;
+  return req.cookies?.[accessCookieNameFor(kind)] ?? null;
 }
 
 export function requireKind(requiredKind: UserKind): RequestHandler {
   return async (req, _res, next) => {
     try {
-      const token = extractBearer(req);
+      const token = extractAccessToken(req, requiredKind);
       if (!token) {
         return next(new UnauthorizedError(AUTH_ERROR_CODES.MISSING_TOKEN));
       }

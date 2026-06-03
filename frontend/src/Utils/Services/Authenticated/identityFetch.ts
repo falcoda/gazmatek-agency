@@ -13,11 +13,12 @@ import {
 export interface AuthFetchOptions extends RequestInit {
   silent?: boolean;
   /**
-   * Called when the API returns 401. The implementation may attempt a refresh
-   * and return a fresh access token to retry the request once. Return `null` to
-   * give up — the original 401 is surfaced.
+   * Called when the API returns 401. The implementation may attempt a cookie
+   * refresh and resolve to whether it succeeded; on `true` the request is
+   * retried once (the rotated access-token cookie rides along automatically).
+   * Resolve to `false` to give up — the original 401 is surfaced.
    */
-  onUnauthorized?: () => Promise<string | null>;
+  onUnauthorized?: () => Promise<boolean>;
   /**
    * Called when the session is definitively considered expired (no refresh
    * possible, or refresh succeeded but the retry was still rejected). The
@@ -48,7 +49,6 @@ function isUserDisabled(status: number, body: ApiErrorBody | null): boolean {
 
 async function executeFetch<T>(
   route: string,
-  token: string | null,
   init: RequestInit,
   silent: boolean | undefined,
 ): Promise<
@@ -62,9 +62,14 @@ async function executeFetch<T>(
   if (!headers.has("Accept")) {
     headers.set("Accept", "application/json");
   }
-  if (token) headers.set("Authorization", `Bearer ${token}`);
 
-  const response = await fetch(route, { ...init, headers });
+  // The access token rides in an httpOnly cookie — send credentials on every
+  // request so the browser attaches it (and the rotated cookie after a refresh).
+  const response = await fetch(route, {
+    ...init,
+    headers,
+    credentials: "include",
+  });
 
   if (response.ok) {
     const ct = response.headers.get("content-type") ?? "";
@@ -103,7 +108,6 @@ async function executeFetch<T>(
 
 export async function identityFetch<T>(
   route: string,
-  token: string | null,
   options: AuthFetchOptions = {},
 ): Promise<T | null> {
   const { silent, onUnauthorized, onSessionExpired, onError, ...init } =
@@ -113,7 +117,7 @@ export async function identityFetch<T>(
     if (!silent) toast.error(i18n.t("auth.sessionExpired"));
   };
   try {
-    const first = await executeFetch<T>(route, token, init, silent);
+    const first = await executeFetch<T>(route, init, silent);
     if (first.ok) return first.data;
 
     // A deactivated account is a definitive session event regardless of the
@@ -126,7 +130,7 @@ export async function identityFetch<T>(
     if (first.status === HTTP_STATUS.UNAUTHORIZED && onUnauthorized) {
       const refreshed = await onUnauthorized();
       if (refreshed) {
-        const second = await executeFetch<T>(route, refreshed, init, silent);
+        const second = await executeFetch<T>(route, init, silent);
         if (second.ok) return second.data;
         if (second.disabled || second.status === HTTP_STATUS.UNAUTHORIZED) {
           expireSession();

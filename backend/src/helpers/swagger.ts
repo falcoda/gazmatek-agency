@@ -1,4 +1,5 @@
 import { config } from "@src/helpers/config";
+import { AUTH_COOKIES } from "@src/helpers/constants";
 import { openApiSchemas } from "@src/helpers/openApiSchemas";
 import { docsRateLimiter } from "@src/middleware/security/rateLimit";
 import { Express, RequestHandler } from "express";
@@ -52,6 +53,22 @@ const buildSwaggerSpec = () =>
             type: "apiKey",
             in: "header",
             name: config.auth.apiKeyHeader,
+          },
+          // Browser flows: each actor's access token rides in its httpOnly cookie.
+          adminCookieAuth: {
+            type: "apiKey",
+            in: "cookie",
+            name: AUTH_COOKIES.ADMIN.ACCESS,
+          },
+          artistCookieAuth: {
+            type: "apiKey",
+            in: "cookie",
+            name: AUTH_COOKIES.ARTIST.ACCESS,
+          },
+          clientCookieAuth: {
+            type: "apiKey",
+            in: "cookie",
+            name: AUTH_COOKIES.CLIENT.ACCESS,
           },
         },
         schemas: openApiSchemas,

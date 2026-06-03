@@ -69,7 +69,7 @@ interface StatusFilterOption {
 
 const InvitationsPanel = () => {
   const { t } = useTranslation();
-  const token = useAdminAuthStore((s) => s.token);
+  const admin = useAdminAuthStore((s) => s.admin);
   const [form, setForm] = useState<InvitationForm>(EMPTY_FORM);
   const [submitting, setSubmitting] = useState(false);
   const [lastResult, setLastResult] =
@@ -100,7 +100,7 @@ const InvitationsPanel = () => {
   );
 
   const reload = async () => {
-    if (!token) return;
+    if (!admin) return;
     const res = await fetchAdminArtistInvitations({
       status: statusFilter === "all" ? undefined : statusFilter,
       pageSize: 100,
@@ -110,7 +110,7 @@ const InvitationsPanel = () => {
 
   useEffect(() => {
     void reload();
-  }, [token, statusFilter]);
+  }, [admin, statusFilter]);
 
   const submit = async (e: React.FormEvent) => {
     e.preventDefault();

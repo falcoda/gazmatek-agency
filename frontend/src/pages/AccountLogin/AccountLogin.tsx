@@ -21,8 +21,8 @@ const AccountLogin = () => {
   const { t } = useTranslation();
   const navigate = useNavigate();
   const language = useOptionalLanguage();
-  const setSession = useClientAuthStore((s) => s.setSession);
-  const token = useClientAuthStore((s) => s.token);
+  const setClient = useClientAuthStore((s) => s.setClient);
+  const client = useClientAuthStore((s) => s.client);
   const [searchParams] = useSearchParams();
   const nextPath = searchParams.get("next");
   const nextSuffix = nextPath ? `?next=${encodeURIComponent(nextPath)}` : "";
@@ -33,12 +33,12 @@ const AccountLogin = () => {
   // Already-authenticated clients shouldn't see the login form: bounce them to
   // the `next` target or the dashboard. (#52)
   useEffect(() => {
-    if (token) {
+    if (client) {
       navigate(nextPath ?? getPagePath("accountDashboard", language), {
         replace: true,
       });
     }
-  }, [token, nextPath, navigate, language]);
+  }, [client, nextPath, navigate, language]);
 
   const onSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -49,11 +49,7 @@ const AccountLogin = () => {
       toast.error(t("auth.invalidCredentials"));
       return;
     }
-    setSession({
-      token: result.token,
-      refreshToken: result.refreshToken,
-      client: result.client,
-    });
+    setClient(result.client);
     navigate(nextPath ?? getPagePath("accountDashboard", language));
   };
 

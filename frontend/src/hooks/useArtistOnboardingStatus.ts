@@ -19,12 +19,12 @@ interface ArtistOnboardingStatus {
  * banner / nav badge so the flow stays discoverable after the invitation. (#34)
  */
 export function useArtistOnboardingStatus(): ArtistOnboardingStatus {
-  const token = useArtistAuthStore((s) => s.token);
+  const artist = useArtistAuthStore((s) => s.artist);
   const [me, setMe] = useState<ArtistMeDto | null>(null);
   const [loading, setLoading] = useState(false);
 
   useEffect(() => {
-    if (!token) {
+    if (!artist) {
       setMe(null);
       return;
     }
@@ -40,7 +40,7 @@ export function useArtistOnboardingStatus(): ArtistOnboardingStatus {
     return () => {
       cancelled = true;
     };
-  }, [token]);
+  }, [artist]);
 
   return {
     loading,

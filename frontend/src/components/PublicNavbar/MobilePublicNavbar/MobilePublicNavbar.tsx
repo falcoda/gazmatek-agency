@@ -25,7 +25,7 @@ const MobilePublicNavbar = ({
   const location = useLocation();
   const { t } = useTranslation();
   const navItems = useNavItems();
-  const clientToken = useClientAuthStore((s) => s.token);
+  const client = useClientAuthStore((s) => s.client);
   const language = useOptionalLanguage();
   const headerRef = useRef<HTMLDivElement>(null);
   const menuRef = useRef<HTMLDivElement>(null);
@@ -239,16 +239,14 @@ const MobilePublicNavbar = ({
           >
             <button
               className={`mobileMenuLink ${
-                isActive(
-                  clientToken ? PAGES.accountDashboard : PAGES.accountLogin,
-                )
+                isActive(client ? PAGES.accountDashboard : PAGES.accountLogin)
                   ? "active"
                   : ""
               }`}
               onClick={() =>
                 handleNavClick(
                   getPagePath(
-                    clientToken ? "accountDashboard" : "accountLogin",
+                    client ? "accountDashboard" : "accountLogin",
                     language,
                   ),
                 )
@@ -259,7 +257,7 @@ const MobilePublicNavbar = ({
                 {`${navItems.length + 1}`.padStart(2, "0")}
               </span>
               <span className="mobileMenuText">
-                {clientToken ? t("nav.myArea") : t("nav.login")}
+                {client ? t("nav.myArea") : t("nav.login")}
               </span>
               <span className="mobileMenuGlyph">/</span>
             </button>

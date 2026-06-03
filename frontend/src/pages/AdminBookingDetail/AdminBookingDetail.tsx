@@ -57,7 +57,7 @@ const AdminBookingDetail = () => {
   const navigate = useNavigate();
   const { id } = useParams<{ id: string }>();
   const language = useLanguage();
-  const token = useAdminAuthStore((s) => s.token);
+  const admin = useAdminAuthStore((s) => s.admin);
 
   const [data, setData] = useState<AdminBookingDetailDto | null>(null);
   const [notFound, setNotFound] = useState(false);
@@ -79,7 +79,7 @@ const AdminBookingDetail = () => {
   };
 
   const reload = useCallback(async () => {
-    if (!id || !token) return;
+    if (!id || !admin) return;
     const res = await fetchAdminBookingDetail(id).catch((err) => {
       loggerService.error(
         LogTag.API,
@@ -93,7 +93,7 @@ const AdminBookingDetail = () => {
       return;
     }
     setData(res);
-  }, [id, token]);
+  }, [id, admin]);
 
   useEffect(() => {
     void reload();

@@ -3,10 +3,11 @@ import { getIdentityRefreshTokenAny } from "@src/db/query/identityRefresh/getIde
 import { revokeAllIdentityRefreshTokensForSubject } from "@src/db/query/identityRefresh/revokeAllForSubject.types";
 import { revokeIdentityRefreshToken } from "@src/db/query/identityRefresh/revokeIdentityRefreshToken.types";
 import { generateRawToken, hashToken } from "@src/helpers/auth/tokens";
+import { IDENTITY_TOKEN_EXPIRES } from "@src/helpers/constants";
 import logger from "@src/helpers/logger";
 import type { Pool } from "pg";
 
-const REFRESH_TOKEN_TTL_DAYS = 30;
+const REFRESH_TOKEN_TTL_DAYS = IDENTITY_TOKEN_EXPIRES.REFRESH_DAYS;
 const SECONDS_PER_DAY = 24 * 60 * 60;
 
 export type IdentityKind = "admin" | "artist" | "client";

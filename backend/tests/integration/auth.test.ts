@@ -95,4 +95,51 @@ describe("authentication integration", () => {
     expect(response.status).toBe(403);
     expect(response.body.message).toBe(AUTH_ERROR_CODES.FORBIDDEN_KIND);
   });
+
+  // ── Cookie source ────────────────────────────────────────────────────────
+  // The access token may also arrive in the per-actor httpOnly cookie
+  // (`client_token` for the client route). It flows through the exact same
+  // verify + kind checks as the Bearer header.
+
+  it("returns 401 when the access token cookie is malformed", async () => {
+    const response = await request(app)
+      .get(PROTECTED_ROUTE)
+      .set("Cookie", "client_token=not-a-jwt");
+
+    expect(response.status).toBe(401);
+    expect(response.body.message).toBe(AUTH_ERROR_CODES.INVALID_TOKEN);
+  });
+
+  it("returns 403 when a wrong-kind token is supplied via the actor cookie", async () => {
+    // An admin-kind token placed in the client cookie still fails the kind gate.
+    const token = signIdentity({
+      data: "admin@example.com",
+      kind: UserKind.ADMIN,
+      sub: "admin-id",
+    });
+
+    const response = await request(app)
+      .get(PROTECTED_ROUTE)
+      .set("Cookie", `client_token=${token}`);
+
+    expect(response.status).toBe(403);
+    expect(response.body.message).toBe(AUTH_ERROR_CODES.FORBIDDEN_KIND);
+  });
+
+  it("ignores a token sent under another actor's cookie name", async () => {
+    // requireClient only reads `client_token`; a valid client token parked in
+    // the admin cookie is invisible to it → treated as missing credentials.
+    const token = signIdentity({
+      data: "client@example.com",
+      kind: UserKind.CLIENT,
+      sub: "client-id",
+    });
+
+    const response = await request(app)
+      .get(PROTECTED_ROUTE)
+      .set("Cookie", `admin_token=${token}`);
+
+    expect(response.status).toBe(401);
+    expect(response.body.message).toBe(AUTH_ERROR_CODES.MISSING_TOKEN);
+  });
 });

@@ -12,8 +12,6 @@ export interface ArtistInvitationMeta {
 }
 
 export interface InvitationAcceptResult {
-  token: string;
-  refreshToken: string;
   artist: { id: string; email: string; slug: string; stageName: string };
 }
 
@@ -33,9 +31,11 @@ export async function acceptArtistInvitation(
     privacyAccepted: boolean;
   },
 ): Promise<InvitationAcceptResult | null> {
+  // credentials:"include" so the browser stores the Set-Cookie session pair.
   return publicFetch(buildArtistInvitationAcceptUrl(token), {
     method: "POST",
     body: JSON.stringify(payload),
+    credentials: "include",
     silent: true,
   });
 }

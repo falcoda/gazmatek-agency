@@ -24,8 +24,10 @@ describe("PublicRoute", () => {
     useClientAuthStore.getState().clear();
   });
 
+  const CLIENT = { id: "c1", email: "c@example.com", displayName: "C" };
+
   it("renders the child route when the client is not authenticated", () => {
-    useClientAuthStore.setState({ token: null });
+    useClientAuthStore.setState({ client: null, isAuthenticated: false });
 
     const { getByText } = renderGuard(["/account/login"]);
 
@@ -33,7 +35,7 @@ describe("PublicRoute", () => {
   });
 
   it("redirects an authenticated client to the dashboard", () => {
-    useClientAuthStore.setState({ token: "client-token" });
+    useClientAuthStore.setState({ client: CLIENT, isAuthenticated: true });
 
     const { getByText, queryByText } = renderGuard(["/account/login"]);
 
@@ -42,7 +44,7 @@ describe("PublicRoute", () => {
   });
 
   it("honours the `next` param when redirecting an authenticated client", () => {
-    useClientAuthStore.setState({ token: "client-token" });
+    useClientAuthStore.setState({ client: CLIENT, isAuthenticated: true });
 
     const { getByText } = renderGuard(["/account/login?next=/booking/new"]);
 

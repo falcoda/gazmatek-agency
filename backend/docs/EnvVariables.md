@@ -192,6 +192,38 @@ These variables tune the `pg` connection pool. Defaults are conservative for a s
 
 ---
 
+### Auth Cookies
+
+The admin, artist, and client access & refresh tokens are delivered as httpOnly
+cookies (per-actor names, e.g. `admin_token` / `admin_refresh_token`). These
+variables tune the cookie attributes; all are optional with safe defaults.
+
+#### `COOKIE_SECURE`
+
+- **Type**: boolean (`true` / `false`)
+- **Default**: `true` when `NODE_ENV=production`, otherwise `false`
+- **Description**: Marks the auth cookies `Secure` so the browser only sends them
+  over HTTPS. The default keeps local HTTP development working while enforcing
+  HTTPS in production. Must be `true` when `COOKIE_SAMESITE=none`.
+
+#### `COOKIE_SAMESITE`
+
+- **Type**: `lax` | `strict` | `none`
+- **Default**: `lax`
+- **Description**: `SameSite` policy for the auth cookies. `lax` suits a
+  same-origin SPA (the dev proxy and a single-domain deploy). Use `none` for a
+  cross-origin SPA where the frontend and API live on different domains — it then
+  **requires** `COOKIE_SECURE=true` (validated at startup).
+
+#### `COOKIE_DOMAIN`
+
+- **Type**: string
+- **Default**: unset (cookies bind to the exact API host)
+- **Description**: Scopes the auth cookies to a parent domain, e.g.
+  `.example.com` to share them across `app.` and `api.` subdomains.
+
+---
+
 ### Security
 
 #### `DATA_ENCRYPTION_KEY`

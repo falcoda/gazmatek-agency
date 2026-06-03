@@ -1,48 +1,44 @@
 import { create } from "zustand";
-import { persist } from "zustand/middleware";
 
+import {
+  type ArtistIdentity,
+  clearStoredArtist,
+  fetchCurrentArtist,
+  readStoredArtist,
+  writeStoredArtist,
+} from "@/Utils/Auth/artistAuthSession";
 import { loggerService, LogTag } from "@/Utils/LoggerService";
 
-export interface ArtistIdentity {
-  id: string;
-  email: string;
-  slug: string;
-  stageName: string;
-}
-
-export interface ArtistSessionPayload {
-  token: string;
-  refreshToken: string;
-  artist: ArtistIdentity;
-}
+export type { ArtistIdentity };
 
 interface ArtistAuthState {
-  token: string | null;
-  refreshToken: string | null;
   artist: ArtistIdentity | null;
-  setSession: (s: ArtistSessionPayload) => void;
-  setToken: (t: { token: string; refreshToken: string }) => void;
+  setSession: (payload: { artist: ArtistIdentity }) => void;
   clear: () => void;
+  /** Restores the session from the httpOnly cookie via /me on boot. */
+  hydrate: () => Promise<void>;
 }
 
-export const useArtistAuthStore = create<ArtistAuthState>()(
-  persist(
-    (set) => ({
-      token: null,
-      refreshToken: null,
-      artist: null,
-      setSession: ({ token, refreshToken, artist }) => {
-        loggerService.info(LogTag.AUTH, "ArtistAuthStore: setSession");
-        set({ token, refreshToken, artist });
-      },
-      setToken: ({ token, refreshToken }) => {
-        set({ token, refreshToken });
-      },
-      clear: () => {
-        loggerService.info(LogTag.AUTH, "ArtistAuthStore: clear");
-        set({ token: null, refreshToken: null, artist: null });
-      },
-    }),
-    { name: "gazmatek.artistAuth" },
-  ),
-);
+export const useArtistAuthStore = create<ArtistAuthState>((set) => ({
+  artist: readStoredArtist(),
+  setSession: ({ artist }) => {
+    loggerService.info(LogTag.AUTH, "ArtistAuthStore: setSession");
+    writeStoredArtist(artist);
+    set({ artist });
+  },
+  clear: () => {
+    loggerService.info(LogTag.AUTH, "ArtistAuthStore: clear");
+    clearStoredArtist();
+    set({ artist: null });
+  },
+  hydrate: async () => {
+    const artist = await fetchCurrentArtist();
+    if (artist) {
+      writeStoredArtist(artist);
+      set({ artist });
+    } else {
+      clearStoredArtist();
+      set({ artist: null });
+    }
+  },
+}));

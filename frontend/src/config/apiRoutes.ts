@@ -29,6 +29,7 @@ export const API_ROUTES = {
   accountBookingDetail: "/api/account/bookings/:id",
   accountBookingCancel: "/api/account/bookings/:id/cancel",
   accountLogout: "/api/account/logout",
+  accountMe: "/api/account/me",
 
   // Artist
   artistAuthLogin: "/api/artist/auth/login",
@@ -57,6 +58,7 @@ export const API_ROUTES = {
   adminAuthLogin: "/api/admin/auth/login",
   adminAuthRefresh: "/api/admin/auth/refresh",
   adminAuthLogout: "/api/admin/auth/logout",
+  adminAuthMe: "/api/admin/auth/me",
 
   // Admin — agency settings
   adminAgencySignature: "/api/admin/agency/signature",

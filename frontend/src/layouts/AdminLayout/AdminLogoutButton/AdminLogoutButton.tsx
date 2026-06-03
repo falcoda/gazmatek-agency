@@ -26,11 +26,10 @@ const AdminLogoutButton = ({
     ? lang
     : undefined;
   const clear = useAdminAuthStore((s) => s.clear);
-  const refreshToken = useAdminAuthStore((s) => s.refreshToken);
 
   const handleLogout = async () => {
-    // Revoke the refresh token server-side before clearing locally. (#47)
-    await logoutAdmin(refreshToken);
+    // Revoke the refresh cookie server-side before clearing locally. (#47)
+    await logoutAdmin();
     clear();
     if (toggleNavbar) toggleNavbar();
     navigate(getPagePath("adminLogin", language));

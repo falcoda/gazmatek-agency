@@ -26,12 +26,12 @@ interface Draft {
 
 const AdminContent = () => {
   const { t } = useTranslation();
-  const token = useAdminAuthStore((s) => s.token);
+  const admin = useAdminAuthStore((s) => s.admin);
   const [blocks, setBlocks] = useState<AdminContentBlock[]>([]);
   const [drafts, setDrafts] = useState<Record<string, Draft>>({});
 
   const reload = async () => {
-    if (!token) return;
+    if (!admin) return;
     const res = await fetchAdminContent();
     const list = res?.data ?? [];
     setBlocks(list);
@@ -48,10 +48,10 @@ const AdminContent = () => {
 
   useEffect(() => {
     void reload();
-  }, [token]);
+  }, [admin]);
 
   const save = async (key: string) => {
-    if (!token) return;
+    if (!admin) return;
     const draft = drafts[key];
     if (!draft) return;
     const res = await putAdminContent(key, {
