@@ -19,6 +19,11 @@ export interface EmailCta {
 }
 
 export interface EmailContent {
+  /**
+   * Overrides the locale's default subject. Only for templates whose subject
+   * has to carry a payload value; everything else omits it.
+   */
+  subject?: string;
   /** Headline shown at the top of the body — not the subject line. */
   title: string;
   /** Salutation without trailing punctuation, e.g. `Bonjour Marie`. */

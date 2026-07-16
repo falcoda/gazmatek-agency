@@ -331,9 +331,24 @@ const featureFlags: AppFeatureFlags = {
 
 const serverPort = parsedEnv.PORT;
 
+/**
+ * Human-readable form of `APP_NAME` ("gazmatek-agency" -> "Gazmatek Agency").
+ *
+ * `APP_NAME` is a machine identifier — it names containers and DNS aliases, so
+ * it stays lowercase and hyphenated. Anywhere the app is shown to a person (the
+ * email "From" name) uses this instead.
+ */
+const toDisplayName = (name: string): string =>
+  name
+    .split(/[-_\s]+/)
+    .filter((word) => word.length > 0)
+    .map((word) => word.charAt(0).toUpperCase() + word.slice(1))
+    .join(" ");
+
 export const config = {
   app: {
     name: parsedEnv.APP_NAME,
+    displayName: toDisplayName(parsedEnv.APP_NAME),
     version:
       parsedEnv.APP_VERSION ?? process.env.npm_package_version ?? "1.0.0",
     baseUrl: parsedEnv.APP_BASE_URL ?? `http://localhost:${serverPort}`,

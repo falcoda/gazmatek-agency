@@ -48,6 +48,7 @@ export const LABELS = {
   },
   name: { fr: "Nom", nl: "Naam", en: "Name" },
   email: { fr: "Email", nl: "E-mail", en: "Email" },
+  subject: { fr: "Sujet", nl: "Onderwerp", en: "Subject" },
   message: { fr: "Message", nl: "Bericht", en: "Message" },
 } as const satisfies Record<string, Record<EmailLocale, string>>;
 

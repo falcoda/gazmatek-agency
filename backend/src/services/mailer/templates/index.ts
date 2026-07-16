@@ -37,6 +37,7 @@ const KEY = {
   CUSTOM_MESSAGE: "customMessage",
   NAME: "name",
   EMAIL: "email",
+  SUBJECT: "subject",
   MESSAGE: "message",
 } as const;
 
@@ -201,13 +202,18 @@ const BUILDERS: Record<EmailTemplate, TemplateBuilder> = {
 
   [EmailTemplate.CONTACT_MESSAGE]: (payload, locale) => {
     const copy = COPY[EmailTemplate.CONTACT_MESSAGE][locale];
+    const userSubject = getString(payload, KEY.SUBJECT);
     return {
+      // The team triages this inbox by subject line, so the sender's own
+      // subject has to survive into it.
+      subject: userSubject ? `${copy.subject} : ${userSubject}` : copy.subject,
       title: copy.title,
       greeting: HELLO[locale],
       paragraphs: copy.paragraphs,
       facts: factsOf([
         fact(LABELS.name[locale], getString(payload, KEY.NAME)),
         fact(LABELS.email[locale], getString(payload, KEY.EMAIL)),
+        fact(LABELS.subject[locale], userSubject),
         fact(LABELS.message[locale], getString(payload, KEY.MESSAGE)),
       ]),
       cta: null,
@@ -305,7 +311,11 @@ export const renderEmail = (
   const content = builder(payload, locale);
   const { text, html } = renderLayout(content, locale);
 
-  return { subject: COPY[template][locale].subject, text, html };
+  return {
+    subject: content.subject ?? COPY[template][locale].subject,
+    text,
+    html,
+  };
 };
 
 export type { RenderedEmail };

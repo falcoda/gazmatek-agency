@@ -1,3 +1,9 @@
+import {
+  DEFAULT_LOCALE,
+  SUPPORTED_LOCALES,
+  SupportedLocale,
+} from "@src/helpers/constants/domain";
+
 /**
  * Email queue vocabulary.
  *
@@ -21,11 +27,11 @@ export enum EmailTemplate {
   ARTIST_INVITATION = "artistInvitation",
 }
 
-export type EmailLocale = "fr" | "nl" | "en";
-
-export const EMAIL_LOCALES: readonly EmailLocale[] = ["fr", "nl", "en"];
-
-export const DEFAULT_EMAIL_LOCALE: EmailLocale = "fr";
+// Emails are localized with the app-wide locale set — every template must cover
+// each one, so these are aliases rather than a parallel list that could drift.
+export type EmailLocale = SupportedLocale;
+export const EMAIL_LOCALES = SUPPORTED_LOCALES;
+export const DEFAULT_EMAIL_LOCALE = DEFAULT_LOCALE;
 
 export interface EmailPayload {
   [key: string]: unknown;

@@ -1,4 +1,5 @@
 import { API_ROUTES } from "@/config/apiRoutes";
+import type { AppLanguage } from "@/i18n/config";
 import { publicFetch } from "@/Utils/Services/Public/publicFetch";
 
 export interface ContactMessagePayload {
@@ -6,6 +7,8 @@ export interface ContactMessagePayload {
   email: string;
   subject: string;
   message: string;
+  /** Language the acknowledgement email is sent in. */
+  locale: AppLanguage;
   website?: string;
 }
 

@@ -42,6 +42,7 @@ import {
   MIN_LEAD_TIME_HOURS,
 } from "@src/services/bookings/bookingConstants";
 import {
+  DEFAULT_EMAIL_LOCALE,
   EmailLocale,
   EmailTemplate,
   getEmailQueue,
@@ -481,6 +482,24 @@ export class ClientAuthService {
       }
       // Should never reach here: SQL refused but no business rule matched.
       throw new ConflictError("Booking cannot be cancelled");
+    }
+
+    // Confirm the cancellation back to the client: the SQL enforces the rules
+    // silently, so without this the only feedback is the dashboard refreshing.
+    const cancelled = await getBookingById.run({ bookingId }, this.db);
+    const booking = cancelled[0];
+    if (booking?.client_email) {
+      await getEmailQueue().enqueue({
+        template: EmailTemplate.BOOKING_CANCELLED,
+        recipient: booking.client_email,
+        locale: (booking.client_locale ?? DEFAULT_EMAIL_LOCALE) as EmailLocale,
+        payload: {
+          clientName: booking.client_name ?? "",
+          artistStageName: booking.artist_stage_name,
+          eventDate: booking.event_date,
+          reason: finalReason,
+        },
+      });
     }
 
     await recordAudit({

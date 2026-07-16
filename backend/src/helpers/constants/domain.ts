@@ -118,8 +118,8 @@ export const AUDIT_ACTION = {
 export type AuditAction = (typeof AUDIT_ACTION)[keyof typeof AUDIT_ACTION];
 
 // Locales --------------------------------------------------------------------
-// Matches EmailLocale (src/services/mailer/queueService.ts) and ArtistLanguage
-// (src/controllers/artist/types.ts).
+// The canonical locale set. EmailLocale (src/services/mailer/emailConstants.ts)
+// aliases it; ArtistLanguage (src/controllers/artist/types.ts) matches it.
 export const SUPPORTED_LOCALES = ["fr", "nl", "en"] as const;
 export type SupportedLocale = (typeof SUPPORTED_LOCALES)[number];
 export const DEFAULT_LOCALE: SupportedLocale = "fr";

@@ -26,6 +26,7 @@ const FULL_PAYLOAD = {
   customMessage: "On adore ton dernier set, rejoins-nous !",
   name: "Marie Dupont",
   email: "marie@example.com",
+  subject: "Réservation pour un mariage",
   message: "Bonjour, je souhaite réserver un artiste.",
 };
 
@@ -138,6 +139,29 @@ describe("renderEmail", () => {
     });
 
     expect(text).toContain("http://localhost:4001/fr/account");
+  });
+
+  it("carries the sender's subject into the team notification subject line", () => {
+    const { subject, text } = renderEmail(EmailTemplate.CONTACT_MESSAGE, "fr", {
+      name: "Marie Dupont",
+      email: "marie@example.com",
+      subject: "Réservation pour un mariage",
+      message: "Bonjour, je souhaite réserver un artiste.",
+    });
+
+    // The team triages this inbox by subject line.
+    expect(subject).toBe(
+      "Gazmatek — Nouveau message de contact : Réservation pour un mariage",
+    );
+    expect(text).toContain("Réservation pour un mariage");
+  });
+
+  it("falls back to the default subject when the payload has none", () => {
+    const { subject } = renderEmail(EmailTemplate.CONTACT_MESSAGE, "fr", {
+      name: "Marie Dupont",
+    });
+
+    expect(subject).toBe("Gazmatek — Nouveau message de contact");
   });
 
   it("escapes HTML coming from payload values", () => {

@@ -1,12 +1,19 @@
 import { config } from "@src/helpers/config";
 import { logger } from "@src/helpers/logger";
-import { getMailerService } from "@src/services/mailer";
+import {
+  DEFAULT_EMAIL_LOCALE,
+  EmailLocale,
+  EmailTemplate,
+} from "@src/services/mailer/emailConstants";
+import { getEmailQueue } from "@src/services/mailer/queueService";
 
 export interface ContactMessageInput {
   name: string;
   email: string;
   subject: string;
   message: string;
+  /** Language of the acknowledgement sent back to the sender. */
+  locale: EmailLocale;
 }
 
 export interface ContactSendResult {
@@ -15,7 +22,6 @@ export interface ContactSendResult {
 
 export class ContactService {
   async sendMessage(input: ContactMessageInput): Promise<ContactSendResult> {
-    const mailer = getMailerService();
     const defaultRecipients = config.mailer.defaultTo;
     const recipient =
       defaultRecipients.length > 0
@@ -29,33 +35,25 @@ export class ContactService {
       return { delivered: false };
     }
 
-    const adminBody = [
-      `Nouveau message de contact`,
-      ``,
-      `De : ${input.name} <${input.email}>`,
-      `Sujet : ${input.subject}`,
-      ``,
-      input.message,
-    ].join("\n");
-
-    const autoReplyBody = [
-      `Bonjour ${input.name},`,
-      ``,
-      `Nous avons bien reçu votre message et nous vous répondrons dans les meilleurs délais (24h ouvrées).`,
-      ``,
-      `— L'équipe Gazmatek`,
-    ].join("\n");
-
-    await mailer.send({
-      to: recipient,
-      subject: `[Contact] ${input.subject}`,
-      text: adminBody,
+    // The team notification is internal, so it goes out in the app's default
+    // locale rather than whatever language the visitor happened to browse in.
+    await getEmailQueue().enqueue({
+      template: EmailTemplate.CONTACT_MESSAGE,
+      recipient,
+      locale: DEFAULT_EMAIL_LOCALE,
+      payload: {
+        name: input.name,
+        email: input.email,
+        subject: input.subject,
+        message: input.message,
+      },
     });
 
-    await mailer.send({
-      to: input.email,
-      subject: `Gazmatek — Confirmation de votre message`,
-      text: autoReplyBody,
+    await getEmailQueue().enqueue({
+      template: EmailTemplate.CONTACT_ACK,
+      recipient: input.email,
+      locale: input.locale,
+      payload: { name: input.name },
     });
 
     logger.info("Contact message delivered", {

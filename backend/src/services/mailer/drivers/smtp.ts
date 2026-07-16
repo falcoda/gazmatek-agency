@@ -1,4 +1,5 @@
 import { config } from "@src/helpers/config";
+import { buildFromHeader } from "@src/services/mailer/fromHeader";
 import { MailerService, MailPayload } from "@src/services/mailer/types";
 import nodemailer from "nodemailer";
 
@@ -18,7 +19,7 @@ export class SmtpMailerService implements MailerService {
 
   async send(payload: MailPayload): Promise<void> {
     await this.transporter.sendMail({
-      from: config.mailer.from,
+      from: buildFromHeader(),
       to: payload.to,
       subject: payload.subject,
       text: payload.text,

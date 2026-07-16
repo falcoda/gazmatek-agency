@@ -20,6 +20,8 @@ import {
   StyledInputText,
   StyledInputTextArea,
 } from "@/covaltech-react-ui";
+import type { AppLanguage } from "@/i18n/config";
+import { DEFAULT_LANGUAGE } from "@/i18n/config";
 import { postContactMessage } from "@/Utils/Services/Public/contactApi";
 
 interface FormState {
@@ -42,7 +44,9 @@ const EMAIL_RE = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
 const MIN_MESSAGE_LEN = 20;
 
 const Contact = () => {
-  const { t } = useTranslation();
+  const { t, i18n } = useTranslation();
+  // Drives the language of the acknowledgement email the sender receives.
+  const language = (i18n.resolvedLanguage ?? DEFAULT_LANGUAGE) as AppLanguage;
   const [form, setForm] = useState<FormState>(INITIAL_STATE);
   const [errors, setErrors] = useState<
     Partial<Record<keyof FormState, string>>
@@ -80,6 +84,7 @@ const Contact = () => {
       email: form.email.trim(),
       subject: form.subject.trim(),
       message: form.message.trim(),
+      locale: language,
       website: form.website,
     });
     setSubmitting(false);

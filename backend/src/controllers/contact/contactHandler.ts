@@ -38,6 +38,7 @@ export class ContactHandler {
         email: req.body.email,
         subject: req.body.subject,
         message: req.body.message,
+        locale: req.body.locale,
       });
 
       res.status(HTTP_STATUS.OK).json({

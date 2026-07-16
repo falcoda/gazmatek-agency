@@ -34,6 +34,7 @@ import {
   AUDIT_ACTION,
   AUDIT_ACTOR_KIND,
   AUDIT_TARGET_KIND,
+  BOOKING_STATUS,
 } from "@src/helpers/constants/domain";
 import { AUTH_ERROR_CODES, HTTP_STATUS } from "@src/helpers/error/constants";
 import {
@@ -93,6 +94,7 @@ import { renderContractPdf } from "@src/services/contract/contractPdfRenderer";
 import { renderEngagementContractHtml } from "@src/services/contract/engagementContractTemplate";
 import { downloadSignedEnvelope } from "@src/services/documenso/documensoClient";
 import {
+  DEFAULT_EMAIL_LOCALE,
   EmailLocale,
   EmailTemplate,
   getEmailQueue,
@@ -1000,6 +1002,9 @@ adminRouter.post(
     try {
       const body = req.body as { reason?: string };
       const reason = body.reason ?? "";
+      // Read before the update: this endpoint cancels from any non-terminal
+      // status, and the status it started from decides which email fits.
+      const booking = await bookingService.getById(req.params.id as string);
       const rows = await rejectBookingAdmin.run(
         { bookingId: req.params.id as string, reason },
         pool,
@@ -1007,16 +1012,28 @@ adminRouter.post(
       if (rows.length === 0) {
         throw new ConflictError("Booking cannot be rejected");
       }
-      const booking = await bookingService.getById(req.params.id as string);
-      const locale = (booking.client_locale ?? "fr") as EmailLocale;
+      const locale = (booking.client_locale ??
+        DEFAULT_EMAIL_LOCALE) as EmailLocale;
       if (booking.client_email) {
+        // A request still awaiting review is *rejected*; one the client already
+        // had approved is *cancelled*. Telling a confirmed client their request
+        // "could not be processed" would be wrong.
+        const wasPending = booking.status === BOOKING_STATUS.PENDING_VALIDATION;
         await getEmailQueue().enqueue({
-          template: EmailTemplate.BOOKING_REJECTED,
+          template: wasPending
+            ? EmailTemplate.BOOKING_REJECTED
+            : EmailTemplate.BOOKING_CANCELLED,
           recipient: booking.client_email,
           locale,
           payload: {
             clientName: booking.client_name ?? "",
             reason,
+            ...(wasPending
+              ? {}
+              : {
+                  artistStageName: booking.artist_stage_name,
+                  eventDate: booking.event_date,
+                }),
           },
         });
       }
@@ -1055,6 +1072,22 @@ adminRouter.post(
         throw new ConflictError(
           "Booking must be in awaiting_deposit to mark deposit paid",
         );
+      }
+      // The deposit landing is what actually confirms the booking, so this is
+      // where the client learns it is locked in. `current` is safe to read
+      // from: the transition only moves the status.
+      if (current.client_email) {
+        await getEmailQueue().enqueue({
+          template: EmailTemplate.BOOKING_CONFIRMED,
+          recipient: current.client_email,
+          locale: (current.client_locale ??
+            DEFAULT_EMAIL_LOCALE) as EmailLocale,
+          payload: {
+            clientName: current.client_name ?? "",
+            artistStageName: current.artist_stage_name,
+            eventDate: current.event_date,
+          },
+        });
       }
       await recordAudit({
         actorKind: AUDIT_ACTOR_KIND.ADMIN,

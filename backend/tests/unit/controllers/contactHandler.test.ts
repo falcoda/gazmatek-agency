@@ -61,6 +61,7 @@ describe("ContactHandler", () => {
       email: "alice@example.com",
       subject: "Booking",
       message: "Hello, I would like to book one of your artists.",
+      locale: "nl",
       website: "",
     });
     const { res, status, json } = buildRes();
@@ -73,6 +74,7 @@ describe("ContactHandler", () => {
       email: "alice@example.com",
       subject: "Booking",
       message: "Hello, I would like to book one of your artists.",
+      locale: "nl",
     });
     expect(status).toHaveBeenCalledWith(200);
     expect(json).toHaveBeenCalledWith({
